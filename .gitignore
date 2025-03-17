@@ -193,3 +193,7 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+*.vsidx
+*.vsidx
+*.json
+*.json
