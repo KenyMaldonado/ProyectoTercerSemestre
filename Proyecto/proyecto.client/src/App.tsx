@@ -1,56 +1,43 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Navbar from './components/Navbar/Navbar';
+import Inicio from './pages/Inicio';
+import Torneos from './pages/Torneos';
+import Equipos from './pages/Equipos';
+import Jugadores from './pages/Jugadores';
+import Partidos from './pages/Partidos';
+import { useEffect } from 'react';
+import Login from './pages/Login';
 
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
-
-function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
+const App = () => {
+    const location = useLocation();
 
     useEffect(() => {
-        populateWeatherData();
-    }, []);
+        const path = location.pathname;
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
+        let pageTitle = 'Torneos de Fútbol';
+        if (path === '/') pageTitle = 'Inicio - Torneos de Fútbol';
+        else if (path.startsWith('/torneos')) pageTitle = 'Torneos';
+        else if (path.startsWith('/equipos')) pageTitle = 'Equipos';
+        else if (path.startsWith('/jugadores')) pageTitle = 'Jugadores';
+        else if (path.startsWith('/partidos')) pageTitle = 'Partidos';
+        else if (path.startsWith('/login')) pageTitle = 'Inicio de Sesión';
+
+        document.title = pageTitle;
+    }, [location]);
 
     return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
+        <>
+        <Navbar />
+        <Routes>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/torneos" element={<Torneos />} />
+            <Route path="/equipos" element={<Equipos />} />
+            <Route path="/jugadores" element={<Jugadores />} />
+            <Route path="/partidos" element={<Partidos />} />
+            <Route path="/login" element={<Login />} />
+        </Routes>
+        </>
     );
-
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
-    }
-}
+};
 
 export default App;
