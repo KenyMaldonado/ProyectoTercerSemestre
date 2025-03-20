@@ -1,8 +1,10 @@
+import LoginForm from '../components/Auth/LoginForm';
+
 const Login = () => {
     return (
         <div>
-            <h1>Inicio de Sesion</h1>
-            <p>Exclusivo para administradores</p>
+        <h1>Iniciar Sesión</h1>
+        <LoginForm />
         </div>
     );
 };

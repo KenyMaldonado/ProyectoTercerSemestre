@@ -13,7 +13,7 @@ const Navbar = () => {
             <li><NavLink to="/equipos" className={({ isActive }) => isActive ? styles.active : ''}>Equipos</NavLink></li>
             <li><NavLink to="/jugadores" className={({ isActive }) => isActive ? styles.active : ''}>Jugadores</NavLink></li>
             <li><NavLink to="/partidos" className={({ isActive }) => isActive ? styles.active : ''}>Partidos</NavLink></li>
-            <li><NavLink to="/login" className={({ isActive }) => isActive ? styles.active : ''}>Login</NavLink></li>
+            <li><Link to="/login" target="_blank" rel="noopener noreferrer">Login</Link></li>
         </ul>
         </nav>
     );
