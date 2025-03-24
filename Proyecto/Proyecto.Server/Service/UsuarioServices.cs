@@ -46,9 +46,10 @@ namespace Proyecto.Server.Service
             _storeProcedure.EjecutarProcedimientoAlmacenado("sp_createUser", System.Data.CommandType.StoredProcedure, ParametrosUsuario, null);
         }
 
-        public bool IncioUsuario(string PasswordHash, string Password)
+        public static bool IncioUsuario(string PasswordHash, string Password)
         {
-            bool PasswordValida = BCrypt.Net.BCrypt.Verify(Password, PasswordHash);
+            bool PasswordValida = BCrypt.Net.BCrypt.Verify(Password,PasswordHash);
+            Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("patito789@"));
 
             return PasswordValida;
         }

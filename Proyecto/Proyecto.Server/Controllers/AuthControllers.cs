@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Proyecto.Server.DAL;
+using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
+using Proyecto.Server.Service;
 
 namespace Proyecto.Server.Controllers
 {
@@ -12,13 +14,14 @@ namespace Proyecto.Server.Controllers
     public class AuthControllers : ControllerBase
     {
         private readonly StoreProcedure _dal;
-        public AuthControllers(StoreProcedure dal) 
-        { 
+        private readonly UsuarioServices _usarioServices;
+        public AuthControllers(StoreProcedure dal)
+        {
             _dal = dal;
         }
 
         [HttpGet("GetUser")]
-        public IActionResult GetUser ()
+        public IActionResult GetUser()
         {
             DataTable ds;
             Usuario.listaUsarios listaUsuario = new Usuario.listaUsarios();
@@ -46,5 +49,35 @@ namespace Proyecto.Server.Controllers
             }
         }
 
+        [HttpPost("AuthUser")]
+        public IActionResult AuthUser(RegistroDTO.objAuthParameter parametrosPeticion)
+        {
+            DataTable dt;
+            bool EstadoLogin;
+            try
+            {
+                var parametrosEntrada = new Dictionary<string, object>()
+                {
+                    {"@correo",parametrosPeticion.Correo}
+                };
+
+                dt = (DataTable)_dal.EjecutarProcedimientoAlmacenado("sp_getCredencialesUsuario",CommandType.StoredProcedure,parametrosEntrada,null);
+
+                List<RegistroDTO.objAuthParameter> listaDatos = dt.AsEnumerable().Select(row  => new RegistroDTO.objAuthParameter 
+                {
+                    Correo = row.Field<string>(0),
+                    Contrasenia = row.Field<string>(1)
+                }).ToList();
+
+                EstadoLogin = UsuarioServices.IncioUsuario(listaDatos[0].Contrasenia, parametrosPeticion.Contrasenia);
+
+                return Ok(EstadoLogin);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            
+        }
     }
 }
