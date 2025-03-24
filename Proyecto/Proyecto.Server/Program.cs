@@ -1,4 +1,6 @@
 
+using Proyecto.Server.DAL;
+
 namespace Proyecto.Server
 {
     public class Program
@@ -6,6 +8,11 @@ namespace Proyecto.Server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Agregar los servicios de configuración de la cadena de conexión
+            builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+            builder.Services.AddScoped<StoreProcedure>(); // Registrar StoreProcedure para inyección de dependencias
+
 
             // Add services to the container.
 
