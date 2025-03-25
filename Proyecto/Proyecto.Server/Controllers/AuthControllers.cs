@@ -79,5 +79,23 @@ namespace Proyecto.Server.Controllers
             }
             
         }
+
+        [HttpPost("CreateUser")]
+
+        public IActionResult CreateUser(RegistroDTO user)
+        {
+            try
+            {
+                UsuarioServices _usarioServices = new UsuarioServices(_dal);
+                _usarioServices.RegistrarUsuario(user);
+                return Ok("El usuario fue creado exitosamente");
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
+
 }

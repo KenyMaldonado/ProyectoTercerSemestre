@@ -22,17 +22,17 @@ namespace Proyecto.Server.Service
             _storeProcedure = storeProcedure;
         }
 
-        public void RegistrarUsuario(string Nombre, string Apellido, string Contrasenia, string TipoRol, string CorreoElectronico)
+        public void RegistrarUsuario(RegistroDTO usuario)
         {
-            string hash = BCrypt.Net.BCrypt.HashPassword(Contrasenia);
+            string hash = BCrypt.Net.BCrypt.HashPassword(usuario.Contrasenia);
 
             var Usuario = new RegistroDTO();
 
-            Usuario.Nombre = Nombre;
-            Usuario.Apellido = Apellido;
+            Usuario.Nombre = usuario.Nombre;
+            Usuario.Apellido = usuario.Apellido;
             Usuario.Contrasenia = hash;
-            Usuario.TipoRol = TipoRol;
-            Usuario.CorreoElectronico = CorreoElectronico;
+            Usuario.TipoRol = usuario.TipoRol;
+            Usuario.CorreoElectronico = usuario.CorreoElectronico;
 
             var ParametrosUsuario = new Dictionary<string, object>()
             {

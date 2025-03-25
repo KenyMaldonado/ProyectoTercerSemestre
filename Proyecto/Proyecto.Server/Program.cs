@@ -1,3 +1,6 @@
+
+
+using Microsoft.EntityFrameworkCore;
 using Proyecto.Server.DAL;
 
 namespace Proyecto.Server
@@ -14,6 +17,13 @@ namespace Proyecto.Server
 
             // Definir política de CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+            var connectionString = builder.Configuration.GetConnectionString("MiConexion");
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(connectionString)
+            );
+
 
             builder.Services.AddCors(options =>
             {
