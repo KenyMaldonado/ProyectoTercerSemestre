@@ -1,42 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
+  "WorkspaceRootPath": "C:\\Users\\juan\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\components\\auth\\loginform.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juan\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\components\\auth\\loginform.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
       "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\src\\components\\auth\\loginform.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\pages\\login.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\src\\pages\\login.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\app.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\src\\app.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\pages\\adminpanel.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\src\\pages\\adminpanel.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\components\\admin\\dashboard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\src\\components\\admin\\dashboard.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\components\\admin\\sidebar.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\src\\components\\admin\\sidebar.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\src\\main.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\src\\main.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.client\\vite.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{29CEF071-2704-4C23-A2A2-3B706D7644F3}|proyecto.client\\proyecto.client.esproj|solutionrelative:proyecto.client\\vite.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\juan\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\authcontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\authcontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,112 +38,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "LoginForm.tsx",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
-              "RelativeDocumentMoniker": "proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
-              "RelativeToolTip": "proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAADAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-25T02:00:07.445Z",
+              "DocumentIndex": 1,
+              "Title": "AuthControllers.cs",
+              "DocumentMoniker": "C:\\Users\\juan\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\AuthControllers.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\AuthControllers.cs",
+              "ToolTip": "C:\\Users\\juan\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\AuthControllers.cs",
+              "RelativeToolTip": "Proyecto.Server\\Controllers\\AuthControllers.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAAAgwFMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-25T10:27:46.479Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Login.tsx",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\pages\\Login.tsx",
-              "RelativeDocumentMoniker": "proyecto.client\\src\\pages\\Login.tsx",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\pages\\Login.tsx",
-              "RelativeToolTip": "proyecto.client\\src\\pages\\Login.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "LoginForm.tsx",
+              "DocumentMoniker": "C:\\Users\\juan\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
+              "RelativeDocumentMoniker": "proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
+              "ToolTip": "C:\\Users\\juan\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
+              "RelativeToolTip": "proyecto.client\\src\\components\\Auth\\LoginForm.tsx",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAUwBMAAABTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-25T02:00:02.047Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "App.tsx",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\App.tsx",
-              "RelativeDocumentMoniker": "proyecto.client\\src\\App.tsx",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\App.tsx",
-              "RelativeToolTip": "proyecto.client\\src\\App.tsx",
-              "ViewState": "AgIAABMAAAAAAAAAAAAqwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-25T01:59:52.904Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Dashboard.tsx",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Admin\\Dashboard.tsx",
-              "RelativeDocumentMoniker": "proyecto.client\\src\\components\\Admin\\Dashboard.tsx",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Admin\\Dashboard.tsx",
-              "RelativeToolTip": "proyecto.client\\src\\components\\Admin\\Dashboard.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-25T01:59:41.742Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Sidebar.tsx",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Admin\\Sidebar.tsx",
-              "RelativeDocumentMoniker": "proyecto.client\\src\\components\\Admin\\Sidebar.tsx",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\components\\Admin\\Sidebar.tsx",
-              "RelativeToolTip": "proyecto.client\\src\\components\\Admin\\Sidebar.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-25T01:59:39.182Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AdminPanel.tsx",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\pages\\AdminPanel.tsx",
-              "RelativeDocumentMoniker": "proyecto.client\\src\\pages\\AdminPanel.tsx",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\pages\\AdminPanel.tsx",
-              "RelativeToolTip": "proyecto.client\\src\\pages\\AdminPanel.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-25T01:59:24.925Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "main.tsx",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\main.tsx",
-              "RelativeDocumentMoniker": "proyecto.client\\src\\main.tsx",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\src\\main.tsx",
-              "RelativeToolTip": "proyecto.client\\src\\main.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-18T08:21:42.225Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "index.html",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\index.html",
-              "RelativeDocumentMoniker": "proyecto.client\\index.html",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\index.html",
-              "RelativeToolTip": "proyecto.client\\index.html",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-03-18T08:20:04.951Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "vite.config.ts",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\vite.config.ts",
-              "RelativeDocumentMoniker": "proyecto.client\\vite.config.ts",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\proyecto.client\\vite.config.ts",
-              "RelativeToolTip": "proyecto.client\\vite.config.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-03-17T06:51:49.469Z"
+              "WhenOpened": "2025-03-25T02:00:07.445Z",
+              "EditorCaption": ""
             }
           ]
         }
