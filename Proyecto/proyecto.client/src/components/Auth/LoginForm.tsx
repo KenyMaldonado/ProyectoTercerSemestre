@@ -17,12 +17,15 @@ const LoginForm = () => {
         }
     
         try {
-            const response = await fetch('http://localhost:5291/api/auth/AuthUser', {
+            const response = await fetch('http://localhost:5291/api/AuthControllers/AuthUser', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({
+                    correo: email, 
+                    contrasenia: password 
+                })
             });
     
             if (!response.ok) throw new Error('Credenciales inválidas');
