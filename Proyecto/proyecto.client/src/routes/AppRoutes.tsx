@@ -5,6 +5,7 @@ import Equipos from '../pages/Equipos';
 import Jugadores from '../pages/Jugadores';
 import Partidos from '../pages/Partidos';
 import Login from '../pages/Login';
+import AdminPanel from '../pages/AdminPanel';
 // import TournamentList from '@/features/tournaments/pages/TournamentList';
 
 const AppRoutes = () => {
@@ -16,6 +17,7 @@ const AppRoutes = () => {
                 <Route path="/jugadores" element={<Jugadores />} />
                 <Route path="/partidos" element={<Partidos />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/admin" element={<AdminPanel />} />
             </Routes>
     );
 };
