@@ -1,15 +1,15 @@
-// src/layouts/MainLayout.tsx
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
 
 const MainLayout = () => {
+    const location = useLocation();
+    const isLoginPage = location.pathname === '/login';
+
     return (
-        <>
-        <Navbar />
-        <main>
-            <Outlet /> {/* Renderiza la ruta hija aquí */}
-        </main>
-        </>
+        <div>
+            {!isLoginPage && <Navbar />}
+            <Outlet />
+        </div>
     );
 };
 

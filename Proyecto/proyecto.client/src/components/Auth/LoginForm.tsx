@@ -1,75 +1,57 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import styles from './LoginForm.module.css';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrorMsg('');
-
         if (!email || !password) {
-        setErrorMsg('Por favor, completa todos los campos');
-        return;
+            alert('Completa todos los campos');
+            return;
         }
-
+    
         try {
-        const response = await fetch('https://localhost:5001/api/auth/login', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Login exitoso:', result);
-
-            // Marca la sesión como autenticada (sin token, usando sessionStorage)
-            sessionStorage.setItem('isAuthenticated', 'true');
-
-            // Redirige al panel admin
+            const response = await fetch('http://localhost:5291/api/auth/AuthUser', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password }),
+            });
+    
+            if (!response.ok) throw new Error('Credenciales inválidas');
+            
+            // Si el servidor devuelve un JWT o algún token de autenticación
+            const { token } = await response.json();  // Asumiendo que el servidor responde con un token
+            
+            // Almacenar el token en el almacenamiento local o en un contexto
+            localStorage.setItem('authToken', token);  // O usar contexto de React si prefieres
+            login();  // Usar el método de login de tu contexto de autenticación
             navigate('/admin');
-        } else {
-            const error = await response.text();
-            setErrorMsg(error || 'Credenciales inválidas');
-        }
         } catch (err) {
-        console.error('Error al conectar con la API:', err);
-        setErrorMsg('Error de conexión. Intenta más tarde.');
+            if (err instanceof Error) {
+                alert(err.message);
+            } else {
+                alert('Ocurrió un error desconocido');
+            }
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
-        <h2 className={styles.title}>Iniciar Sesión</h2>
-
-        {errorMsg && <p className={styles.error}>{errorMsg}</p>}
-
-        <label>Email:</label>
-        <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            aria-label="Email"
-        />
-
-        <label>Contraseña:</label>
-        <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-            aria-label="Password"
-        />
-
-        <button type="submit">Entrar</button>
+            <h2>Iniciar Sesión</h2>
+            <label>Email:</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <label>Contraseña:</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+            <button type="submit">Entrar</button>
         </form>
     );
 };

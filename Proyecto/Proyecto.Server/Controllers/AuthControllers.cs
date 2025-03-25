@@ -9,7 +9,7 @@ using Proyecto.Server.Service;
 
 namespace Proyecto.Server.Controllers
 {
-    [Microsoft.AspNetCore.Components.Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
     public class AuthControllers : ControllerBase
     {

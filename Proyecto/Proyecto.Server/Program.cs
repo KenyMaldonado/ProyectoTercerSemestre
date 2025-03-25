@@ -1,4 +1,3 @@
-
 using Proyecto.Server.DAL;
 
 namespace Proyecto.Server
@@ -9,15 +8,27 @@ namespace Proyecto.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Agregar los servicios de configuraci髇 de la cadena de conexi髇
+            // Agregar los servicios de configuraci贸n de la cadena de conexi贸n
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-            builder.Services.AddScoped<StoreProcedure>(); // Registrar StoreProcedure para inyecci髇 de dependencias
+            builder.Services.AddScoped<StoreProcedure>(); // Registrar StoreProcedure para inyecci贸n de dependencias
 
+            // Definir pol铆tica de CORS
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-            // Add services to the container.
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                    policy =>
+                                    {
+                                        policy.WithOrigins("http://localhost:5173") // Permitir el frontend
+                                                .AllowAnyHeader()
+                                                .AllowAnyMethod()
+                                                .AllowCredentials(); // Permitir cookies y autenticaci贸n
+                                    });
+            });
 
+            // Agregar servicios al contenedor.
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -26,7 +37,10 @@ namespace Proyecto.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            // Configure the HTTP request pipeline.
+            // Activar CORS antes de cualquier middleware que lo requiera
+            app.UseCors(MyAllowSpecificOrigins);
+
+            // Configurar el pipeline de solicitudes HTTP.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -34,10 +48,7 @@ namespace Proyecto.Server
             }
 
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
 
             app.Run();
