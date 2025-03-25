@@ -3,7 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Proyecto.Server.DTOs
 {
-    public class RegistroDTO
+    public class UserRegistrationDTO
     {
         public string Nombre { get; set; }
         public string Apellido { get; set; }
@@ -11,7 +11,7 @@ namespace Proyecto.Server.DTOs
         public string TipoRol { get; set; }
         public string CorreoElectronico { get; set; }
 
-        public class objAuthParameter()
+        public class AuthRequestDTO()
         {
             public string Correo { set; get; }
             public string Contrasenia {  set; get; }

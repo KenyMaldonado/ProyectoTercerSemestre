@@ -22,11 +22,11 @@ namespace Proyecto.Server.Controllers
         }
 
         [HttpPost("AuthUser")]
-        public IActionResult AuthUser(RegistroDTO.objAuthParameter parametrosPeticion)
+        public IActionResult AuthUser(UserRegistrationDTO.AuthRequestDTO parametrosPeticion)
         {
             try
             {
-                bool estadoLogin = _usuarioBLL.AutenticarUsuario(parametrosPeticion);
+                bool estadoLogin = _usuarioBLL.AuthenticateUser(parametrosPeticion);
                 return Ok(estadoLogin);
             }
             catch (Exception ex)
@@ -36,6 +36,28 @@ namespace Proyecto.Server.Controllers
             
         }
 
+
+        [HttpPost("CreateNewUser")]
+
+        public async Task<IActionResult> CreateNewUser(UserRegistrationDTO parametrosPeticion)
+        {
+            try
+            {
+                if (await _usuarioBLL.IsEmailRegisteredAsync(parametrosPeticion.CorreoElectronico))
+                {
+                    return Ok("El usuario Ya existe");
+                } else
+                {
+                    _usuarioBLL.CreateUser(parametrosPeticion);
+                    return Ok("Usuario Creado Exitosamente");
+                }
+                
+            }
+            catch (Exception ex) 
+            { 
+                return BadRequest(ex.Message);
+            }
+        }
     }
 
 }

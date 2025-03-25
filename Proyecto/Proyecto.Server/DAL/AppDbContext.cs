@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Proyecto.Server.Models;
 
@@ -22,33 +23,43 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Facultad> Facultads { get; set; }
 
+    public virtual DbSet<FaseEliminacion> FaseEliminacions { get; set; }
+
+    public virtual DbSet<Goles> Goles { get; set; }
+
     public virtual DbSet<Grupos> Grupos { get; set; }
 
     public virtual DbSet<Inscripcion> Inscripcions { get; set; }
+
+    public virtual DbSet<Jornada> Jornada { get; set; }
 
     public virtual DbSet<Jugador> Jugadors { get; set; }
 
     public virtual DbSet<Partido> Partidos { get; set; }
 
+    public virtual DbSet<PosicionJugador> PosicionJugadors { get; set; }
+
     public virtual DbSet<ResultadoPartido> ResultadoPartidos { get; set; }
 
     public virtual DbSet<SubTorneo> SubTorneos { get; set; }
 
+    public virtual DbSet<Tarjeta> Tarjeta { get; set; }
+
     public virtual DbSet<Torneo> Torneos { get; set; }
+
+    public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory()) 
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) 
+            var configuration = new  ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
-
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("MiConexion"));
         }
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CarreraSemestre>(entity =>
@@ -92,13 +103,38 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(100);
         });
 
+        modelBuilder.Entity<FaseEliminacion>(entity =>
+        {
+            entity.HasKey(e => e.FaseId);
+
+            entity.ToTable("Fase_Eliminacion");
+
+            entity.Property(e => e.FaseId).HasColumnName("Fase_ID");
+            entity.Property(e => e.Nombre).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Goles>(entity =>
+        {
+            entity.HasKey(e => e.GolId);
+
+            entity.Property(e => e.GolId).HasColumnName("Gol_ID");
+            entity.Property(e => e.EsTiempoExtra).HasColumnName("Es_Tiempo_Extra");
+            entity.Property(e => e.JugadorId).HasColumnName("Jugador_ID");
+            entity.Property(e => e.MinutoGol).HasColumnName("Minuto_Gol");
+            entity.Property(e => e.OrdenPenal).HasColumnName("Orden_Penal");
+            entity.Property(e => e.ResultadoPartidoId).HasColumnName("Resultado_Partido_ID");
+            entity.Property(e => e.TipoGol)
+                .HasMaxLength(50)
+                .HasColumnName("Tipo_Gol");
+        });
+
         modelBuilder.Entity<Grupos>(entity =>
         {
+            entity.HasKey(e => e.GrupoId);
+
             entity.Property(e => e.GrupoId).HasColumnName("Grupo_ID");
             entity.Property(e => e.NombreGrupo)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(10)
                 .HasColumnName("Nombre_Grupo");
         });
 
@@ -113,6 +149,14 @@ public partial class AppDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("Fecha_Inscripcion");
             entity.Property(e => e.SubTorneoId).HasColumnName("Sub_Torneo_ID");
+        });
+
+        modelBuilder.Entity<Jornada>(entity =>
+        {
+            entity.HasKey(e => e.JornadaId);
+
+            entity.Property(e => e.JornadaId).HasColumnName("Jornada_ID");
+            entity.Property(e => e.NumeroJornada).HasColumnName("Numero_Jornada");
         });
 
         modelBuilder.Entity<Jugador>(entity =>
@@ -133,10 +177,7 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Partido");
 
             entity.Property(e => e.PartidoId).HasColumnName("Partido_ID");
-            entity.Property(e => e.Cancha)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength();
+            entity.Property(e => e.Cancha).HasMaxLength(10);
             entity.Property(e => e.Estado).HasMaxLength(50);
             entity.Property(e => e.FaseId).HasColumnName("Fase_ID");
             entity.Property(e => e.FechaPartido)
@@ -144,6 +185,16 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("Fecha_Partido");
             entity.Property(e => e.HoraPartido).HasColumnName("Hora_Partido");
             entity.Property(e => e.JornadaId).HasColumnName("Jornada_ID");
+        });
+
+        modelBuilder.Entity<PosicionJugador>(entity =>
+        {
+            entity.HasKey(e => e.PosicionId);
+
+            entity.ToTable("Posicion_Jugador");
+
+            entity.Property(e => e.PosicionId).HasColumnName("Posicion_ID");
+            entity.Property(e => e.Nombre).HasMaxLength(50);
         });
 
         modelBuilder.Entity<ResultadoPartido>(entity =>
@@ -165,6 +216,20 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.TorneoId).HasColumnName("Torneo_ID");
         });
 
+        modelBuilder.Entity<Tarjeta>(entity =>
+        {
+            entity.HasKey(e => e.TarjetaId);
+
+            entity.Property(e => e.TarjetaId).HasColumnName("Tarjeta_ID");
+            entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.JugadorId).HasColumnName("Jugador_ID");
+            entity.Property(e => e.MinutoTarjeta).HasColumnName("Minuto_Tarjeta");
+            entity.Property(e => e.ResultadoPartidoId).HasColumnName("Resultado_Partido_ID");
+            entity.Property(e => e.TipoTarjeta)
+                .HasMaxLength(15)
+                .HasColumnName("Tipo_Tarjeta");
+        });
+
         modelBuilder.Entity<Torneo>(entity =>
         {
             entity.ToTable("Torneo");
@@ -178,6 +243,27 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.FechaInicioInscripcion).HasColumnName("Fecha_Inicio_Inscripcion");
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.UsuarioId).HasColumnName("Usuario_ID");
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.ToTable("Usuario");
+
+            entity.Property(e => e.UsuarioId).HasColumnName("Usuario_ID");
+            entity.Property(e => e.Apellido).HasMaxLength(50);
+            entity.Property(e => e.Contrasenia).HasMaxLength(255);
+            entity.Property(e => e.CorreoElectronico)
+                .HasMaxLength(100)
+                .HasColumnName("Correo_Electronico");
+            entity.Property(e => e.Estado).HasMaxLength(25);
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("Fecha_Creacion");
+            entity.Property(e => e.Nombre).HasMaxLength(50);
+            entity.Property(e => e.TipoRol)
+                .HasMaxLength(50)
+                .HasColumnName("Tipo_Rol");
         });
 
         OnModelCreatingPartial(modelBuilder);
