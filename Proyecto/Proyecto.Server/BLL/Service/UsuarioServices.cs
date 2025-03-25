@@ -9,7 +9,7 @@ using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 
 
-namespace Proyecto.Server.Service
+namespace Proyecto.Server.BLL.Service
 
 {
     public class UsuarioServices
@@ -48,7 +48,7 @@ namespace Proyecto.Server.Service
 
         public static bool IncioUsuario(string PasswordHash, string Password)
         {
-            bool PasswordValida = BCrypt.Net.BCrypt.Verify(Password,PasswordHash);
+            bool PasswordValida = BCrypt.Net.BCrypt.Verify(Password, PasswordHash);
             Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("patito789@"));
 
             return PasswordValida;

@@ -1,6 +1,9 @@
 
 
 using Microsoft.EntityFrameworkCore;
+using Proyecto.Server.BLL.Interface;
+using Proyecto.Server.BLL.Repository;
+using Proyecto.Server.BLL.Service;
 using Proyecto.Server.DAL;
 
 namespace Proyecto.Server
@@ -14,6 +17,13 @@ namespace Proyecto.Server
             // Agregar los servicios de configuración de la cadena de conexión
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
             builder.Services.AddScoped<StoreProcedure>(); // Registrar StoreProcedure para inyección de dependencias
+
+            // Registro de IUserBLL
+            builder.Services.AddScoped<IUserBLL, UserBLL>();
+            builder.Services.AddControllers();
+            // Registra IUserRepository con su implementación concreta
+            builder.Services.AddScoped<IUserRepository, UserRepository>();  // .NET 6 o superior
+
 
             // Definir política de CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
