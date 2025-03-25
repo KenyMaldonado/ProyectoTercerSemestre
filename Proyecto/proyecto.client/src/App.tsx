@@ -6,6 +6,8 @@ import Equipos from './pages/Equipos';
 import Jugadores from './pages/Jugadores';
 import Partidos from './pages/Partidos';
 import Login from './pages/Login';
+import AdminPanel from './pages/AdminPanel';
+import ProtectedRoute from './routes/ProtectedRoute';
 import { useEffect } from 'react';
 
 function App() {
@@ -32,11 +34,15 @@ function App() {
             <Route path="/equipos" element={<Equipos />} />
             <Route path="/jugadores" element={<Jugadores />} />
             <Route path="/partidos" element={<Partidos />} />
-            </Route>
-
             {/* Ruta sin Navbar */}
             <Route path="/login" element={<Login />} />
+            <Route path="/admin/*" element={
+            <ProtectedRoute>
+                <AdminPanel />
+            </ProtectedRoute>
+            } />
             <Route path="*" element={<div>Página no encontrada</div>} />
+            </Route>
         </Routes>
     );
 }
