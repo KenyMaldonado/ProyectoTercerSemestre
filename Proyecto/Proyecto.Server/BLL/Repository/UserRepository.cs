@@ -44,7 +44,8 @@ namespace Proyecto.Server.BLL.Repository
                     {"@apellido", newUser.Apellido},
                     {"@password",newUser.Contrasenia},
                     {"@rol",newUser.TipoRol},
-                    {"@correo",newUser.CorreoElectronico}
+                    {"@correo",newUser.CorreoElectronico.ToLower()},
+                    {"@usuarioCreo", newUser.UsuarioCreo}
                 };
 
                 _storeProcedure.EjecutarProcedimientoAlmacenado("sp_createUser", CommandType.StoredProcedure, parametrosEntrada);
@@ -59,6 +60,19 @@ namespace Proyecto.Server.BLL.Repository
         public async Task<bool> EmailExistsAsync(string email)
         {
             return await _dbContext.Usuarios.AnyAsync(u => u.CorreoElectronico == email);
+        }
+
+        public string GetRolByEmail(string email)
+        {
+            
+            var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.CorreoElectronico == email);
+
+            if (usuario == null)
+            {
+                return null; 
+            }
+
+            return usuario.TipoRol; 
         }
 
 

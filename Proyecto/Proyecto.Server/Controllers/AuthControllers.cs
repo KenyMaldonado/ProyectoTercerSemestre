@@ -8,6 +8,7 @@ using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
 using Proyecto.Server.BLL;
 using Proyecto.Server.BLL.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Proyecto.Server.Controllers
 {
@@ -26,8 +27,11 @@ namespace Proyecto.Server.Controllers
         {
             try
             {
-                bool estadoLogin = _usuarioBLL.AuthenticateUser(parametrosPeticion);
-                return Ok(estadoLogin);
+                string token = _usuarioBLL.AuthenticateUser(parametrosPeticion);
+                if (token == null)
+                    return Unauthorized("Credenciales inválidas");
+
+                return Ok(new { Token = token });
             }
             catch (Exception ex)
             {
@@ -36,7 +40,7 @@ namespace Proyecto.Server.Controllers
             
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateNewUser")]
 
         public async Task<IActionResult> CreateNewUser(UserRegistrationDTO parametrosPeticion)
@@ -45,11 +49,11 @@ namespace Proyecto.Server.Controllers
             {
                 if (await _usuarioBLL.IsEmailRegisteredAsync(parametrosPeticion.CorreoElectronico))
                 {
-                    return Ok("El usuario Ya existe");
+                    return Conflict("El usuario Ya existe");
                 } else
                 {
                     _usuarioBLL.CreateUser(parametrosPeticion);
-                    return Ok("Usuario Creado Exitosamente");
+                    return Created("","Usuario Creado Exitosamente");
                 }
                 
             }

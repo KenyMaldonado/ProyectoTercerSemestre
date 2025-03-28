@@ -10,6 +10,8 @@
             public string Estado { get; set; } = null!;
             public string CorreoElectronico { get; set; } = null!;
             public DateTime FechaCreacion { get; set; }
-        
+            public int UsuarioCreo { get; set; }
+            public virtual ICollection<Torneo> Torneos { get; set; } = new List<Torneo>();
+
     }
 }

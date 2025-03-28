@@ -5,5 +5,6 @@
         public int SubTorneoId { get; set; }
         public string Categoria { get; set; } = null!;
         public int TorneoId { get; set; }
+        public virtual Torneo Torneo { get; set; } = null!;
     }
 }

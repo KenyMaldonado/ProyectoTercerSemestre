@@ -1,10 +1,14 @@
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Proyecto.Server.BLL.Interface;
 using Proyecto.Server.BLL.Repository;
 using Proyecto.Server.BLL.Service;
 using Proyecto.Server.DAL;
+using Microsoft.OpenApi.Models;
 
 namespace Proyecto.Server
 {
@@ -13,6 +17,65 @@ namespace Proyecto.Server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var key = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mi API", Version = "v1" });
+
+                // Configurar autenticación con JWT en Swagger
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Ingrese el token en este formato: Bearer {token}"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+            });
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
 
             // Agregar los servicios de configuración de la cadena de conexión
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
@@ -23,6 +86,7 @@ namespace Proyecto.Server
             builder.Services.AddControllers();
             // Registra IUserRepository con su implementación concreta
             builder.Services.AddScoped<IUserRepository, UserRepository>();  // .NET 6 o superior
+            builder.Services.AddScoped<IUserBLL, UserBLL>();
 
 
             // Definir política de CORS

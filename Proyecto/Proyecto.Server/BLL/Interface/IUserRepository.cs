@@ -8,5 +8,6 @@ namespace Proyecto.Server.BLL.Interface
         DataTable GetCredentials(string correo);
         void CreateNewUser(UserRegistrationDTO newUser);
         Task<bool> EmailExistsAsync(string email);
+        string GetRolByEmail(string email);
     }
 }

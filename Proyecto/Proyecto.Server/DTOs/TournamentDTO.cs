@@ -1,6 +1,8 @@
-﻿namespace Proyecto.Server.Models
+﻿using Proyecto.Server.Models;
+
+namespace Proyecto.Server.DTOs
 {
-    public class Torneo
+    public class TournamentDTO
     {
         public int TorneoId { get; set; }
         public string Nombre { get; set; } = null!;
@@ -14,7 +16,6 @@
         public int UsuarioId { get; set; }
         public int? EquipoMin { get; set; }
         public int? EquipoMax { get; set; }
-        public virtual ICollection<SubTorneo> SubTorneos { get; set; } = new List<SubTorneo>();
-        public virtual Usuario Usuario { get; set; } = null!;
+        public List<SubTorneo> Ramas { get; set; }
     }
 }
