@@ -1,14 +1,14 @@
-import { Outlet, useLocation } from 'react-router-dom';
-import Navbar from '../components/Navbar/Navbar';
+import { Outlet, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
 
 const MainLayout = () => {
     const location = useLocation();
-    const isLoginPage = location.pathname === '/login';
+    const hideNavbarRoutes = ["/login", "/admin"]; // Rutas sin Navbar
 
     return (
         <div>
-            {!isLoginPage && <Navbar />}
-            <Outlet />
+        {!hideNavbarRoutes.some(route => location.pathname.startsWith(route)) && <Navbar />}
+        <Outlet />
         </div>
     );
 };
