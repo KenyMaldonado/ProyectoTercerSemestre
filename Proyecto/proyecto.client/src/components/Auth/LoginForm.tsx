@@ -19,23 +19,18 @@ const LoginForm = () => {
         try {
             const response = await fetch('http://localhost:5291/api/AuthControllers/AuthUser', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    correo: email, 
-                    contrasenia: password 
-                })
-            });
-    
-            if (!response.ok) throw new Error('Credenciales inválidas');
-            
-            // Si el servidor devuelve un JWT o algún token de autenticación
-            const { token } = await response.json();  // Asumiendo que el servidor responde con un token
-            
-            // Almacenar el token en el almacenamiento local o en un contexto
-            localStorage.setItem('authToken', token);  // O usar contexto de React si prefieres
-            login();  // Usar el método de login de tu contexto de autenticación
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ correo: email, contrasenia: password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data === false) {  // Si el backend devuelve false, no permite el acceso
+            throw new Error('Credenciales inválidas');
+        }
+
+            localStorage.setItem('authToken', data.token);
+            login();
             navigate('/admin');
         } catch (err) {
             if (err instanceof Error) {
