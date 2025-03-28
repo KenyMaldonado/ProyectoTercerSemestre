@@ -214,6 +214,11 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.SubTorneoId).HasColumnName("Sub_Torneo_ID");
             entity.Property(e => e.Categoria).HasMaxLength(50);
             entity.Property(e => e.TorneoId).HasColumnName("Torneo_ID");
+
+            entity.HasOne(d => d.Torneo).WithMany(p => p.SubTorneos)
+                .HasForeignKey(d => d.TorneoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SubTorneo_Torneo");
         });
 
         modelBuilder.Entity<Tarjeta>(entity =>
@@ -237,12 +242,19 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.TorneoId).HasColumnName("Torneo_ID");
             entity.Property(e => e.BasesTorneo).HasColumnName("Bases_Torneo");
             entity.Property(e => e.CantidadParticipantes).HasColumnName("Cantidad_Participantes");
+            entity.Property(e => e.EquipoMax).HasColumnName("Equipo_Max");
+            entity.Property(e => e.EquipoMin).HasColumnName("Equipo_Min");
             entity.Property(e => e.FechaFin).HasColumnName("Fecha_Fin");
             entity.Property(e => e.FechaFinInscripcion).HasColumnName("Fecha_Fin_Inscripcion");
             entity.Property(e => e.FechaInicio).HasColumnName("Fecha_Inicio");
             entity.Property(e => e.FechaInicioInscripcion).HasColumnName("Fecha_Inicio_Inscripcion");
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.UsuarioId).HasColumnName("Usuario_ID");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.Torneos)
+                .HasForeignKey(d => d.UsuarioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Torneo_Usuario");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
@@ -264,6 +276,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.TipoRol)
                 .HasMaxLength(50)
                 .HasColumnName("Tipo_Rol");
+            entity.Property(e => e.UsuarioCreo).HasColumnName("Usuario_Creo");
         });
 
         OnModelCreatingPartial(modelBuilder);
