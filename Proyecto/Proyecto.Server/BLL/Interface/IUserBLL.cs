@@ -5,7 +5,7 @@ namespace Proyecto.Server.BLL.Interface
     public interface IUserBLL
     {
         public string AuthenticateUser(UserRegistrationDTO.AuthRequestDTO parametrosPeticion);
-        public void CreateUser(UserRegistrationDTO userRegistrationDTO);
+        void CreateUser(UserRegistrationDTO.UserRegistrationParameter userRegistrationDTO, int UserId);
         Task<bool> IsEmailRegisteredAsync(string email);
     }
 }

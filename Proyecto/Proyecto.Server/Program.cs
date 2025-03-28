@@ -1,5 +1,3 @@
-
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +7,7 @@ using Proyecto.Server.BLL.Repository;
 using Proyecto.Server.BLL.Service;
 using Proyecto.Server.DAL;
 using Microsoft.OpenApi.Models;
+using System.IO;
 
 namespace Proyecto.Server
 {
@@ -36,21 +35,24 @@ namespace Proyecto.Server
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-            });
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
 
+                // Incluir el archivo XML en Swagger
+                var xmlFile = Path.Combine(AppContext.BaseDirectory, "ProyectoAPI.xml"); // Ajusta el nombre según el nombre de tu proyecto
+                c.IncludeXmlComments(xmlFile); // Incluir los comentarios XML en Swagger
+            });
 
             builder.Services.AddAuthentication(options =>
             {
@@ -76,7 +78,6 @@ namespace Proyecto.Server
 
             builder.Services.AddAuthorization();
 
-
             // Agregar los servicios de configuración de la cadena de conexión
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
             builder.Services.AddScoped<StoreProcedure>(); // Registrar StoreProcedure para inyección de dependencias
@@ -88,7 +89,6 @@ namespace Proyecto.Server
             builder.Services.AddScoped<IUserRepository, UserRepository>();  // .NET 6 o superior
             builder.Services.AddScoped<IUserBLL, UserBLL>();
 
-
             // Definir política de CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -97,7 +97,6 @@ namespace Proyecto.Server
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString)
             );
-
 
             builder.Services.AddCors(options =>
             {

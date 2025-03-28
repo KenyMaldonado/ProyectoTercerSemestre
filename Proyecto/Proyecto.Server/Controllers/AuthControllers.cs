@@ -9,6 +9,8 @@ using Proyecto.Server.Models;
 using Proyecto.Server.BLL;
 using Proyecto.Server.BLL.Interface;
 using Microsoft.AspNetCore.Authorization;
+using Proyecto.Server.Utils;
+using System.Security.Claims;
 
 namespace Proyecto.Server.Controllers
 {
@@ -22,37 +24,78 @@ namespace Proyecto.Server.Controllers
             _usuarioBLL = usuarioBLL;
         }
 
+        /// <summary>
+        /// Este método autentica a un usuario mediante su solicitud de autenticación.
+        /// </summary>
+        /// <param name="parametrosPeticion">Parámetros necesarios para autenticar al usuario (incluye el correo electrónico y la contraseña).</param>
+        /// <returns>Un token JWT que puede ser utilizado para autenticar futuras solicitudes.</returns>
+        /// <response code="200">Devuelve el token JWT si la autenticación es exitosa.</response>
+        /// <response code="400">Si los parámetros de autenticación son incorrectos o si ocurre un error interno.</response>
+        /// <response code="401">Si el usuario no está autorizado.</response>
+        /// <response code="404">Si el usuario no se encuentra.</response>
+
         [HttpPost("AuthUser")]
         public IActionResult AuthUser(UserRegistrationDTO.AuthRequestDTO parametrosPeticion)
         {
             try
             {
                 string token = _usuarioBLL.AuthenticateUser(parametrosPeticion);
-                if (token == null)
-                    return Unauthorized("Credenciales inválidas");
-
                 return Ok(new { Token = token });
             }
-            catch (Exception ex)
+            catch (CustomException ex)
+            {
+                if (ex.ErrorCode == 404)
+                {
+                    return NotFound(ex.Message);
+                }
+                if (ex.ErrorCode == 401)
+                {
+                    return Unauthorized(ex.Message);
+                }
+                if (ex.ErrorCode == 400)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex) 
             {
                 return BadRequest(ex.Message);
             }
             
         }
 
+        /// <summary>
+        /// Crea un nuevo usuario en el sistema. Solo los usuarios con el rol "Admin" pueden ejecutar este método.
+        /// </summary>
+        /// <param name="parametrosPeticion">El parámetro que contiene los datos necesarios para crear el nuevo usuario.</param>
+        /// <returns>Un IActionResult que indica si la operación fue exitosa, o el motivo de un error.</returns>
+        /// <response code="201">Usuario creado exitosamente.</response>
+        /// <response code="401">Si el ID del usuario no se puede obtener desde el token.</response>
+        /// <response code="409">Si el correo electrónico del usuario ya está registrado.</response>
+        /// <response code="400">Si ocurre un error inesperado al procesar la solicitud.</response>
+
         [Authorize(Roles = "Admin")]
         [HttpPost("CreateNewUser")]
 
-        public async Task<IActionResult> CreateNewUser(UserRegistrationDTO parametrosPeticion)
+        public async Task<IActionResult> CreateNewUser(UserRegistrationDTO.UserRegistrationParameter parametrosPeticion)
         {
             try
             {
-                if (await _usuarioBLL.IsEmailRegisteredAsync(parametrosPeticion.CorreoElectronico))
+                var userId = User.FindFirst("UsuarioID")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized("No se pudo obtener el ID del usuario. Verifique que el token sea válido.");
+                }
+
+                if (await _usuarioBLL.IsEmailRegisteredAsync(parametrosPeticion.CorreoElectronico.ToLower()))
                 {
                     return Conflict("El usuario Ya existe");
                 } else
                 {
-                    _usuarioBLL.CreateUser(parametrosPeticion);
+                    _usuarioBLL.CreateUser(parametrosPeticion,int.Parse(userId));
                     return Created("","Usuario Creado Exitosamente");
                 }
                 

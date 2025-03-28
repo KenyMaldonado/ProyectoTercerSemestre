@@ -7,6 +7,9 @@
     <SpaRoot>..\proyecto.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\Debug\net8.0\ProyectoAPI.xml</DocumentationFile>
+
   </PropertyGroup>
 
   <ItemGroup>

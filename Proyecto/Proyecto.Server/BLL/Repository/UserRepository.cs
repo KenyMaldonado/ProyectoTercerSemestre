@@ -40,11 +40,11 @@ namespace Proyecto.Server.BLL.Repository
             {
                 var parametrosEntrada = new Dictionary<string, object>
                 {
-                    {"@nombre", newUser.Nombre},
-                    {"@apellido", newUser.Apellido},
-                    {"@password",newUser.Contrasenia},
-                    {"@rol",newUser.TipoRol},
-                    {"@correo",newUser.CorreoElectronico.ToLower()},
+                    {"@nombre", newUser.Datos.Nombre},
+                    {"@apellido", newUser.Datos.Apellido},
+                    {"@password",newUser.Datos.Contrasenia},
+                    {"@rol",newUser.Datos.TipoRol},
+                    {"@correo",newUser.Datos.CorreoElectronico.ToLower()},
                     {"@usuarioCreo", newUser.UsuarioCreo}
                 };
 
