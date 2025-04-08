@@ -95,8 +95,9 @@ namespace Proyecto.Server
             var connectionString = builder.Configuration.GetConnectionString("MiConexion");
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString)
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
             );
+
 
             builder.Services.AddCors(options =>
             {

@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using Microsoft.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace Proyecto.Server.DAL
 {
@@ -8,23 +8,20 @@ namespace Proyecto.Server.DAL
 
         private readonly string _conexionString;
 
-        // Constructor que recibe IConfiguration
         public StoreProcedure(IConfiguration configuration)
         {
             _conexionString = configuration.GetConnectionString("MiConexion");
         }
 
-        //Crear metodo para ejecutar un procedimiento almacenado
-        public object EjecutarProcedimientoAlmacenado(string nombreSP, CommandType tipoComando, Dictionary<string, object> parametrosEntrada, List<SqlParameter> parametrosSalida = null)
+        public object EjecutarProcedimientoAlmacenado(string nombreSP, CommandType tipoComando, Dictionary<string, object> parametrosEntrada, List<MySqlParameter> parametrosSalida = null)
         {
-            using (SqlConnection conexion = new SqlConnection(_conexionString))
+            using (MySqlConnection conexion = new MySqlConnection(_conexionString))
             {
                 conexion.Open();
-                using (SqlCommand cmd = new SqlCommand(nombreSP, conexion))
+                using (MySqlCommand cmd = new MySqlCommand(nombreSP, conexion))
                 {
                     cmd.CommandType = tipoComando;
 
-                    // Agregar parámetros de entrada
                     if (parametrosEntrada != null)
                     {
                         foreach (var param in parametrosEntrada)
@@ -33,34 +30,32 @@ namespace Proyecto.Server.DAL
                         }
                     }
 
-                    // Agregar parámetros de salida
                     if (parametrosSalida != null)
                     {
                         cmd.Parameters.AddRange(parametrosSalida.ToArray());
                     }
 
-                    // Ejecutar y retornar según el tipo de comando
                     if (tipoComando == CommandType.StoredProcedure)
                     {
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
                         {
                             DataTable dt = new DataTable();
-                            adapter.Fill(dt); // Llenar el DataTable con los resultados
-                            return dt; // Retornar el DataTable
+                            adapter.Fill(dt);
+                            return dt; 
                         }
                     }
                     else if (tipoComando == CommandType.Text)
                     {
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
                         {
                             DataTable dt = new DataTable();
                             adapter.Fill(dt);
-                            return dt; // Comando de texto que devuelve un DataTable
+                            return dt;
                         }
                     }
                     else
                     {
-                        return cmd.ExecuteNonQuery(); // Ejecutar sin retorno para otros casos
+                        return cmd.ExecuteNonQuery();
                     }
                 }
             }

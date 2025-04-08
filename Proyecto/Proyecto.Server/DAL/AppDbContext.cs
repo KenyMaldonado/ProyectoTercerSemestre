@@ -53,11 +53,15 @@ public partial class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            var configuration = new  ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("MiConexion"));
+
+            optionsBuilder.UseMySql(
+                configuration.GetConnectionString("MiConexion"),
+                ServerVersion.AutoDetect(configuration.GetConnectionString("MiConexion"))
+            );
         }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
