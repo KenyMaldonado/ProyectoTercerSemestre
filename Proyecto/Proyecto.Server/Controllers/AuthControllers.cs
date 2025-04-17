@@ -14,11 +14,19 @@ using System.Security.Claims;
 
 namespace Proyecto.Server.Controllers
 {
+
+    /// <summary>
+    /// Controlador responsable de la autenticación de usuarios.
+    /// </summary>
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
     public class AuthControllers : ControllerBase
     {
         private readonly IUserBLL _usuarioBLL;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usuarioBLL"></param>
         public AuthControllers(IUserBLL usuarioBLL)
         {
             _usuarioBLL = usuarioBLL;

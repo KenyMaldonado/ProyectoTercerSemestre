@@ -8,17 +8,30 @@ using System.Data;
 
 namespace Proyecto.Server.BLL.Service
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UserBLL : IUserBLL
     {
         private readonly IUserRepository _usuarioRepositorio;
         private readonly IConfiguration _configuration;
         private readonly UserHelps _userHelps = new UserHelps();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usuarioRepositorio"></param>
+        /// <param name="configuration"></param>
         public UserBLL(IUserRepository usuarioRepositorio, IConfiguration configuration)
         {
             _usuarioRepositorio = usuarioRepositorio;
             _configuration = configuration;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parametrosPeticion"></param>
+        /// <returns></returns>
+        /// <exception cref="CustomException"></exception>
         public string AuthenticateUser(UserRegistrationDTO.AuthRequestDTO parametrosPeticion)
         {
             DataTable dt = _usuarioRepositorio.GetCredentials(parametrosPeticion.Correo.ToLower());
@@ -54,7 +67,11 @@ namespace Proyecto.Server.BLL.Service
 
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userRegistrationDTO"></param>
+        /// <param name="UserId"></param>
         public void CreateUser (UserRegistrationDTO.UserRegistrationParameter userRegistrationDTO, int UserId)
         {
             string PasswordHash = _userHelps.CreateHash(userRegistrationDTO.Contrasenia);
@@ -65,15 +82,20 @@ namespace Proyecto.Server.BLL.Service
             
             _usuarioRepositorio.CreateNewUser(newUser);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<bool> IsEmailRegisteredAsync(string email)
         {
             return await _usuarioRepositorio.EmailExistsAsync(email);
         }
 
-        public async Task<string> GetRolByEmail(string email)
-        {
-            return _usuarioRepositorio.GetRolByEmail(email);
-        }
+        /*  public async Task<string> GetRolByEmail(string email)
+          {
+              return _usuarioRepositorio.GetRolByEmail(email);
+          }
+        */
     }
 }
