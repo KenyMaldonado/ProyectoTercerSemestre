@@ -14,20 +14,30 @@ namespace Proyecto.Server.Utils
             _configuration = configuration;
         }
 
-        public string GenerateToken(string correo,string rol,string usuarioID)
+        public string GenerateToken(string correo, string rol, string usuarioID, string nameUser)
         {
             var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]);
 
             var tokenHandler = new JwtSecurityTokenHandler();
+            var now = DateTime.UtcNow;
+            var expiration = now.AddHours(2);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, usuarioID),
+                new Claim(JwtRegisteredClaimNames.Email, correo),
+                new Claim(ClaimTypes.Role, rol),
+                new Claim("UsuarioID", usuarioID),
+                new Claim(ClaimTypes.Name,nameUser),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // ID único del token
+                new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeSeconds().ToString())
+                
+            };
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                new Claim(ClaimTypes.Email, correo),
-                new Claim(ClaimTypes.Role, rol),
-                new Claim("UsuarioID", usuarioID)
-            }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Subject = new ClaimsIdentity(claims),
+                Expires = expiration,
                 Issuer = _configuration["JwtSettings:Issuer"],
                 Audience = _configuration["JwtSettings:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -8,6 +8,7 @@ using Proyecto.Server.BLL.Service;
 using Proyecto.Server.DAL;
 using Microsoft.OpenApi.Models;
 using System.IO;
+using MySqlConnector;
 
 namespace Proyecto.Server
 {
@@ -85,9 +86,11 @@ namespace Proyecto.Server
             // Registro de IUserBLL
             builder.Services.AddScoped<IUserBLL, UserBLL>();
             builder.Services.AddControllers();
+            // Registro de ITournamentBLL
+            builder.Services.AddScoped<ITournamentBLL, TournamentBLL>();
             // Registra IUserRepository con su implementación concreta
-            builder.Services.AddScoped<IUserRepository, UserRepository>();  // .NET 6 o superior
-            builder.Services.AddScoped<IUserBLL, UserBLL>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 
             // Definir política de CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";

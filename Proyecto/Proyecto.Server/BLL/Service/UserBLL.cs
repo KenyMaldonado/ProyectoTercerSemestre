@@ -16,22 +16,12 @@ namespace Proyecto.Server.BLL.Service
         private readonly IUserRepository _usuarioRepositorio;
         private readonly IConfiguration _configuration;
         private readonly UserHelps _userHelps = new UserHelps();
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="usuarioRepositorio"></param>
-        /// <param name="configuration"></param>
+
         public UserBLL(IUserRepository usuarioRepositorio, IConfiguration configuration)
         {
             _usuarioRepositorio = usuarioRepositorio;
             _configuration = configuration;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="parametrosPeticion"></param>
-        /// <returns></returns>
-        /// <exception cref="CustomException"></exception>
         public string AuthenticateUser(UserRegistrationDTO.AuthRequestDTO parametrosPeticion)
         {
             DataTable dt = _usuarioRepositorio.GetCredentials(parametrosPeticion.Correo.ToLower());
@@ -44,34 +34,33 @@ namespace Proyecto.Server.BLL.Service
             var listaDatos = dt.AsEnumerable().Select(row => new Usuario
             {
                 CorreoElectronico = row.Field<string>(0),
-                Contrasenia = row.Field<string>(1),
-                UsuarioId = row.Field<int>(2)
+                PasswordUser = row.Field<string>(1),
+                UsuarioId = row.Field<int>(2),
+                Nombre = row.Field<string>(3),
+                Apellido = row.Field<string>(4),
             }).ToList();
 
-            bool esValido = _userHelps.VeryfyPassword(listaDatos[0].Contrasenia, parametrosPeticion.Contrasenia);
+            bool esValido = _userHelps.VeryfyPassword(listaDatos[0].PasswordUser, parametrosPeticion.Contrasenia);
             if (!esValido)
             {
                 throw new CustomException("Credenciales invalidas", 401);
             } 
             else
             {
-                string rol = _usuarioRepositorio.GetRolByEmail(parametrosPeticion.Correo.ToLower());
-                if (string.IsNullOrEmpty(rol))
+                int rol = _usuarioRepositorio.GetRolByEmail(parametrosPeticion.Correo.ToLower());
+                if (rol == 0)
                 {
                     throw new CustomException("Rol no encontrado para el usuario", 400);
                 }
 
                 TokenServices tokenService = new TokenServices(_configuration);
-                return tokenService.GenerateToken(parametrosPeticion.Correo.ToLower(), rol, listaDatos[0].UsuarioId.ToString());
+                String NameUser = listaDatos[0].Nombre +" "+ listaDatos[0].Apellido;
+                return tokenService.GenerateToken(parametrosPeticion.Correo.ToLower(), rol.ToString(), listaDatos[0].UsuarioId.ToString(),NameUser);
             }
 
 
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userRegistrationDTO"></param>
-        /// <param name="UserId"></param>
+
         public void CreateUser (UserRegistrationDTO.UserRegistrationParameter userRegistrationDTO, int UserId)
         {
             string PasswordHash = _userHelps.CreateHash(userRegistrationDTO.Contrasenia);
@@ -82,20 +71,11 @@ namespace Proyecto.Server.BLL.Service
             
             _usuarioRepositorio.CreateNewUser(newUser);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
+
         public async Task<bool> IsEmailRegisteredAsync(string email)
         {
             return await _usuarioRepositorio.EmailExistsAsync(email);
         }
 
-        /*  public async Task<string> GetRolByEmail(string email)
-          {
-              return _usuarioRepositorio.GetRolByEmail(email);
-          }
-        */
     }
 }

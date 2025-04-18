@@ -42,8 +42,8 @@ namespace Proyecto.Server.BLL.Repository
                 {
                     {"@nombre", newUser.Datos.Nombre},
                     {"@apellido", newUser.Datos.Apellido},
-                    {"@password",newUser.Datos.Contrasenia},
-                    {"@rol",newUser.Datos.TipoRol},
+                    {"@passwordUser",newUser.Datos.Contrasenia},
+                    {"@rol",newUser.Datos.RolId},
                     {"@correo",newUser.Datos.CorreoElectronico.ToLower()},
                     {"@usuarioCreo", newUser.UsuarioCreo}
                 };
@@ -62,18 +62,21 @@ namespace Proyecto.Server.BLL.Repository
             return await _dbContext.Usuarios.AnyAsync(u => u.CorreoElectronico == email);
         }
 
-        public string GetRolByEmail(string email)
+        public int GetRolByEmail(string email)
         {
-            
-            var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.CorreoElectronico == email);
+            var lowerEmail = email.ToLower();
 
-            if (usuario == null)
+            var usuari = _dbContext.Usuarios
+                .FirstOrDefault(u => u.CorreoElectronico.ToLower() == lowerEmail);
+
+            if (usuari == null)
             {
-                return null; 
+                return 0;
             }
 
-            return usuario.TipoRol; 
+            return usuari.RolId;
         }
+
 
 
     }

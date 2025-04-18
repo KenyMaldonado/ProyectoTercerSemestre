@@ -24,7 +24,7 @@ namespace Proyecto.Server.Controllers
     {
         private readonly IUserBLL _usuarioBLL;
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
         /// <param name="usuarioBLL"></param>
         public AuthControllers(IUserBLL usuarioBLL)
@@ -48,30 +48,38 @@ namespace Proyecto.Server.Controllers
             try
             {
                 string token = _usuarioBLL.AuthenticateUser(parametrosPeticion);
-                return Ok(new { Token = token });
+                return Ok(new 
+                { 
+                    success = true,
+                    Token = token 
+                });
             }
             catch (CustomException ex)
             {
-                if (ex.ErrorCode == 404)
+                var errorResponse = new
                 {
-                    return NotFound(ex.Message);
-                }
-                if (ex.ErrorCode == 401)
-                {
-                    return Unauthorized(ex.Message);
-                }
-                if (ex.ErrorCode == 400)
-                {
-                    return BadRequest(ex.Message);
-                }
+                    success = false,
+                    message = ex.Message
+                };
 
-                return BadRequest(ex.Message);
+                return ex.ErrorCode switch
+                {
+                    404 => NotFound(errorResponse),
+                    401 => Unauthorized(errorResponse),
+                    400 => BadRequest(errorResponse),
+                    _ => BadRequest(errorResponse)
+                };
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                var errorResponse = new
+                {
+                    success = false,
+                    message = "Error inesperado en el servidor: " + ex.Message
+                };
+
+                return StatusCode(500, errorResponse);
             }
-            
         }
 
         /// <summary>
@@ -84,7 +92,7 @@ namespace Proyecto.Server.Controllers
         /// <response code="409">Si el correo electrónico del usuario ya está registrado.</response>
         /// <response code="400">Si ocurre un error inesperado al procesar la solicitud.</response>
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "1")]
         [HttpPost("CreateNewUser")]
 
         public async Task<IActionResult> CreateNewUser(UserRegistrationDTO.UserRegistrationParameter parametrosPeticion)

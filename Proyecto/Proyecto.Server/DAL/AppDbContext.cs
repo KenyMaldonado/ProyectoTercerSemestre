@@ -25,24 +25,49 @@ public partial class AppDbContext : DbContext
     {
     }
     public virtual DbSet<Cambio> Cambios { get; set; }
+
     public virtual DbSet<Cancha> Canchas { get; set; }
+
     public virtual DbSet<Capitan> Capitans { get; set; }
+
     public virtual DbSet<CarreraSemestre> CarreraSemestres { get; set; }
+
     public virtual DbSet<Equipo> Equipos { get; set; }
-    public virtual DbSet<Facultad> Facultads { get; set; }
-    public virtual DbSet<FaseEliminacion> FaseEliminacions { get; set; }
+
+    public virtual DbSet<Facultad> Facultades { get; set; }
+
+    public virtual DbSet<FaseEliminacion> FaseEliminaciones { get; set; }
+
     public virtual DbSet<Goles> Goles { get; set; }
+
     public virtual DbSet<Grupos> Grupos { get; set; }
+
     public virtual DbSet<Inscripcion> Inscripcions { get; set; }
+
     public virtual DbSet<Jornada> Jornada { get; set; }
-    public virtual DbSet<Jugador> Jugadors { get; set; }
+
+    public virtual DbSet<Jugador> Jugador { get; set; }
+
     public virtual DbSet<Partido> Partidos { get; set; }
+
     public virtual DbSet<PosicionJugador> PosicionJugadors { get; set; }
+
     public virtual DbSet<ResultadoPartido> ResultadoPartidos { get; set; }
+
     public virtual DbSet<SubTorneo> SubTorneos { get; set; }
+
     public virtual DbSet<Tarjeta> Tarjeta { get; set; }
+
+    public virtual DbSet<TipoGol> TipoGols { get; set; }
+
+    public virtual DbSet<TipoRol> TipoRols { get; set; }
+
+    public virtual DbSet<TipoTorneo> TipoTorneos { get; set; }
+
     public virtual DbSet<Torneo> Torneos { get; set; }
+
     public virtual DbSet<Usuario> Usuarios { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)

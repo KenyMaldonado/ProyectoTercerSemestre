@@ -8,7 +8,7 @@ namespace Proyecto.Server.DTOs
         public UserRegistrationParameter Datos {  get; set; }
         public int UsuarioCreo { get; set; } 
 
-        public class AuthRequestDTO()
+        public class AuthRequestDTO
         {
             public string Correo { set; get; }
             public string Contrasenia {  set; get; }
@@ -19,7 +19,7 @@ namespace Proyecto.Server.DTOs
             public string Nombre { get; set; }
             public string Apellido { get; set; }
             public string Contrasenia { get; set; }
-            public string TipoRol { get; set; }
+            public int RolId { get; set; }
             public string CorreoElectronico { get; set; }
         }
     }
