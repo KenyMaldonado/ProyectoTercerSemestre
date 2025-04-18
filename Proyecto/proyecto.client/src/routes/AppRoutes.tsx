@@ -6,10 +6,13 @@ import Jugadores from '../pages/Jugadores';
 import Partidos from '../pages/Partidos';
 import Login from '../pages/Login';
 import AdminPanel from '../pages/AdminPanel';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // import TournamentList from '@/features/tournaments/pages/TournamentList';
 
 const AppRoutes = () => {
     return (
+        <>
             <Routes>
                 <Route path="/" element={<Inicio />} />
                 <Route path="/torneos" element={<Torneos />} />
@@ -19,6 +22,9 @@ const AppRoutes = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin" element={<AdminPanel />} />
             </Routes>
+        <ToastContainer position="top-right" autoClose={3000} />
+        </>
+            
     );
 };
 

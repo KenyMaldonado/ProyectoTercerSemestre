@@ -9,6 +9,9 @@ import Login from './pages/Login';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './routes/ProtectedRoute';
 import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Inscripcion from './pages/Inscripcion';
 
 function App() {
     const location = useLocation();
@@ -22,15 +25,17 @@ function App() {
         else if (path.startsWith('/jugadores')) pageTitle = 'Jugadores';
         else if (path.startsWith('/partidos')) pageTitle = 'Partidos';
         else if (path.startsWith('/login')) pageTitle = 'Inicio de Sesión';
-    
+        else if (path.startsWith('/inscripcion')) pageTitle = 'Inscripción';
         document.title = pageTitle;
     }, [location]);
     
     return (
+        <>
         <Routes>
             <Route element={<MainLayout />}>
             <Route path="/" element={<Inicio />} />
             <Route path="/torneos" element={<Torneos />} />
+            <Route path="/inscripcion" element={<Inscripcion />} />
             <Route path="/equipos" element={<Equipos />} />
             <Route path="/jugadores" element={<Jugadores />} />
             <Route path="/partidos" element={<Partidos />} />
@@ -44,6 +49,8 @@ function App() {
             <Route path="*" element={<div>Página no encontrada</div>} />
             </Route>
         </Routes>
+        <ToastContainer position="top-right" autoClose={3000} />
+        </>
     );
 }
 
