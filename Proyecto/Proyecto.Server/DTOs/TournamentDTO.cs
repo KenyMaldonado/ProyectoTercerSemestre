@@ -17,5 +17,14 @@ namespace Proyecto.Server.DTOs
         public int? EquipoMin { get; set; }
         public int? EquipoMax { get; set; }
         public List<SubTorneo> Ramas { get; set; }
+
+
+        public class TypeOfTournament
+        {
+            public int TipoTorneoId { get; set; }
+            public string NombreTipoTorneo { get; set; }
+            public string DescripcionTipoTorneo { get; set; }
+        }
+
     }
 }
