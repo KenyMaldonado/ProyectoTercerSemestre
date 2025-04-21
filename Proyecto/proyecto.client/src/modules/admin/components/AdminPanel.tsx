@@ -1,9 +1,9 @@
 // pages/AdminPanel.tsx
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Sidebar from '../components/Admin/Sidebar';
-import Dashboard from '../components/Admin/Dashboard';
+import Sidebar from './Sidebar';
+import Dashboard from './Dashboard';
 import styles from './AdminPanel.module.css';
-import TorneosAdmin from '../components/Admin/TorneoAdmin';
+import TorneosAdmin from '../modules/torneos/components/TorneoAdmin';
 
 const AdminPanel = () => {
     return (

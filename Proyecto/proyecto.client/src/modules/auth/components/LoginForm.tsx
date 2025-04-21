@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import styles from './LoginForm.module.css';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';

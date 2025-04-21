@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../modules/auth/context/AuthContext';
 import { JSX, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
         const token = localStorage.getItem('authToken');
 
         if (!token || isTokenExpired(token)) {
-            toast.error('Tu sesión ha expirado. Inicia sesión nuevamente.');
+            toast.error('Tu sesiï¿½n ha expirado. Inicia sesiï¿½n nuevamente.');
             logout();
             setIsValidSession(false);
             navigate('/login');
