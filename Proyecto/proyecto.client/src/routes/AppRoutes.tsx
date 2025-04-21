@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
-import Inicio from '../pages/Inicio';
-import Torneos from '../pages/Torneos';
-import Equipos from '../pages/Equipos';
-import Jugadores from '../pages/Jugadores';
-import Partidos from '../pages/Partidos';
-import Login from '../pages/Login';
-import AdminPanel from '../pages/AdminPanel';
+import Inicio from '../modules/Inicio';
+import Torneos from '../modules/torneos/components/Torneos';
+import Equipos from '../modules/equipos/components/Equipos';
+import Jugadores from '../modules/jugadores/components/Jugadores';
+import Partidos from '../modules/partidos/components/Partidos';
+import Login from '../modules/auth/components/Login';
+import AdminPanel from '../modules/admin/components/AdminPanel';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import TournamentList from '@/features/tournaments/pages/TournamentList';
