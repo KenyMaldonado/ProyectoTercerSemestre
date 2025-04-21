@@ -48,37 +48,15 @@ namespace Proyecto.Server.Controllers
             try
             {
                 string token = _usuarioBLL.AuthenticateUser(parametrosPeticion);
-                return Ok(new 
-                { 
-                    success = true,
-                    Token = token 
-                });
+                return ResponseHelper.Success("Autenticación exitosa", new { Token = token });
             }
             catch (CustomException ex)
             {
-                var errorResponse = new
-                {
-                    success = false,
-                    message = ex.Message
-                };
-
-                return ex.ErrorCode switch
-                {
-                    404 => NotFound(errorResponse),
-                    401 => Unauthorized(errorResponse),
-                    400 => BadRequest(errorResponse),
-                    _ => BadRequest(errorResponse)
-                };
+                return ResponseHelper.HandleCustomException(ex);
             }
             catch (Exception ex)
             {
-                var errorResponse = new
-                {
-                    success = false,
-                    message = "Error inesperado en el servidor: " + ex.Message
-                };
-
-                return StatusCode(500, errorResponse);
+                return ResponseHelper.HandleGeneralException(ex);
             }
         }
 
@@ -99,26 +77,30 @@ namespace Proyecto.Server.Controllers
         {
             try
             {
-                var userId = User.FindFirst("UsuarioID")?.Value;
+                var userId = User.GetUsuarioId();
 
-                if (string.IsNullOrEmpty(userId))
+                if (userId == null)
                 {
-                    return Unauthorized("No se pudo obtener el ID del usuario. Verifique que el token sea válido.");
+                    return ResponseHelper.HandleCustomException(new CustomException("No se pudo obtener el ID del usuario.", 401));
                 }
 
                 if (await _usuarioBLL.IsEmailRegisteredAsync(parametrosPeticion.CorreoElectronico.ToLower()))
                 {
-                    return Conflict("El usuario Ya existe");
-                } else
-                {
-                    _usuarioBLL.CreateUser(parametrosPeticion,int.Parse(userId));
-                    return Created("","Usuario Creado Exitosamente");
+                    return ResponseHelper.HandleCustomException(new CustomException("El usuario ya existe.", 409));
                 }
                 
+                    _usuarioBLL.CreateUser(parametrosPeticion,userId.Value);
+                return ResponseHelper.Created("Usuario creado exitosamente");
+
+
             }
-            catch (Exception ex) 
-            { 
-                return BadRequest(ex.Message);
+            catch (CustomException ex) 
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
             }
         }
     }

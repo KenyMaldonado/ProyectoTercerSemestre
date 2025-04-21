@@ -17,6 +17,19 @@ namespace Proyecto.Server.BLL.Service
 
         public Task<List<TournamentDTO.TypeOfTournament>> GetTypeOfTournaments()
         {
+            return _torneoRepositorio.GetTypesTournaments();
+        }
+
+        public void CreateTournament(TournamentDTO.CreateTournamenteParameter parametros,int UsuarioCreo)
+        {
+            TournamentDTO Torneo= new TournamentDTO();
+            Torneo.Datos = parametros;
+            Torneo.UsuarioId = UsuarioCreo;
+            _torneoRepositorio.CreateNewTournament(Torneo);
+        }
+
+        public Task<List<TournamentDTO.GetTournamentDTO>> GetTournaments()
+        {
             return _torneoRepositorio.GetTournaments();
         }
     }

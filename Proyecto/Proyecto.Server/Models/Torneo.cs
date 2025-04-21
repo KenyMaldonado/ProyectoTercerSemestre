@@ -4,12 +4,12 @@
     {
         public int TorneoId { get; set; }
         public string Nombre { get; set; } = null!;
-        public DateTime FechaInicio { get; set; }
-        public DateTime FechaFin { get; set; }
+        public DateOnly FechaInicio { get; set; }
+        public DateOnly FechaFin { get; set; }
         public string Descripcion { get; set; } = null!;
         public string BasesTorneo { get; set; } = null!;
-        public DateTime FechaInicioInscripcion { get; set; }
-        public DateTime FechaFinInscripcion { get; set; }
+        public DateOnly FechaInicioInscripcion { get; set; }
+        public DateOnly FechaFinInscripcion { get; set; }
         public int CantidadParticipantes { get; set; }
         public int UsuarioId { get; set; }
         public int TipoTorneoId { get; set; }

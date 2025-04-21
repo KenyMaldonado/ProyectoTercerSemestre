@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface;
+using Proyecto.Server.DTOs;
+using Proyecto.Server.Utils;
 
 namespace Proyecto.Server.Controllers
 {
@@ -20,8 +23,13 @@ namespace Proyecto.Server.Controllers
             this.tournamentBLL = tournamentBLL;
         }
 
-        [HttpGet("GetTournaments")]
-        public async Task<IActionResult> GetTournaments()
+        /// <summary>
+        /// Obtiene los tipos de torneos
+        /// </summary>
+        /// <returns></returns>
+        
+        [HttpGet("GetTypeTournaments")]
+        public async Task<IActionResult> GetTypeTournaments()
         {
             try
             {
@@ -41,7 +49,58 @@ namespace Proyecto.Server.Controllers
         }
 
 
+        /// <summary>
+        /// Crea un nuevo torneo incluyendo las ramas que desea habilitar el administrador. Necesita Autenticación 
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "1")]
+        [HttpPost("CreateNewTournament")]
+        public IActionResult CreateNewTournament(TournamentDTO.CreateTournamenteParameter parametrosPeticion)
+        {
+            try
+            {
+                var UsuarioId = User.GetUsuarioId();
 
+                if (UsuarioId == null)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No se obtuvo el ID del usuario", 401));
+                }
+
+                tournamentBLL.CreateTournament(parametrosPeticion, UsuarioId.Value);
+                return ResponseHelper.Created("Torneo creado exitosamente");
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+          
+        }
+
+        [HttpGet("GetTournaments")]
+        public async Task<IActionResult> GetTournaments()
+        {
+            try
+            {
+                var result = await tournamentBLL.GetTournaments();
+
+                return ResponseHelper.Success("Torneos Actuales", result);
+            }
+            catch(CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex) 
+            {  
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+            
+            
+
+        }
 
 
     }

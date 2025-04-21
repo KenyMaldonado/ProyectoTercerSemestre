@@ -33,15 +33,15 @@ const LoginForm = () => {
                 body: JSON.stringify({ correo: email, contrasenia: password }),
             });
 
-            const data = await response.json();
+            const Data = await response.json();
 
             switch (response.status) {
                 case 200: {
-                    localStorage.setItem('authToken', data.token);
-                    const decoded: JwtPayload = jwtDecode(data.token);
+                    localStorage.setItem('authToken', Data.data.token);
+                    const decoded: JwtPayload = jwtDecode(Data.data.token);
                     const userName = decoded.unique_name || 'Usuario';
 
-                    login(data.token); // Actualizar contexto
+                    login(Data.data.token); // Actualizar contexto
                     toast.success(`¡Sesión iniciada! Bienvenido, ${userName}`);
                     navigate('/admin');
                     break;

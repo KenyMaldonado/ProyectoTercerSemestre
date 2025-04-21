@@ -20,7 +20,7 @@ namespace Proyecto.Server.Utils
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var now = DateTime.UtcNow;
-            var expiration = now.AddHours(2);
+            var expiration = now.AddMinutes(1);
 
             var claims = new List<Claim>
             {
