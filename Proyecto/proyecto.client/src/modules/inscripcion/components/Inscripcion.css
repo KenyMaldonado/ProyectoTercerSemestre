@@ -1,63 +1,58 @@
-.contenedor-inscripcion {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    font-family: sans-serif;
-}
-
 .wizard-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
     position: relative;
 }
 
 .step {
-    display: flex;
-    align-items: center;
     position: relative;
+    text-align: center;
     flex: 1;
 }
 
 .circle {
     width: 30px;
     height: 30px;
+    margin: 0 auto;
     border-radius: 50%;
-    background-color: lightgray;
+    background-color: #ccc;
+    color: white;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    z-index: 2;
+    transition: all 0.3s ease;
 }
 
-.active .circle {
-    background-color: #4caf50;
-    color: white;
+.step.active .circle {
+    background-color: #0d6efd;
+    transform: scale(1.2);
 }
 
 .label {
-    margin-left: 10px;
-    font-size: 14px;
+    font-size: 0.9rem;
+    margin-top: 5px;
 }
 
 .line {
-    height: 4px;
-    background-color: lightgray;
-    flex: 1;
+    height: 2px;
+    background-color: #ccc;
     position: absolute;
+    width: 100%;
+    top: 15px;
     left: 50%;
+    z-index: -1;
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
     right: -50%;
-    z-index: 1;
-    top: 13px;
+    width: 100%;
+    height: 2px;
+    background-color: #ccc;
+    z-index: -1;
 }
 
-.active ~ .line {
-    background-color: #4caf50;
-}
-
-.navegacion {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
+.step.active:not(:last-child)::after {
+    background-color: #0d6efd;
 }

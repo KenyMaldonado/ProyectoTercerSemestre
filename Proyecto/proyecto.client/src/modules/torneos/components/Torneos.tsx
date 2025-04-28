@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Torneo } from "../pages/TorneoCard"; // ya lo definiste ahí
+import { Torneo } from "./TorneoCard";
 
 const Torneos: React.FC = () => {
     const [torneos, setTorneos] = useState<Torneo[]>([]);
