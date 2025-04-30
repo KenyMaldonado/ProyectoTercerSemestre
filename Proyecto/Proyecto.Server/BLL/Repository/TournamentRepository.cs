@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
-using Proyecto.Server.BLL.Interface;
+using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
 

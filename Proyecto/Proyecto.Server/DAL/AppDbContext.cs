@@ -32,11 +32,15 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<CarreraSemestre> CarreraSemestres { get; set; }
 
+    public virtual DbSet<CodigosVerificacion> Codigosverificacions { get; set; }
+
+    public virtual DbSet<Departamento> Departamentos { get; set; }
+
     public virtual DbSet<Equipo> Equipos { get; set; }
 
-    public virtual DbSet<Facultad> Facultades { get; set; }
+    public virtual DbSet<Facultad> Facultads { get; set; }
 
-    public virtual DbSet<FaseEliminacion> FaseEliminaciones { get; set; }
+    public virtual DbSet<FaseEliminacion> FaseEliminacions { get; set; }
 
     public virtual DbSet<Goles> Goles { get; set; }
 
@@ -46,11 +50,15 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Jornada> Jornada { get; set; }
 
-    public virtual DbSet<Jugador> Jugador { get; set; }
+    public virtual DbSet<Jugador> Jugadors { get; set; }
+
+    public virtual DbSet<Municipio> Municipios { get; set; }
 
     public virtual DbSet<Partido> Partidos { get; set; }
 
     public virtual DbSet<PosicionJugador> PosicionJugadors { get; set; }
+
+    public virtual DbSet<PreInscripcion> PreInscripcions { get; set; }
 
     public virtual DbSet<ResultadoPartido> ResultadoPartidos { get; set; }
 
@@ -85,6 +93,10 @@ public partial class AppDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder
+            .UseCollation("utf8mb3_general_ci")
+            .HasCharSet("utf8mb3");
+
         modelBuilder.Entity<Cambio>(entity =>
         {
             entity.HasKey(e => e.CambioId).HasName("PRIMARY");
@@ -172,6 +184,37 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.FacultadId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Relationship15");
+        });
+
+        modelBuilder.Entity<CodigosVerificacion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("codigosverificacion");
+
+            entity.HasIndex(e => e.UsuarioId, "UsuarioId");
+
+            entity.Property(e => e.Codigo).HasMaxLength(300);
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
+            entity.Property(e => e.TokenTemporal).HasColumnType("text");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.Codigosverificacions)
+                .HasForeignKey(d => d.UsuarioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("codigosverificacion_ibfk_1");
+        });
+
+        modelBuilder.Entity<Departamento>(entity =>
+        {
+            entity.HasKey(e => e.DepartamentoId).HasName("PRIMARY");
+
+            entity.ToTable("departamento");
+
+            entity.Property(e => e.DepartamentoId).HasColumnName("Departamento_id");
+            entity.Property(e => e.Nombre).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Equipo>(entity =>
@@ -294,18 +337,25 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.EquipoId, "Relationship6");
 
+            entity.HasIndex(e => e.PreInscripcionId, "fk_Pre_Inscripcion");
+
             entity.Property(e => e.InscripcionId).HasColumnName("Inscripcion_ID");
             entity.Property(e => e.EquipoId).HasColumnName("Equipo_ID");
             entity.Property(e => e.Estado).HasMaxLength(50);
             entity.Property(e => e.FechaInscripcion)
                 .HasColumnType("datetime")
                 .HasColumnName("Fecha_Inscripcion");
+            entity.Property(e => e.PreInscripcionId).HasColumnName("Pre_Inscripcion_id");
             entity.Property(e => e.SubTorneoId).HasColumnName("Sub_Torneo_ID");
 
             entity.HasOne(d => d.Equipo).WithMany(p => p.Inscripcions)
                 .HasForeignKey(d => d.EquipoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Relationship6");
+
+            entity.HasOne(d => d.PreInscripcion).WithMany(p => p.Inscripcions)
+                .HasForeignKey(d => d.PreInscripcionId)
+                .HasConstraintName("fk_Pre_Inscripcion");
 
             entity.HasOne(d => d.SubTorneo).WithMany(p => p.Inscripcions)
                 .HasForeignKey(d => d.SubTorneoId)
@@ -335,12 +385,15 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.CarreraId, "Relationship4");
 
+            entity.HasIndex(e => e.MunicipioId, "fk_municipio_jugador");
+
             entity.Property(e => e.JugadorId).HasColumnName("Jugador_ID");
             entity.Property(e => e.Apellido).HasMaxLength(100);
             entity.Property(e => e.CarreraId).HasColumnName("CarreraID");
             entity.Property(e => e.EquipoId).HasColumnName("Equipo_ID");
             entity.Property(e => e.Estado).HasMaxLength(100);
             entity.Property(e => e.Fotografia).HasColumnType("text");
+            entity.Property(e => e.MunicipioId).HasColumnName("Municipio_id");
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.PosicionId).HasColumnName("Posicion_ID");
 
@@ -354,10 +407,31 @@ public partial class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Relationship1");
 
+            entity.HasOne(d => d.Municipio).WithMany(p => p.Jugadors)
+                .HasForeignKey(d => d.MunicipioId)
+                .HasConstraintName("fk_municipio_jugador");
+
             entity.HasOne(d => d.Posicion).WithMany(p => p.Jugadors)
                 .HasForeignKey(d => d.PosicionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Relationship35");
+        });
+
+        modelBuilder.Entity<Municipio>(entity =>
+        {
+            entity.HasKey(e => e.MunicipioId).HasName("PRIMARY");
+
+            entity.ToTable("municipio");
+
+            entity.HasIndex(e => e.DepartamentoId, "Departamento_id");
+
+            entity.Property(e => e.MunicipioId).HasColumnName("Municipio_id");
+            entity.Property(e => e.DepartamentoId).HasColumnName("Departamento_id");
+            entity.Property(e => e.Nombre).HasMaxLength(100);
+
+            entity.HasOne(d => d.Departamento).WithMany(p => p.Municipios)
+                .HasForeignKey(d => d.DepartamentoId)
+                .HasConstraintName("municipio_ibfk_1");
         });
 
         modelBuilder.Entity<Partido>(entity =>
@@ -366,16 +440,19 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("partido");
 
-            entity.HasIndex(e => e.Equipo2, "Relationship22");
-
             entity.HasIndex(e => e.JornadaId, "Relationship31");
 
             entity.HasIndex(e => e.UsuarioId, "Relationship42");
 
+            entity.HasIndex(e => e.CanchaId, "fk_cancha");
+
+            entity.HasIndex(e => e.Equipo1, "fk_partido_equipo1");
+
+            entity.HasIndex(e => e.Equipo2, "fk_partido_equipo2");
+
+            entity.HasIndex(e => e.FaseId, "fk_partido_fase");
+
             entity.Property(e => e.PartidoId).HasColumnName("Partido_ID");
-            entity.Property(e => e.Cancha)
-                .HasMaxLength(1)
-                .IsFixedLength();
             entity.Property(e => e.CanchaId).HasColumnName("Cancha_ID");
             entity.Property(e => e.Estado).HasMaxLength(50);
             entity.Property(e => e.FaseId).HasColumnName("Fase_ID");
@@ -388,9 +465,22 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.JornadaId).HasColumnName("Jornada_ID");
             entity.Property(e => e.UsuarioId).HasColumnName("Usuario_ID");
 
-            entity.HasOne(d => d.Equipo2Navigation).WithMany(p => p.Partidos)
+            entity.HasOne(d => d.Cancha).WithMany(p => p.Partidos)
+                .HasForeignKey(d => d.CanchaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_cancha");
+
+            entity.HasOne(d => d.Equipo1Navigation).WithMany(p => p.PartidoEquipo1Navigations)
+                .HasForeignKey(d => d.Equipo1)
+                .HasConstraintName("fk_partido_equipo1");
+
+            entity.HasOne(d => d.Equipo2Navigation).WithMany(p => p.PartidoEquipo2Navigations)
                 .HasForeignKey(d => d.Equipo2)
-                .HasConstraintName("Relationship22");
+                .HasConstraintName("fk_partido_equipo2");
+
+            entity.HasOne(d => d.Fase).WithMany(p => p.Partidos)
+                .HasForeignKey(d => d.FaseId)
+                .HasConstraintName("fk_partido_fase");
 
             entity.HasOne(d => d.Jornada).WithMany(p => p.Partidos)
                 .HasForeignKey(d => d.JornadaId)
@@ -410,6 +500,20 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.PosicionId).HasColumnName("Posicion_ID");
             entity.Property(e => e.Nombre).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<PreInscripcion>(entity =>
+        {
+            entity.HasKey(e => e.PreInscripcionId).HasName("PRIMARY");
+
+            entity.ToTable("pre_inscripcion");
+
+            entity.Property(e => e.PreInscripcionId).HasColumnName("Pre_Inscripcion_id");
+            entity.Property(e => e.Codigo).HasMaxLength(50);
+            entity.Property(e => e.DataSave)
+                .HasColumnType("json")
+                .HasColumnName("Data_Save");
+            entity.Property(e => e.Email).HasMaxLength(50);
         });
 
         modelBuilder.Entity<ResultadoPartido>(entity =>
@@ -441,6 +545,7 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.SubTorneoId).HasColumnName("Sub_Torneo_ID");
             entity.Property(e => e.Categoria).HasMaxLength(50);
+            entity.Property(e => e.Estado).HasMaxLength(50);
             entity.Property(e => e.TorneoId).HasColumnName("Torneo_ID");
 
             entity.HasOne(d => d.Torneo).WithMany(p => p.SubTorneos)
@@ -461,6 +566,7 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.TarjetaId).HasColumnName("Tarjeta_ID");
             entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.Estado).HasMaxLength(50);
             entity.Property(e => e.JugadorId).HasColumnName("Jugador_ID");
             entity.Property(e => e.MinutoTarjeta).HasColumnName("Minuto_Tarjeta");
             entity.Property(e => e.ResultadoPartidoId).HasColumnName("Resultado_Partido_ID");
@@ -508,7 +614,7 @@ public partial class AppDbContext : DbContext
             entity.ToTable("tipo_torneo");
 
             entity.Property(e => e.TipoTorneoId).HasColumnName("Tipo_Torneo_ID");
-            entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.Descripcion).HasMaxLength(1000);
             entity.Property(e => e.Nombre).HasMaxLength(100);
         });
 
@@ -528,18 +634,11 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("Bases_Torneo");
             entity.Property(e => e.CantidadParticipantes).HasColumnName("Cantidad_Participantes");
             entity.Property(e => e.Descripcion).HasColumnType("text");
-            entity.Property(e => e.FechaFin)
-                .HasColumnType("date")
-                .HasColumnName("Fecha_Fin");
-            entity.Property(e => e.FechaFinInscripcion)
-                .HasColumnType("date")
-                .HasColumnName("Fecha_Fin_Inscripcion");
-            entity.Property(e => e.FechaInicio)
-                .HasColumnType("date")
-                .HasColumnName("Fecha_Inicio");
-            entity.Property(e => e.FechaInicioInscripcion)
-                .HasColumnType("date")
-                .HasColumnName("Fecha_Inicio_Inscripcion");
+            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.FechaFin).HasColumnName("Fecha_Fin");
+            entity.Property(e => e.FechaFinInscripcion).HasColumnName("Fecha_Fin_Inscripcion");
+            entity.Property(e => e.FechaInicio).HasColumnName("Fecha_Inicio");
+            entity.Property(e => e.FechaInicioInscripcion).HasColumnName("Fecha_Inicio_Inscripcion");
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.TipoTorneoId).HasColumnName("Tipo_Torneo_ID");
             entity.Property(e => e.UsuarioId).HasColumnName("Usuario_ID");
@@ -574,9 +673,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(300)
                 .HasColumnName("Password_User");
             entity.Property(e => e.RolId).HasColumnName("Rol_ID");
-            entity.Property(e => e.UsuarioCreo)
-                .HasMaxLength(100)
-                .HasColumnName("Usuario_Creo");
+            entity.Property(e => e.UsuarioCreo).HasColumnName("Usuario_Creo");
 
             entity.HasOne(d => d.Rol).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.RolId)

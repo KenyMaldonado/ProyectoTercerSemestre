@@ -22,6 +22,16 @@ namespace Proyecto.Server.DTOs
             public int RolId { get; set; }
             public string CorreoElectronico { get; set; }
         }
+        
+        public class UserGetCredenciales
+        {
+            public string Nombre { get; set; }
+            public string Apellido { get; set; }
+            public int UsuarioId {  get; set; }
+            public string Contrasenia { get; set; }
+            public string Correo { set; get; }
+
+        }
     }
     
 }

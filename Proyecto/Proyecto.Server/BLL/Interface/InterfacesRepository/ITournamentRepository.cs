@@ -1,6 +1,6 @@
 ﻿using Proyecto.Server.DTOs;
 
-namespace Proyecto.Server.BLL.Interface
+namespace Proyecto.Server.BLL.Interface.InterfacesRepository
 {
     public interface ITournamentRepository
     {

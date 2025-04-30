@@ -6,9 +6,7 @@
 
         public DateTime FechaPartido { get; set; }
 
-        public TimeSpan HoraPartido { get; set; }
-
-        public string Cancha { get; set; } = null!;
+        public TimeOnly HoraPartido { get; set; }
 
         public int? Equipo1 { get; set; }
 
@@ -26,7 +24,13 @@
 
         public virtual ICollection<Cambio> Cambios { get; set; } = new List<Cambio>();
 
+        public virtual Cancha Cancha { get; set; } = null!;
+
+        public virtual Equipo? Equipo1Navigation { get; set; }
+
         public virtual Equipo? Equipo2Navigation { get; set; }
+
+        public virtual FaseEliminacion? Fase { get; set; }
 
         public virtual Jornada? Jornada { get; set; }
 

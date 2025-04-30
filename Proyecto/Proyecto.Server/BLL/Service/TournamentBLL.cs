@@ -1,4 +1,5 @@
-﻿using Proyecto.Server.BLL.Interface;
+﻿using Proyecto.Server.BLL.Interface.InterfacesRepository;
+using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
 
 namespace Proyecto.Server.BLL.Service

@@ -7,10 +7,10 @@ using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
 using Proyecto.Server.BLL;
-using Proyecto.Server.BLL.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Proyecto.Server.Utils;
 using System.Security.Claims;
+using Proyecto.Server.BLL.Interface.InterfacesService;
 
 namespace Proyecto.Server.Controllers
 {
@@ -70,7 +70,7 @@ namespace Proyecto.Server.Controllers
         /// <response code="409">Si el correo electrónico del usuario ya está registrado.</response>
         /// <response code="400">Si ocurre un error inesperado al procesar la solicitud.</response>
 
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateNewUser")]
 
         public async Task<IActionResult> CreateNewUser(UserRegistrationDTO.UserRegistrationParameter parametrosPeticion)
@@ -102,6 +102,98 @@ namespace Proyecto.Server.Controllers
             {
                 return ResponseHelper.HandleGeneralException(ex);
             }
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("UpdatePasswordWithLogin")]
+        public IActionResult UpdatePasswordWithLogin(string currentPassword, string newPassword)
+        {
+            try
+            {
+                var userEmail = User.GetCorreo();
+                if (userEmail == null)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No se puedo obtener el correo, verique el JWT", 401));
+                }
+
+                _usuarioBLL.UpdatePassword(userEmail, currentPassword, newPassword);
+                return ResponseHelper.Success("Se actualizo correctamente");
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [HttpPost("LostPassword")]
+        public async Task<IActionResult> LostPassword(string correo)
+        {
+            try
+            {
+                await _usuarioBLL.LostPassword(correo);
+                return ResponseHelper.Success("Se envio el correo exitosamente, verifique tambien su bandeja de spam");
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            
+        }
+
+        [HttpPost("VerifyCode")]
+        public IActionResult verifyCode(string code,string correo)
+        {
+            try
+            {
+                string token = _usuarioBLL.ValidacionCodigo(correo, code);
+                return ResponseHelper.Success("Verificación exitosa",token);
+                
+            }
+            catch (CustomException ex) 
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+
+
+
+        }
+
+        [Authorize(Policy = "ResetPassword")]
+        [HttpPatch("UpdatePasswordWithToken")]
+        public IActionResult UpdatePasswordWithToken(string password)
+        {
+            try
+            {
+                var usuarioID = User.GetUsuarioId();
+                if (usuarioID == null) 
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No se puedo obtener el UsuarioID, verique el JWT", 401));
+                }
+                _usuarioBLL.CambioPassword(password, usuarioID.Value);
+                return ResponseHelper.Success("Se ha actualizado su contraseña correctamente");
+
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            } 
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+            
+            
+            
+
         }
     }
 

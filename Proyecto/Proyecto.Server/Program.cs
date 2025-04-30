@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Proyecto.Server.BLL.Interface;
 using Proyecto.Server.BLL.Repository;
 using Proyecto.Server.BLL.Service;
 using Proyecto.Server.DAL;
 using Microsoft.OpenApi.Models;
 using System.IO;
 using MySqlConnector;
+using Proyecto.Server.BLL.Interface.InterfacesRepository;
+using Proyecto.Server.BLL.Interface.InterfacesService;
 
 namespace Proyecto.Server
 {
@@ -77,7 +78,12 @@ namespace Proyecto.Server
                 };
             });
 
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ResetPassword", policy =>
+                policy.RequireClaim("Purpose", "ResetPassword"));
+            });
+
 
             // Agregar los servicios de configuración de la cadena de conexión
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
@@ -96,10 +102,29 @@ namespace Proyecto.Server
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
             var connectionString = builder.Configuration.GetConnectionString("MiConexion");
+            bool dbConnectionAvailable = true;
+            try
+            {
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al conectarse a la base de datos:");
+                Console.WriteLine(ex.Message);
+                dbConnectionAvailable = false; // <- Termina la aplicación si falla
+            }
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-            );
+
+            if (dbConnectionAvailable)
+            {
+                builder.Services.AddDbContext<AppDbContext>(options =>
+                    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+                );
+            }
 
 
             builder.Services.AddCors(options =>

@@ -10,6 +10,7 @@
         public string CorreoElectronico { get; set; } = null!;
         public int RolId { get; set; }
         public int UsuarioCreo { get; set; }
+        public virtual ICollection<CodigosVerificacion> Codigosverificacions { get; set; } = new List<CodigosVerificacion>();
         public virtual ICollection<Partido> Partidos { get; set; } = new List<Partido>();
         public virtual TipoRol Rol { get; set; } = null!;
         public virtual ICollection<Torneo> Torneos { get; set; } = new List<Torneo>();

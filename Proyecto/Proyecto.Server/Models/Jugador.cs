@@ -22,6 +22,8 @@
 
         public int Dorsal { get; set; }
 
+        public int? MunicipioId { get; set; }
+
         public virtual ICollection<Cambio> Cambios { get; set; } = new List<Cambio>();
 
         public virtual ICollection<Capitan> Capitans { get; set; } = new List<Capitan>();
@@ -31,6 +33,8 @@
         public virtual Equipo Equipo { get; set; } = null!;
 
         public virtual ICollection<Goles> Goles { get; set; } = new List<Goles>();
+
+        public virtual Municipio? Municipio { get; set; }
 
         public virtual PosicionJugador Posicion { get; set; } = null!;
 

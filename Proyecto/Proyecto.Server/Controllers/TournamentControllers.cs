@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Proyecto.Server.BLL.Interface;
+using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Utils;
 

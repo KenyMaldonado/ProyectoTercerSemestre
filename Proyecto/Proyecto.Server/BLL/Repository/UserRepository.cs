@@ -1,9 +1,11 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using Microsoft.EntityFrameworkCore;
-using Proyecto.Server.BLL.Interface;
+using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
+using Proyecto.Server.Models;
 
 namespace Proyecto.Server.BLL.Repository
 {
@@ -17,23 +19,21 @@ namespace Proyecto.Server.BLL.Repository
             _dbContext = dbContext;
         }
 
-        public DataTable GetCredentials(string email)
+        public UserRegistrationDTO.UserGetCredenciales? GetCredenciales(string email)
         {
-            try
-            {
-                var parametrosEntrada = new Dictionary<string, object>
-                {   
-                    {"@correo",email}
-                };
+            var consulta = _dbContext.Usuarios.Where(u => u.CorreoElectronico.ToLower() == email.ToLower()).
+                Select(u => new UserRegistrationDTO.UserGetCredenciales
+                {
+                    UsuarioId= u.UsuarioId,
+                    Nombre = u.Nombre,
+                    Apellido = u.Apellido,
+                    Correo = u.CorreoElectronico,
+                    Contrasenia = u.PasswordUser
+                }).FirstOrDefault();
 
-                return (DataTable)_storeProcedure.EjecutarProcedimientoAlmacenado("sp_getCredencialesUsuario", CommandType.StoredProcedure, parametrosEntrada);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error, no se encontro las credenciales del usuario" + ex.Message);
-            }
+            return consulta;
         }
-
+     
         public void CreateNewUser(UserRegistrationDTO newUser)
         {
             try
@@ -62,22 +62,89 @@ namespace Proyecto.Server.BLL.Repository
             return await _dbContext.Usuarios.AnyAsync(u => u.CorreoElectronico == email);
         }
 
-        public int GetRolByEmail(string email)
+        public string GetRolByEmail(string email)
         {
             var lowerEmail = email.ToLower();
+            var Rol = (from u in _dbContext.Usuarios
+                          join r in _dbContext.TipoRols
+                          on u.RolId equals r.RolId
+                          where u.CorreoElectronico.ToLower() == lowerEmail
+                          select r.Nombre).FirstOrDefault();
 
-            var usuari = _dbContext.Usuarios
-                .FirstOrDefault(u => u.CorreoElectronico.ToLower() == lowerEmail);
-
-            if (usuari == null)
-            {
-                return 0;
-            }
-
-            return usuari.RolId;
+            return Rol.ToString();
         }
 
+        public void UpdatePassword(int idUsuario, string correo, string newPassword)
+        {
+            var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.UsuarioId == idUsuario);
+            if (usuario != null)
+            {
+                usuario.PasswordUser = newPassword;
+                _dbContext.SaveChanges();
+            }
+        }
 
+        public bool InsertCode(CodigoDTO codigo)
+        {
+            try
+            {
+                var codigoNuevo = new CodigosVerificacion
+                {
+                    Codigo = codigo.CodigoHash,
+                    FechaCreacion = codigo.FechaCreacion,
+                    FechaExpiracion = codigo.FechaExpiracion,
+                    UsuarioId = codigo.UsuarioId,
+                    Usado = codigo.Usado,
+                    TokenTemporal = codigo.TokenTemporal
+                };
 
+                _dbContext.Codigosverificacions.Add(codigoNuevo);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
+
+        }
+    
+        public CodigoDTO? GetCodeVerification(string correo)
+        {
+            TimeZoneInfo zonaGuatemala = TimeZoneInfo.FindSystemTimeZoneById("Central America Standard Time");
+            var horaGuatemala = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, zonaGuatemala);
+
+            var codigo = _dbContext.Codigosverificacions.Where(c => c.FechaExpiracion > horaGuatemala
+                && c.Usado == false && c.Usuario.CorreoElectronico == correo.ToLower())
+                .OrderByDescending(c => c.FechaExpiracion).FirstOrDefault();
+
+            if (codigo == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new CodigoDTO
+                {
+                    Codigo = codigo.Codigo,
+                    FechaCreacion = codigo.FechaCreacion,
+                    FechaExpiracion = codigo.FechaExpiracion,
+                    Usado = codigo.Usado,
+                    TokenTemporal = codigo.TokenTemporal
+                };
+            }
+        }
+
+        public void ChangePassword(int idUsuario, string passwordHash)
+        {
+            var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.UsuarioId == idUsuario);
+
+            if (usuario != null)
+            {
+                usuario.PasswordUser = passwordHash;
+                _dbContext.SaveChanges();
+            }
+        }
     }
 }
