@@ -7,5 +7,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task<List<TournamentDTO.TypeOfTournament>> GetTypeOfTournaments();
         void CreateTournament(TournamentDTO.CreateTournamenteParameter parametros, int UsuarioCreo);
         Task<List<TournamentDTO.GetTournamentDTO>> GetTournaments();
+        Task<List<TournamentDTO.GetSubTournamentDTO>> GetSubTournaments(int TournamentID);
     }
 }

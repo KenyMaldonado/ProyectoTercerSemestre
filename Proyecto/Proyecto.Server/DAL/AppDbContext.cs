@@ -30,6 +30,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Capitan> Capitans { get; set; }
 
+    public virtual DbSet<Carrera> Carreras { get; set; }
+
     public virtual DbSet<CarreraSemestre> CarreraSemestres { get; set; }
 
     public virtual DbSet<CodigosVerificacion> Codigosverificacions { get; set; }
@@ -68,6 +70,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<TipoGol> TipoGols { get; set; }
 
+    public virtual DbSet<TipoJuegoTorneo> TipoJuegoTorneos { get; set; }
+
     public virtual DbSet<TipoRol> TipoRols { get; set; }
 
     public virtual DbSet<TipoTorneo> TipoTorneos { get; set; }
@@ -75,7 +79,6 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<Torneo> Torneos { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -91,8 +94,29 @@ public partial class AppDbContext : DbContext
             );
         }
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Usuario>()
+        .Property(u => u.Estado)
+        .HasConversion<string>();
+
+        modelBuilder.Entity<Torneo>()
+        .Property(t => t.Estado)
+        .HasConversion<string>();
+
+        modelBuilder.Entity<Inscripcion>()
+        .Property(i => i.Estado)
+        .HasConversion<string>();
+
+        modelBuilder.Entity<Equipo>()
+        .Property(e => e.Estado)
+        .HasConversion<string>();
+
+        modelBuilder.Entity<SubTorneo>()
+        .Property(st => st.Estado)
+        .HasConversion<string>();
+
         modelBuilder
             .UseCollation("utf8mb3_general_ci")
             .HasCharSet("utf8mb3");
@@ -138,7 +162,7 @@ public partial class AppDbContext : DbContext
             entity.ToTable("cancha");
 
             entity.Property(e => e.CanchaId).HasColumnName("Cancha_ID");
-            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.Estado).HasColumnType("enum('Disponible','Reservada','Ocupada','En mantenimiento','Fuera de servicio')");
             entity.Property(e => e.Nombre).HasMaxLength(50);
         });
 
@@ -164,26 +188,42 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Capitan_Jugador");
         });
 
+        modelBuilder.Entity<Carrera>(entity =>
+        {
+            entity.HasKey(e => e.CarreraId).HasName("PRIMARY");
+
+            entity.ToTable("carrera");
+
+            entity.HasIndex(e => e.FacultadId, "fk_carrera_facultad");
+
+            entity.Property(e => e.CarreraId).HasColumnName("Carrera_ID");
+            entity.Property(e => e.FacultadId).HasColumnName("Facultad_ID");
+            entity.Property(e => e.Nombre).HasMaxLength(200);
+
+            entity.HasOne(d => d.Facultad).WithMany(p => p.Carreras)
+                .HasForeignKey(d => d.FacultadId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_carrera_facultad");
+        });
+
         modelBuilder.Entity<CarreraSemestre>(entity =>
         {
             entity.HasKey(e => e.CarreraId).HasName("PRIMARY");
 
             entity.ToTable("carrera_semestre");
 
-            entity.HasIndex(e => e.FacultadId, "Relationship15");
+            entity.HasIndex(e => e.CarreraId1, "fk_carrera_semestre_carrera");
 
             entity.Property(e => e.CarreraId).HasColumnName("CarreraID");
+            entity.Property(e => e.CarreraId1).HasColumnName("Carrera_ID");
             entity.Property(e => e.CodigoCarrera)
                 .HasMaxLength(20)
                 .HasColumnName("Codigo_Carrera");
-            entity.Property(e => e.FacultadId).HasColumnName("Facultad_ID");
-            entity.Property(e => e.Nombre).HasMaxLength(200);
             entity.Property(e => e.Seccion).HasMaxLength(10);
 
-            entity.HasOne(d => d.Facultad).WithMany(p => p.CarreraSemestres)
-                .HasForeignKey(d => d.FacultadId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship15");
+            entity.HasOne(d => d.CarreraId1Navigation).WithMany(p => p.CarreraSemestres)
+                .HasForeignKey(d => d.CarreraId1)
+                .HasConstraintName("fk_carrera_semestre_carrera");
         });
 
         modelBuilder.Entity<CodigosVerificacion>(entity =>
@@ -227,7 +267,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.FacultadId, "Relationship16");
 
-            entity.HasIndex(e => e.TorneoId, "Relationship3");
+            entity.HasIndex(e => e.SubTorneoId, "fk_equipo_subtorneo");
 
             entity.Property(e => e.EquipoId).HasColumnName("Equipo_ID");
             entity.Property(e => e.ColorUniforme)
@@ -236,11 +276,13 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ColorUniformeSecundario)
                 .HasMaxLength(100)
                 .HasColumnName("Color_Uniforme_Secundario");
-            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.Estado)
+                .HasDefaultValueSql("'Inactivo'")
+                .HasColumnType("enum('Activo','Descalificado','Suspendido','Retirado','Inactivo')");
             entity.Property(e => e.FacultadId).HasColumnName("Facultad_ID");
             entity.Property(e => e.GrupoId).HasColumnName("Grupo_ID");
             entity.Property(e => e.Nombre).HasMaxLength(100);
-            entity.Property(e => e.TorneoId).HasColumnName("Torneo_ID");
+            entity.Property(e => e.SubTorneoId).HasColumnName("Sub_Torneo_ID");
 
             entity.HasOne(d => d.Facultad).WithMany(p => p.Equipos)
                 .HasForeignKey(d => d.FacultadId)
@@ -252,10 +294,9 @@ public partial class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Relationship10");
 
-            entity.HasOne(d => d.Torneo).WithMany(p => p.Equipos)
-                .HasForeignKey(d => d.TorneoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship3");
+            entity.HasOne(d => d.SubTorneo).WithMany(p => p.Equipos)
+                .HasForeignKey(d => d.SubTorneoId)
+                .HasConstraintName("fk_equipo_subtorneo");
         });
 
         modelBuilder.Entity<Facultad>(entity =>
@@ -341,7 +382,7 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.InscripcionId).HasColumnName("Inscripcion_ID");
             entity.Property(e => e.EquipoId).HasColumnName("Equipo_ID");
-            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.Estado).HasColumnType("enum('EnRevision','EnCorreccion','Aprobada','Rechazada','Cancelada')");
             entity.Property(e => e.FechaInscripcion)
                 .HasColumnType("datetime")
                 .HasColumnName("Fecha_Inscripcion");
@@ -383,24 +424,25 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.PosicionId, "Relationship35");
 
-            entity.HasIndex(e => e.CarreraId, "Relationship4");
+            entity.HasIndex(e => e.CarreraSemestreId, "fk_jugador_carrera_semestre");
 
             entity.HasIndex(e => e.MunicipioId, "fk_municipio_jugador");
 
             entity.Property(e => e.JugadorId).HasColumnName("Jugador_ID");
             entity.Property(e => e.Apellido).HasMaxLength(100);
-            entity.Property(e => e.CarreraId).HasColumnName("CarreraID");
+            entity.Property(e => e.CarreraSemestreId).HasColumnName("Carrera_Semestre_ID");
             entity.Property(e => e.EquipoId).HasColumnName("Equipo_ID");
-            entity.Property(e => e.Estado).HasMaxLength(100);
+            entity.Property(e => e.Estado)
+                .HasDefaultValueSql("'Inactivo'")
+                .HasColumnType("enum('Activo','Lesionado','Suspendido','Expulsado','Inactivo')");
             entity.Property(e => e.Fotografia).HasColumnType("text");
             entity.Property(e => e.MunicipioId).HasColumnName("Municipio_id");
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.PosicionId).HasColumnName("Posicion_ID");
 
-            entity.HasOne(d => d.Carrera).WithMany(p => p.Jugadors)
-                .HasForeignKey(d => d.CarreraId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship4");
+            entity.HasOne(d => d.CarreraSemestre).WithMany(p => p.Jugadors)
+                .HasForeignKey(d => d.CarreraSemestreId)
+                .HasConstraintName("fk_jugador_carrera_semestre");
 
             entity.HasOne(d => d.Equipo).WithMany(p => p.Jugadors)
                 .HasForeignKey(d => d.EquipoId)
@@ -454,7 +496,7 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.PartidoId).HasColumnName("Partido_ID");
             entity.Property(e => e.CanchaId).HasColumnName("Cancha_ID");
-            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.Estado).HasColumnType("enum('Pendiente','En curso','Finalizado','Suspendido','Cancelado','Por reprogramar')");
             entity.Property(e => e.FaseId).HasColumnName("Fase_ID");
             entity.Property(e => e.FechaPartido)
                 .HasColumnType("datetime")
@@ -545,7 +587,7 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.SubTorneoId).HasColumnName("Sub_Torneo_ID");
             entity.Property(e => e.Categoria).HasMaxLength(50);
-            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.Estado).HasColumnType("enum('Activo','Finalizado','Suspendido','En Curso','Cancelado')");
             entity.Property(e => e.TorneoId).HasColumnName("Torneo_ID");
 
             entity.HasOne(d => d.Torneo).WithMany(p => p.SubTorneos)
@@ -566,7 +608,6 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.TarjetaId).HasColumnName("Tarjeta_ID");
             entity.Property(e => e.Descripcion).HasMaxLength(100);
-            entity.Property(e => e.Estado).HasMaxLength(50);
             entity.Property(e => e.JugadorId).HasColumnName("Jugador_ID");
             entity.Property(e => e.MinutoTarjeta).HasColumnName("Minuto_Tarjeta");
             entity.Property(e => e.ResultadoPartidoId).HasColumnName("Resultado_Partido_ID");
@@ -593,6 +634,20 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.TipoGolId).HasColumnName("Tipo_Gol_ID");
             entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.Nombre).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<TipoJuegoTorneo>(entity =>
+        {
+            entity.HasKey(e => e.TipoJuegoId).HasName("PRIMARY");
+
+            entity.ToTable("tipo_juego_torneo");
+
+            entity.Property(e => e.TipoJuegoId).HasColumnName("Tipo_Juego_ID");
+            entity.Property(e => e.CantidadJugadores).HasColumnName("Cantidad_Jugadores");
+            entity.Property(e => e.Descripcion)
+                .HasColumnType("text")
+                .HasColumnName("descripcion");
             entity.Property(e => e.Nombre).HasMaxLength(50);
         });
 
@@ -624,6 +679,8 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("torneo");
 
+            entity.HasIndex(e => e.TipoJuegoId, "FK_TipoTorneo_Torneo_idx");
+
             entity.HasIndex(e => e.UsuarioId, "Relationship30");
 
             entity.HasIndex(e => e.TipoTorneoId, "Relationship41");
@@ -632,16 +689,21 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.BasesTorneo)
                 .HasColumnType("text")
                 .HasColumnName("Bases_Torneo");
-            entity.Property(e => e.CantidadParticipantes).HasColumnName("Cantidad_Participantes");
             entity.Property(e => e.Descripcion).HasColumnType("text");
-            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.Estado).HasColumnType("enum('Activo','Finalizado','Suspendido','En Curso','Cancelado')");
             entity.Property(e => e.FechaFin).HasColumnName("Fecha_Fin");
             entity.Property(e => e.FechaFinInscripcion).HasColumnName("Fecha_Fin_Inscripcion");
             entity.Property(e => e.FechaInicio).HasColumnName("Fecha_Inicio");
             entity.Property(e => e.FechaInicioInscripcion).HasColumnName("Fecha_Inicio_Inscripcion");
             entity.Property(e => e.Nombre).HasMaxLength(100);
+            entity.Property(e => e.TipoJuegoId).HasColumnName("Tipo_Juego_ID");
             entity.Property(e => e.TipoTorneoId).HasColumnName("Tipo_Torneo_ID");
             entity.Property(e => e.UsuarioId).HasColumnName("Usuario_ID");
+
+            entity.HasOne(d => d.TipoJuego).WithMany(p => p.Torneos)
+                .HasForeignKey(d => d.TipoJuegoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Torneo_TipoJuego");
 
             entity.HasOne(d => d.TipoTorneo).WithMany(p => p.Torneos)
                 .HasForeignKey(d => d.TipoTorneoId)
@@ -667,7 +729,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.CorreoElectronico)
                 .HasMaxLength(100)
                 .HasColumnName("Correo_Electronico");
-            entity.Property(e => e.Estado).HasMaxLength(25);
+            entity.Property(e => e.Estado).HasColumnType("enum('Activo','Inactivo','Suspendido','Eliminado')");
             entity.Property(e => e.Nombre).HasMaxLength(50);
             entity.Property(e => e.PasswordUser)
                 .HasMaxLength(300)
@@ -683,6 +745,7 @@ public partial class AppDbContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

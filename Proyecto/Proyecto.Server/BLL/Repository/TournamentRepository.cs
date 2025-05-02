@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
+using ZstdSharp.Unsafe;
 
 namespace Proyecto.Server.BLL.Repository
 {
@@ -59,27 +60,45 @@ namespace Proyecto.Server.BLL.Repository
 
         public async Task<List<TournamentDTO.GetTournamentDTO>> GetTournaments()
         {
-            var consulta = await (from st in _appDbContext.SubTorneos
-                                  join t in _appDbContext.Torneos on st.TorneoId equals t.TorneoId
-                                  join us in _appDbContext.Usuarios on t.UsuarioId equals us.UsuarioId
+            var consulta = await (from t in _appDbContext.Torneos 
                                   join tt in _appDbContext.TipoTorneos on t.TipoTorneoId equals tt.TipoTorneoId
+                                  join u in _appDbContext.Usuarios on t.UsuarioId equals u.UsuarioId
+                                  join tj in _appDbContext.TipoJuegoTorneos on t.TipoJuegoId equals tj.TipoJuegoId
                                   select new TournamentDTO.GetTournamentDTO
                                   {
+                                      TorneoId = t.TorneoId,
                                       Nombre = t.Nombre,
-                                      Rama = st.Categoria,
                                       FechaInicio = t.FechaInicio,
                                       FechaFin = t.FechaFin,
                                       Descripcion = t.Descripcion,
                                       BasesTorneo = t.BasesTorneo,
                                       FechaInicioInscripcion = t.FechaInicioInscripcion,
                                       FechaFinInscripcion = t.FechaFinInscripcion,
-                                      CantidadParticipantes = t.CantidadParticipantes,
-                                      TipoTorneo = tt.Nombre,
-                                      CreatedBy = us.Nombre + " " + us.Apellido
+                                      UsuarioId = t.UsuarioId,
+                                      NameUsuario = u.Nombre + " " + u.Apellido,
+                                      TipoTorneoId = t.TipoTorneoId,
+                                      NameTipoTorneo = tt.Nombre,
+                                      Estado = (TournamentDTO.EstadoTorneo)t.Estado,
+                                      TipoJuegoId = t.TipoJuegoId,
+                                      NameTipoJuego = tj.Nombre
                                   }).ToListAsync();
             return consulta;
         }
 
+        public async Task<List<TournamentDTO.GetSubTournamentDTO>> GetSubTournaments(int TournamentID)
+        {
+            var consulta = await (from st in _appDbContext.SubTorneos
+                                  select new TournamentDTO.GetSubTournamentDTO
+                                  {
+                                      SubTorneoId = st.SubTorneoId,
+                                      Categoria = st.Categoria,
+                                      TorneoId = st.TorneoId,
+                                      Estado = (TournamentDTO.EstadoSubTorneo)st.Estado,
+                                      CantidadEquipos = st.CantidadEquipos
+                                  }).ToListAsync();
+            return consulta;
+        }
+       
         
     }
 }

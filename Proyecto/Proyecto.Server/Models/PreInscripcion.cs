@@ -6,7 +6,7 @@
 
         public string? Codigo { get; set; }
 
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
         public string? DataSave { get; set; }
 

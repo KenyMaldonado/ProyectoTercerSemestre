@@ -86,6 +86,10 @@ namespace Proyecto.Server.Controllers
             try
             {
                 var result = await tournamentBLL.GetTournaments();
+                if (result == null || !result.Any())
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No hay torneos en la base de datos", 404));
+                }
 
                 return ResponseHelper.Success("Torneos Actuales", result);
             }
@@ -102,6 +106,28 @@ namespace Proyecto.Server.Controllers
 
         }
 
+        [HttpGet("GetSubTournaments")]
 
+        public async Task<IActionResult> GerSubTournaments(int TournamentID)
+        {
+            try
+            {
+                var listado = await tournamentBLL.GetSubTournaments(TournamentID);
+                if (listado == null || !listado.Any())
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No hay subtorneos registrados", 404));
+                }  
+
+                return ResponseHelper.Success("Listado de subtorneos",listado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
     }
 }

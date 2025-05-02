@@ -7,5 +7,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<List<TournamentDTO.TypeOfTournament>> GetTypesTournaments();
         void CreateNewTournament(TournamentDTO tournament);
         Task<List<TournamentDTO.GetTournamentDTO>> GetTournaments();
+        Task<List<TournamentDTO.GetSubTournamentDTO>> GetSubTournaments(int TournamentID);
     }
 }

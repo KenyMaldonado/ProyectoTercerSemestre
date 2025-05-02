@@ -1,0 +1,15 @@
+﻿using Proyecto.Server.DTOs;
+
+namespace Proyecto.Server.BLL.Interface.InterfacesService
+{
+    public interface ITeamManagementBLL
+    {
+        List<RegistrationTournamentsDTO.DepartametosDTO> ObtenerDepartamentos();
+        List<RegistrationTournamentsDTO.MunicipiosDTO> ObtenerMunicios(int DepartamentoId);
+        List<RegistrationTournamentsDTO.FacultadDTO> ObtenerFacultades();
+        List<RegistrationTournamentsDTO.carreraDTO> ObtenerCarrera(int FacultadId);
+        List<RegistrationTournamentsDTO.CarreraSemestreDTO> ObtenerSemestres(int CarreraId);
+        Task<RegistrationTournamentsDTO.RegistrationStartDTO> RegistrationStart(string correo);
+
+    }
+}

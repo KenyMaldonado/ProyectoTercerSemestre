@@ -1,9 +1,18 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Proyecto.Server.Models
 {
     public class Equipo
     {
+        public enum EstadoEquipo
+        {
+            Activo = 1,
+            Descalificado = 2,
+            Suspendido = 3,
+            Retirado = 4,
+            Inactivo = 5
+        }
         public int EquipoId { get; set; }
 
         public string Nombre { get; set; } = null!;
@@ -12,13 +21,14 @@ namespace Proyecto.Server.Models
 
         public string ColorUniformeSecundario { get; set; } = null!;
 
-        public int TorneoId { get; set; }
-
-        public string Estado { get; set; } = null!;
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public EstadoEquipo Estado { get; set; }
 
         public int GrupoId { get; set; }
 
         public int FacultadId { get; set; }
+
+        public int? SubTorneoId { get; set; }
 
         public virtual ICollection<Cambio> Cambios { get; set; } = new List<Cambio>();
 
@@ -34,6 +44,6 @@ namespace Proyecto.Server.Models
 
         public virtual ICollection<Partido> PartidoEquipo2Navigations { get; set; } = new List<Partido>();
 
-        public virtual Torneo Torneo { get; set; } = null!;
+        public virtual SubTorneo? SubTorneo { get; set; }
     }
 }

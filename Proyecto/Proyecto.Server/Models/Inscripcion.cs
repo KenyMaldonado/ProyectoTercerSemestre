@@ -2,11 +2,19 @@
 {
     public class Inscripcion
     {
+        public enum EstadosInscripcion
+        {
+            Aprobada = 1,
+            EnRevision = 2,
+            Rechazada = 3,
+            ConCorrecion = 4,
+            Cancelada = 5
+        }
         public int EquipoId { get; set; }
 
         public int InscripcionId { get; set; }
 
-        public string Estado { get; set; } = null!;
+        public EstadosInscripcion Estado { get; set; }
 
         public DateTime FechaInscripcion { get; set; }
 

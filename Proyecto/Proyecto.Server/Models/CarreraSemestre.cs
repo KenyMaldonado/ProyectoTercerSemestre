@@ -2,8 +2,7 @@
 {
     public class CarreraSemestre
     {
-        public string Nombre { get; set; } = null!;
-
+        // este es la llave primaria de la tabla
         public int CarreraId { get; set; }
 
         public int Semestre { get; set; }
@@ -12,9 +11,10 @@
 
         public string Seccion { get; set; } = null!;
 
-        public int FacultadId { get; set; }
+        // esta es la llave foranea de la tabla entre carrera y carreraSemestre
+        public int? CarreraId1 { get; set; }
 
-        public virtual Facultad Facultad { get; set; } = null!;
+        public virtual Carrera? CarreraId1Navigation { get; set; }
 
         public virtual ICollection<Jugador> Jugadors { get; set; } = new List<Jugador>();
     }

@@ -21,7 +21,8 @@ namespace Proyecto.Server.BLL.Repository
 
         public UserRegistrationDTO.UserGetCredenciales? GetCredenciales(string email)
         {
-            var consulta = _dbContext.Usuarios.Where(u => u.CorreoElectronico.ToLower() == email.ToLower()).
+            var consulta = _dbContext.Usuarios.Where(u => u.CorreoElectronico.ToLower() == email.ToLower() 
+                && u.Estado == Usuario.EstadoUsuario.Activo).
                 Select(u => new UserRegistrationDTO.UserGetCredenciales
                 {
                     UsuarioId= u.UsuarioId,

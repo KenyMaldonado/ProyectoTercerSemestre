@@ -1,9 +1,28 @@
-﻿using Proyecto.Server.Models;
+﻿using System.Text.Json.Serialization;
+using Proyecto.Server.Models;
 
 namespace Proyecto.Server.DTOs
 {
     public class TournamentDTO
     {
+        public enum EstadoTorneo
+        {
+            Activo = 1,
+            Finalizado = 2,
+            Suspendido = 3,
+            EnCurso = 4,
+            Cancelado = 5
+        }
+
+        public enum EstadoSubTorneo
+        {
+            Activo = 1,
+            Finalizado = 2,
+            Suspendido = 3,
+            EnCurso = 4,
+            Cancelado = 5
+        }
+
         public CreateTournamenteParameter Datos { get; set; }
         public int UsuarioId { get; set; }
         public int? EquipoMin { get; set; }
@@ -35,19 +54,51 @@ namespace Proyecto.Server.DTOs
 
         public class GetTournamentDTO
         {
+            public int TorneoId { get; set; }
+
             public string Nombre { get; set; } = null!;
-            public string Rama { get; set; }
+
             public DateOnly FechaInicio { get; set; }
+
             public DateOnly FechaFin { get; set; }
+
             public string Descripcion { get; set; } = null!;
+
             public string BasesTorneo { get; set; } = null!;
+
             public DateOnly FechaInicioInscripcion { get; set; }
+
             public DateOnly FechaFinInscripcion { get; set; }
-            public int CantidadParticipantes { get; set; }
-            public string TipoTorneo { get; set; }
-            public string CreatedBy { get; set; }
-            
+
+            public int UsuarioId { get; set; }
+
+            public string NameUsuario { get; set; }
+
+            public int TipoTorneoId { get; set; }
+
+            public string  NameTipoTorneo { get; set; }
+
+            [JsonConverter(typeof(JsonStringEnumConverter))]
+            public EstadoTorneo Estado { get; set; }
+
+            public int TipoJuegoId { get; set; }
+
+            public string NameTipoJuego { get; set; }
+
         }
 
+        public class GetSubTournamentDTO
+        {
+            public int SubTorneoId { get; set; }
+
+            public string Categoria { get; set; } = null!;
+
+            public int TorneoId { get; set; }
+
+            [JsonConverter(typeof(JsonStringEnumConverter))]
+            public EstadoSubTorneo Estado { get; set; }
+
+            public int CantidadEquipos { get; set; }
+        }
     }
 }

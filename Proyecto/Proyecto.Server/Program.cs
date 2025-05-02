@@ -97,7 +97,8 @@ namespace Proyecto.Server
             // Registra IUserRepository con su implementación concreta
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
-
+            builder.Services.AddScoped<ITeamManagementRepository, TeamManagementRepository>();
+            builder.Services.AddScoped<ITeamManagementBLL, TeamManagementBLL>();
             // Definir política de CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

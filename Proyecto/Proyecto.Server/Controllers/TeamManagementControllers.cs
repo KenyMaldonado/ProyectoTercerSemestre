@@ -1,0 +1,151 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto.Server.BLL.Interface.InterfacesService;
+using Proyecto.Server.DTOs;
+using Proyecto.Server.Utils;
+
+namespace Proyecto.Server.Controllers
+{
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [ApiController]
+    public class TeamManagementControllers : ControllerBase
+    {
+        private readonly ITeamManagementBLL _teamManagementBLL;
+
+        public TeamManagementControllers(ITeamManagementBLL teamManagementBLL)
+        {
+            this._teamManagementBLL = teamManagementBLL;
+        }
+
+        [HttpGet("GetDepartamentos")]
+        public IActionResult GetDepartamentos()
+        {
+            try
+            {
+                var consulta = _teamManagementBLL.ObtenerDepartamentos();
+                return ResponseHelper.Success("Departamentos obtenidos exitosamente", consulta);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+            
+        }
+
+        [HttpGet("GetMunicipiosByDepartamento")]
+        public IActionResult GetMunicipiosByDepartamento(int DepartamentoID)
+        {
+            try
+            {
+                var listaMunicipios = _teamManagementBLL.ObtenerMunicios(DepartamentoID);
+                if (listaMunicipios == null || !listaMunicipios.Any())
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("El departamento no existe", 404));
+                }
+                return ResponseHelper.Success("Municipios Obtenidos Exitosamente",listaMunicipios);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [HttpGet("GetFacultades")]
+        public IActionResult GetFacultades()
+        {
+            try
+            {
+                var Listado = _teamManagementBLL.ObtenerFacultades();
+                return ResponseHelper.Success("Facultades obtenidas exitosamente", Listado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [HttpGet("GetCarrerasByFacultad")]    
+        public IActionResult GetCarrerasByFacultad(int FacultadId)
+        {
+            try
+            {
+                var Carreras = _teamManagementBLL.ObtenerCarrera(FacultadId);
+                if (Carreras == null || !Carreras.Any())
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No existe esa carrera", 404));
+                }
+                return ResponseHelper.Success("Las carreras enviadas exitosamente", Carreras);
+
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [HttpGet("GetSemestreByCarrera")]
+        public IActionResult GetSemestreByCarrera(int CarreraId)
+        {
+            try
+            {
+                var ListaSemestres = _teamManagementBLL.ObtenerSemestres(CarreraId);
+                if (ListaSemestres == null || !ListaSemestres.Any())
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("La carrera no existe", 404));
+                }
+
+                return ResponseHelper.Success("Semestres Obtenidos exitosamente", ListaSemestres);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [HttpPost("CreateRegistrationTeam")]
+        public IActionResult CreateRegistrationTeam(RegistrationTournamentsDTO.NewTeamRegistration datos)
+        {
+            return Ok();
+        }
+
+        [HttpPost("RegistrationStart")]
+        public async Task<IActionResult> RegistrationStart(string correo)
+        {
+            try
+            {
+                var datos = await _teamManagementBLL.RegistrationStart(correo);
+                return ResponseHelper.Success("Se creo el número de inscripcion exitosamente",datos);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+
+        }
+
+
+    }
+}
