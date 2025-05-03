@@ -10,6 +10,9 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         List<RegistrationTournamentsDTO.carreraDTO> ObtenerCarrera(int FacultadId);
         List<RegistrationTournamentsDTO.CarreraSemestreDTO> ObtenerSemestres(int CarreraId);
         Task<RegistrationTournamentsDTO.RegistrationStartDTO> RegistrationStart(string correo);
+        Task GuardarFormulario(string json, string Code);
+        Task CrearNuevaInscripcion(RegistrationTournamentsDTO.NewTeamRegistration datos);
+
 
     }
 }

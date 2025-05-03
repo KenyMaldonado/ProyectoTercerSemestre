@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
+using Proyecto.Server.Utils;
 
 namespace Proyecto.Server.BLL.Repository
 {
@@ -121,6 +123,123 @@ namespace Proyecto.Server.BLL.Repository
                 .OrderByDescending(x => x.Codigo)
                 .FirstOrDefaultAsync();
             return consulta?.Codigo;
+        }
+
+        public async Task SaveRegistration(string codigoInscripcion, string json)
+        {
+            var consulta =  _appDbContext.PreInscripcions
+                            .SingleOrDefault(x => x.Codigo == codigoInscripcion);
+
+            if (consulta == null) 
+            {
+                throw new Exception("Error al guardar los datos");
+            }
+
+            consulta.DataSave = json;
+            await _appDbContext.SaveChangesAsync();
+
+        }
+
+        public async Task CreateNewRegistration(RegistrationTournamentsDTO.NewTeamRegistration datos)
+        {
+            int EquipoIdNew = 0;
+
+            using var transaction = await _appDbContext.Database.BeginTransactionAsync();
+            try
+            {
+                // 1. Insertar equipo
+                Equipo equipo = new Equipo
+                {
+                    Nombre = datos.NewTeam.Nombre,
+                    ColorUniforme = datos.NewTeam.ColorUniforme,
+                    ColorUniformeSecundario = datos.NewTeam.ColorUniformeSecundario,
+                    FacultadId = datos.NewTeam.FacultadId,
+                    SubTorneoId = datos.IdSubtorneo
+                };
+                _appDbContext.Equipos.Add(equipo);
+                await _appDbContext.SaveChangesAsync();
+                EquipoIdNew = equipo.EquipoId;
+
+                // 2. Crear lista de jugadores (inicia con el capitán)
+                var ListaJugadores = new List<Jugador>
+                {
+                    new Jugador
+                    {
+                        Nombre = datos.capitan.jugadorCapitan.Nombre,
+                        Apellido = datos.capitan.jugadorCapitan.Apellido,
+                        Carne = datos.capitan.jugadorCapitan.Carne,
+                        Fotografia = datos.capitan.jugadorCapitan.Fotografia,
+                        MunicipioId = datos.capitan.jugadorCapitan.MunicipioId,
+                        CarreraSemestreId = datos.capitan.jugadorCapitan.CarreraSemestreId,
+                        FechaNacimiento = datos.capitan.jugadorCapitan.FechaNacimiento,
+                        Edad = datos.capitan.jugadorCapitan.Edad,
+                        Telefono = datos.capitan.jugadorCapitan.Telefono
+                    }
+                };
+
+                // 3. Agregar jugadores del listado
+                ListaJugadores.AddRange(datos.ListaJugadores.Select(jugador => new Jugador
+                {
+                    Nombre = jugador.Nombre,
+                    Apellido = jugador.Apellido,
+                    Carne = jugador.Carne,
+                    Fotografia = jugador.Fotografia,
+                    MunicipioId = jugador.MunicipioId,
+                    CarreraSemestreId = jugador.CarreraSemestreId,
+                    FechaNacimiento = jugador.FechaNacimiento,
+                    Edad = jugador.Edad,
+                    Telefono = jugador.Telefono
+                }));
+
+                await _appDbContext.AddRangeAsync(ListaJugadores);
+                await _appDbContext.SaveChangesAsync();
+
+                // 4. Crear lista de asignaciones (incluye al capitan y demás jugadores)
+                var ListaAsignaciones = new List<JugadorEquipo>();
+                foreach(var jugador in ListaJugadores)
+                {
+                    var asignacion = jugador.Carne == datos.capitan.jugadorCapitan.Carne
+                    ? datos.capitan.jugadorCapitan.asignacion
+                    : datos.ListaJugadores.First(j => j.Carne == jugador.Carne).asignacion;
+
+                    ListaAsignaciones.Add(new JugadorEquipo
+                    {
+                        JugadorId = jugador.JugadorId,
+                        EquipoId = EquipoIdNew,
+                        PosicionId = asignacion.PosicionId,
+                        Dorsal = asignacion.Dorsal
+                    });
+
+                }
+                await _appDbContext.AddRangeAsync(ListaAsignaciones);
+
+                // 5. Insertar capitán
+                Capitan capitan = new Capitan
+                {
+                    JugadorId = ListaJugadores.First().JugadorId,
+                    CorreoElectronico = datos.capitan.CorreoElectronico,
+                };
+                await _appDbContext.Capitans.AddAsync(capitan);
+
+                // 6. Insertar inscripción
+                Inscripcion nuevaInscripcion = new Inscripcion
+                {
+                    EquipoId = EquipoIdNew,
+                    FechaInscripcion = DateTime.Now,
+                    SubTorneoId = datos.IdSubtorneo,
+                    PreInscripcionId = datos.PreInscripcionId
+                };
+                await _appDbContext.Inscripcions.AddAsync(nuevaInscripcion);
+
+                await _appDbContext.SaveChangesAsync();
+                await transaction.CommitAsync(); 
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                var mensaje = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                throw new CustomException("Error al registrar el equipo: " + mensaje);
+            }
         }
 
     }

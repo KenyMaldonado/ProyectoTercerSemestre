@@ -122,9 +122,22 @@ namespace Proyecto.Server.Controllers
         }
 
         [HttpPost("CreateRegistrationTeam")]
-        public IActionResult CreateRegistrationTeam(RegistrationTournamentsDTO.NewTeamRegistration datos)
+        public async Task<IActionResult> CreateRegistrationTeam([FromBody] RegistrationTournamentsDTO.NewTeamRegistration datos)
         {
-            return Ok();
+            try
+            {
+                await _teamManagementBLL.CrearNuevaInscripcion(datos);
+                return ResponseHelper.Created("Se ingreso la inscripcion correctamente");
+
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
         }
 
         [HttpPost("RegistrationStart")]
@@ -133,7 +146,7 @@ namespace Proyecto.Server.Controllers
             try
             {
                 var datos = await _teamManagementBLL.RegistrationStart(correo);
-                return ResponseHelper.Success("Se creo el número de inscripcion exitosamente",datos);
+                return ResponseHelper.Success("Se obtuvo el número de inscripción exitosamente",datos);
             }
             catch (CustomException ex)
             {
@@ -146,6 +159,23 @@ namespace Proyecto.Server.Controllers
 
         }
 
+        [HttpPatch("SaveRegistration")]
+        public async Task <IActionResult> SaveRegistration (string json, string NumeroFormulario)
+        {
+            try
+            {
+                await _teamManagementBLL.GuardarFormulario(json, NumeroFormulario);
+                return ResponseHelper.Success("Datos guardados exitosamente");
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
 
     }
 }

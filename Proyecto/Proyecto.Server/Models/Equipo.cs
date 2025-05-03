@@ -21,29 +21,28 @@ namespace Proyecto.Server.Models
 
         public string ColorUniformeSecundario { get; set; } = null!;
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public EstadoEquipo Estado { get; set; }
 
-        public int GrupoId { get; set; }
+        public int? GrupoId { get; set; }
 
         public int FacultadId { get; set; }
 
-        public int? SubTorneoId { get; set; }
+        public int SubTorneoId { get; set; }
 
         public virtual ICollection<Cambio> Cambios { get; set; } = new List<Cambio>();
 
         public virtual Facultad Facultad { get; set; } = null!;
 
-        public virtual Grupos Grupo { get; set; } = null!;
+        public virtual Grupos? Grupo { get; set; }
 
         public virtual ICollection<Inscripcion> Inscripcions { get; set; } = new List<Inscripcion>();
 
-        public virtual ICollection<Jugador> Jugadors { get; set; } = new List<Jugador>();
+        public virtual ICollection<JugadorEquipo> JugadorEquipos { get; set; } = new List<JugadorEquipo>();
 
         public virtual ICollection<Partido> PartidoEquipo1Navigations { get; set; } = new List<Partido>();
 
         public virtual ICollection<Partido> PartidoEquipo2Navigations { get; set; } = new List<Partido>();
 
-        public virtual SubTorneo? SubTorneo { get; set; }
+        public virtual SubTorneo SubTorneo { get; set; } = null!;
     }
 }

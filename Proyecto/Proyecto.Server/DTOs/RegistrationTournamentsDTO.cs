@@ -50,45 +50,9 @@ namespace Proyecto.Server.DTOs
         {
             public JugadorDTO jugadorCapitan { get; set; }
 
-            public string Telefono { get; set; } = null!;
-
             public string CorreoElectronico { get; set; } = null!;
 
             public int JugadorId { get; set; }
-        }
-
-        public class JugadorDTO
-        {
-            public enum EstadoJugador
-            {
-                Activo = 1,
-                Lesionado = 2,
-                Suspendido = 3,
-                Expulsado = 4,
-                Inactivo = 5
-            }
-            public string Nombre { get; set; } = null!;
-
-            public string Apellido { get; set; } = null!;
-
-            public int JugadorId { get; set; }
-
-            public int Carne { get; set; }
-
-            public int EquipoId { get; set; }
-
-            public string? Fotografia { get; set; }
-
-            public int PosicionId { get; set; }
-
-            [JsonConverter(typeof(JsonStringEnumConverter))]
-            public EstadoJugador Estado { get; set; }
-
-            public int Dorsal { get; set; }
-
-            public int? MunicipioId { get; set; }
-
-            public int? CarreraSemestreId { get; set; }
         }
 
         public class EquipoDTO
@@ -111,9 +75,6 @@ namespace Proyecto.Server.DTOs
 
             public int TorneoId { get; set; }
 
-            [JsonConverter(typeof(JsonStringEnumConverter))]
-            public EstadoEquipo Estado { get; set; }
-
             public int GrupoId { get; set; }
 
             public int FacultadId { get; set; }
@@ -122,6 +83,7 @@ namespace Proyecto.Server.DTOs
         public class NewTeamRegistration()
         {
             public int IdSubtorneo { get; set; }
+            public int? PreInscripcionId { get; set; }
             public CapitanDTO capitan { get; set; }
             public EquipoDTO NewTeam { get; set; }
             public List<JugadorDTO> ListaJugadores { get; set; }
@@ -131,6 +93,8 @@ namespace Proyecto.Server.DTOs
         public class RegistrationStartDTO()
         {
             public int PreInscripcionId { get; set; }
+
+            public bool IsNew { get; set; }
 
             public string? Codigo { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
+using Proyecto.Server.Models;
 using Proyecto.Server.Utils;
 
 namespace Proyecto.Server.BLL.Service
@@ -122,7 +123,8 @@ namespace Proyecto.Server.BLL.Service
                         {
                             Codigo = newCode,
                             Email = correo,
-                            DataSave = null
+                            DataSave = null,
+                            IsNew = true
                         };
 
                          _teamManagementRepository.CreateDataRegistration(datos);
@@ -136,6 +138,7 @@ namespace Proyecto.Server.BLL.Service
                 }
                 else
                 {
+                    consulta.IsNew = false;
                     return consulta;
                 }
             }
@@ -148,6 +151,69 @@ namespace Proyecto.Server.BLL.Service
                 throw new CustomException($"Error inesperado: {ex.Message}", 500);
             }
         }
+
+        public async Task GuardarFormulario(string json, string Code)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(json))
+                    throw new CustomException("El JSON no puede estar vacío.", 400);
+
+                await _teamManagementRepository.SaveRegistration(Code, json);
+
+            }
+            catch
+            {
+                throw new CustomException("Error al guardar el formulario ", 500);
+            }
+            
+
+        }
+
+        public async Task CrearNuevaInscripcion(RegistrationTournamentsDTO.NewTeamRegistration datos)
+        {
+            try
+            {
+                var errores = new List<string>();
+
+                if (datos == null)
+                {
+                    throw new CustomException("Los datos de inscripción no pueden ser nulos.");
+                }
+
+                if (datos.NewTeam == null)
+                    errores.Add("El objeto 'NewTeam' es obligatorio.");
+
+                if (datos.capitan == null)
+                    errores.Add("El objeto 'capitan' es obligatorio.");
+
+                if (datos.capitan?.jugadorCapitan == null)
+                    errores.Add("El objeto 'jugadorCapitan' dentro de 'capitan' es obligatorio.");
+                if (datos.capitan?.jugadorCapitan.asignacion == null)
+                    errores.Add("El objeto 'Asignacion' dentro de 'jugadorCapitan' dentro de 'capitan' es obligatorio.");
+
+                if (datos.ListaJugadores == null || !datos.ListaJugadores.Any())
+                    errores.Add("La lista de jugadores no puede estar vacía.");
+
+                // Puedes agregar alguna validación básica del IdSubtorneo, por ejemplo:
+                if (datos.IdSubtorneo <= 0)
+                    errores.Add("El 'IdSubtorneo' debe ser mayor a cero.");
+
+                // Si hay errores, lanza excepción con todos ellos
+                if (errores.Any())
+                {
+                    throw new CustomException("Errores de validación:\n" + string.Join("\n", errores));
+                }
+
+                // Lógica de guardado o procesamiento va aquí...
+                await _teamManagementRepository.CreateNewRegistration(datos);
+            }
+            catch (CustomException ex)
+            {
+                throw new CustomException(ex.Message);
+            }
+        }
+
 
     }
 }

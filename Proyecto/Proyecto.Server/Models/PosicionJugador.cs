@@ -4,6 +4,6 @@
     {
         public int PosicionId { get; set; }
         public string Nombre { get; set; } = null!;
-        public virtual ICollection<Jugador> Jugadors { get; set; } = new List<Jugador>();
+        public virtual ICollection<JugadorEquipo> JugadorEquipos { get; set; } = new List<JugadorEquipo>();
     }
 }

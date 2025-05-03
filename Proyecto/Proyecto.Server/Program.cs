@@ -99,6 +99,10 @@ namespace Proyecto.Server
             builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
             builder.Services.AddScoped<ITeamManagementRepository, TeamManagementRepository>();
             builder.Services.AddScoped<ITeamManagementBLL, TeamManagementBLL>();
+            builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+            builder.Services.AddScoped<IPlayerBLL, PlayerBLL>();
+
+
             // Definir política de CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

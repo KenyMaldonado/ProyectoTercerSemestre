@@ -12,5 +12,8 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<RegistrationTournamentsDTO.RegistrationStartDTO> GetDataRegistration(string correo);
         void CreateDataRegistration(RegistrationTournamentsDTO.RegistrationStartDTO datos);
         Task<string?> GetLastCode();
+        Task SaveRegistration(string codigoInscripcion, string json);
+        Task CreateNewRegistration(RegistrationTournamentsDTO.NewTeamRegistration datos);
+        
     }
 }
