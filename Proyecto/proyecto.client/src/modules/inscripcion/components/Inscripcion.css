@@ -1,58 +1,142 @@
-.wizard-bar {
-    position: relative;
-}
-
-.step {
-    position: relative;
-    text-align: center;
-    flex: 1;
-}
-
-.circle {
-    width: 30px;
-    height: 30px;
-    margin: 0 auto;
-    border-radius: 50%;
-    background-color: #ccc;
-    color: white;
-    font-weight: bold;
+.stepper-container {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+  }
+  
+  .step {
+    display: flex;
+    align-items: center;
+    position: relative;
     transition: all 0.3s ease;
-}
-
-.step.active .circle {
+  }
+  
+  .circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .step.active .circle {
     background-color: #0d6efd;
+    color: white;
     transform: scale(1.2);
-}
-
-.label {
-    font-size: 0.9rem;
-    margin-top: 5px;
-}
-
-.line {
+  }
+  
+  .step.completed .circle {
+    background-color: #198754;
+    color: white;
+  }
+  
+  .label {
+    margin-left: 8px;
+    min-width: 120px;
+  }
+  
+  .divider {
     height: 2px;
+    width: 30px;
     background-color: #ccc;
-    position: absolute;
-    width: 100%;
-    top: 15px;
-    left: 50%;
-    z-index: -1;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .step-content {
+    max-width: 600px;
+    margin: auto;
+    padding: 1rem;
+    animation: fadeIn 0.4s ease-in-out;
+  }
+  
+  .step-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .inscripcion-wrapper {
+    padding: 2rem;
+  }
+  
+  .animated-form {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    to {
+      opacity: 1;
+      transform: translateY(-1);
+    }
+  }
+/* Botones */
+.step-buttons .btn {
+    transition: transform 0.2s ease, background-color 0.3s;
+  }
+  
+  .step-buttons .btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+  
+  .step-buttons .btn:active {
+    transform: scale(0.97);
+    filter: brightness(0.95);
+  }
+
+  /* Progress bar container */
+.progress-bar-container {
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 1rem 0;
 }
 
-.step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 15px;
-    right: -50%;
-    width: 100%;
-    height: 2px;
-    background-color: #ccc;
-    z-index: -1;
+/* Animated fill */
+.progress-bar-fill {
+  height: 100%;
+  background-color: #007bff; /* Bootstrap primary */
+  width: 0%;
+  transition: width 0.4s ease-in-out;
+  border-radius: 4px;
 }
 
-.step.active:not(:last-child)::after {
-    background-color: #0d6efd;
+.user-context-box {
+  background-color: #f1f1f1;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
 }
