@@ -1,78 +1,148 @@
-﻿import { useEffect, useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useTournamentData, { Tournament } from '../../../hook/useTournamentData';
+import { FaEdit } from 'react-icons/fa'; // Ícono de lápiz
 
-interface Torneo {
-    Torneo_ID: number;
-    Nombre: string;
-    Fecha_Inicio: string;
-    Fecha_Fin: string;
-    Descripcion: string;
-    Bases_Torneo: string;
-    Fecha_Inicio_Inscripcion: string;
-    Fecha_Fin_Inscripcion: string;
-    Cantidad_Participantes: number;
-    Tipo_Torneo_ID: number;
-}
+const Torneos: React.FC = () => {
+  const navigate = useNavigate();
+  const {
+    tournaments,
+    subTournamentsMap,
+    fetchSubTorneos,
+  } = useTournamentData();
 
-const Torneos = () => {
-    const [torneos, setTorneos] = useState<Torneo[]>([]);
-    const [verMasId, setVerMasId] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState<number | null>(null);
 
-    useEffect(() => {
-        const obtenerTorneos = async () => {
-            try {
-                const response = await fetch('https://tu-api.com/api/torneo/activos'); // Cambia esto por tu API real
-                const data = await response.json();
-                setTorneos(data);
-            } catch (error) {
-                console.error("Error al obtener los torneos:", error);
-            }
-        };
+  const handleCrearTorneo = () => {
+    navigate('/torneos/crear');
+  };
 
-        obtenerTorneos();
-    }, []);
+  const toggleExpand = (torneoId: number) => {
+    if (expanded === torneoId) {
+      setExpanded(null);
+    } else {
+      setExpanded(torneoId);
+      if (!subTournamentsMap[torneoId]) {
+        fetchSubTorneos(torneoId);
+      }
+    }
+  };
 
-    const toggleVerMas = (id: number) => {
-        setVerMasId(prevId => (prevId === id ? null : id));
-    };
+  const formatoFecha = (fecha: string) =>
+    new Date(fecha).toLocaleDateString('es-GT', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+    });
 
-    const formatoFecha = (fecha: string) => {
-        return new Date(fecha).toLocaleDateString('es-GT', {
-            day: '2-digit', month: 'short', year: 'numeric'
-        });
-    };
+  return (
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>🎯 Torneos actuales</h2>
+        <button
+          onClick={handleCrearTorneo}
+          className="btn btn-success"
+        >
+          ➕ Crear Torneo
+        </button>
+      </div>
 
-    return (
-        <div style={{ padding: "20px" }}>
-            <h2>🎯 Torneos activos</h2>
-            {torneos.length === 0 && <p>No hay torneos activos.</p>}
-            {torneos.map(torneo => (
-                <div key={torneo.Torneo_ID} style={{
-                    border: "1px solid #ccc",
-                    padding: "15px",
-                    borderRadius: "10px",
-                    marginBottom: "15px",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-                }}>
-                    <h3>{torneo.Nombre}</h3>
-                    <p><strong>📅 Fechas:</strong> {formatoFecha(torneo.Fecha_Inicio)} - {formatoFecha(torneo.Fecha_Fin)}</p>
-                    <p><strong>📝 Inscripción:</strong> {formatoFecha(torneo.Fecha_Inicio_Inscripcion)} - {formatoFecha(torneo.Fecha_Fin_Inscripcion)}</p>
-                    <p><strong>👥 Participantes:</strong> {torneo.Cantidad_Participantes}</p>
-
-                    <button onClick={() => toggleVerMas(torneo.Torneo_ID)}>
-                        {verMasId === torneo.Torneo_ID ? 'Ver menos' : 'Ver más'}
+      <table className="table table-sm table-bordered mb-0 shadow">
+        <thead className="table-success">
+          <tr>
+            <th></th> {/* Columna para el ícono de editar */}
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Juego</th>
+            <th>Inicio del Torneo</th>
+            <th>Fin del Torneo</th>
+            <th>Inicio inscripción</th>
+            <th>Fin inscripción</th>
+            <th>Creador</th>
+            <th>Estado</th>
+            <th>Ver más</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tournaments.length === 0 ? (
+            <tr>
+              <td colSpan={11} className="text-center text-muted">
+                No hay torneos disponibles por el momento.
+              </td>
+            </tr>
+          ) : (
+            tournaments.map((t: Tournament) => (
+              <React.Fragment key={t.torneoId}>
+                <tr>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-outline-warning"
+                      onClick={() => navigate(`/torneos/editar/${t.torneoId}`)}
+                      title="Editar torneo"
+                    >
+                      <FaEdit />
                     </button>
-
-                    {verMasId === torneo.Torneo_ID && (
-                        <div style={{ marginTop: "10px" }}>
-                            <p><strong>📖 Descripción:</strong> {torneo.Descripcion}</p>
-                            <p><strong>📚 Bases:</strong> {torneo.Bases_Torneo}</p>
-                            <p><strong>🏅 Tipo Torneo ID:</strong> {torneo.Tipo_Torneo_ID}</p>
-                        </div>
-                    )}
-                </div>
-            ))}
-        </div>
-    );
+                  </td>
+                  <td>{t.nombre}</td>
+                  <td>{t.nameTipoTorneo}</td>
+                  <td>{t.nameTipoJuego}</td>
+                  <td>{formatoFecha(t.fechaInicio)}</td>
+                  <td>{formatoFecha(t.fechaFin)}</td>
+                  <td>{formatoFecha(t.fechaInicioInscripcion)}</td>
+                  <td>{formatoFecha(t.fechaFinInscripcion)}</td>
+                  <td>{t.creadoPor}</td>
+                  <td>{t.estado}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-outline-success"
+                      onClick={() => toggleExpand(t.torneoId)}
+                    >
+                      {expanded === t.torneoId ? 'Ocultar' : 'Ver'}
+                    </button>
+                  </td>
+                </tr>
+                {expanded === t.torneoId && (
+                  <tr>
+                    <td colSpan={11}>
+                      <div className="p-3 bg-light rounded">
+                        <p><strong>📖 Descripción:</strong> {t.descripcion || '—'}</p>
+                        <p><strong>📚 Bases del torneo:</strong> {t.basesTorneo || '—'}</p>
+                        {subTournamentsMap[t.torneoId] && subTournamentsMap[t.torneoId].length > 0 ? (
+                          <div className="mt-3">
+                            <h6>🏆 Subtorneos:</h6>
+                            <table className="table table-sm table-bordered mb-0">
+                              <thead className="table-success">
+                                <tr>
+                                  <th>Categoría</th>
+                                  <th>Estado</th>
+                                  <th>Equipos</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {subTournamentsMap[t.torneoId].map((sub) => (
+                                  <tr key={sub.subTorneoId}>
+                                    <td>{sub.categoria}</td>
+                                    <td>{sub.estado}</td>
+                                    <td>{sub.cantidadEquipos}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <p className="text-muted m-0">No hay subtorneos registrados o aún se están cargando.</p>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default Torneos;
