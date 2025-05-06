@@ -1,4 +1,3 @@
-// components/Admin/Sidebar.tsx
 import { NavLink } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 import { useAuth } from '../../auth/context/AuthContext';
@@ -14,16 +13,16 @@ const Sidebar = () => {
 
     return (
         <aside className={styles.sidebar}>
-        <h2>Admin</h2>
+        <h2>👮 Admin</h2>
         <nav>
             <ul>
-            <li><NavLink to="/admin/dashboard">Dashboard</NavLink></li>
-            <li><NavLink to="/admin/torneos">Torneos</NavLink></li>
-            <li><NavLink to="/admin/equipos">Equipos</NavLink></li>
-            <li><NavLink to="/admin/jugadores">Jugadores</NavLink></li>
+            <li><NavLink to="/admin/dashboard" className={styles.sidebarLink}>Dashboard</NavLink></li>
+            <li><NavLink to="/admin/torneos" className={styles.sidebarLink}>Torneos</NavLink></li>
+            <li><NavLink to="/admin/equipos" className={styles.sidebarLink}>Equipos</NavLink></li>
+            <li><NavLink to="/admin/jugadores" className={styles.sidebarLink}>Jugadores</NavLink></li>
             </ul>
         </nav>
-            <button onClick={handleLogout} className={styles.logoutButton}>Cerrar sesi�n</button>
+        <button onClick={handleLogout} className={styles.logoutButton}>Cerrar sesión</button>
         </aside>
     );
 };

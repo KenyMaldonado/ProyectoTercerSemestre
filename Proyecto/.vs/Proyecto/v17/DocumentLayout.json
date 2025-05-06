@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
+  "WorkspaceRootPath": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\juani\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -36,9 +36,9 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "TournamentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
+              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
-              "ToolTip": "C:\\Users\\juani\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
+              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
