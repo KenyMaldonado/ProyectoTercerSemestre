@@ -1,41 +1,80 @@
 .form {
+    width: 100%;
+    max-width: 550px; /* más ancho */
+    min-width: 400px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1.3rem;
+  }
+
+.containerCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('https://media.licdn.com/dms/image/v2/C4E1BAQHdDL51LP7acQ/company-background_10000/company-background_10000/0/1624464550268/universidad_mesoamericana_sede_quetzaltenango_cover?e=2147483647&v=beta&t=1gYhLVHVajhKsAEvTdDcbSftBeXD_EhqHTQ5a2Y4rDA');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin: 0 auto 1rem;
+    display: block;
+  }
 
 .title {
     text-align: center;
     margin-bottom: 1rem;
-    color: #333;
+    color: #0a4b0a;
+    font-weight: bold;
 }
+
+.lostPassword{
+    text-align: center;
+    font-size: 1rem;
+    color: #000000;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+}
+
+.lostPassword:hover {
+    text-decoration: underline;
+  }
 
 input {
-    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem;
+    font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 4px;
-}
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
 
 button {
-    background: #007bff;
-    color: white;
+    background: #000000;
+    color: rgb(255, 255, 255);
     padding: 0.75rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px !important;
     cursor: pointer;
+    border-radius: 50px;
 }
 
 button:hover {
-    background: #0056b3;
+    background: #025829;
 }
 
 .error {
     color: red;
     text-align: center;
-}  
+}
