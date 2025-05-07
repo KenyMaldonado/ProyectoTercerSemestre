@@ -6,6 +6,8 @@ import Equipos from './modules/equipos/components/Equipos';
 import Jugadores from './modules/jugadores/components/Jugadores';
 import Partidos from './modules/partidos/components/Partidos';
 import Login from './modules/auth/components/Login';
+import ForgotPassword from './modules/auth/components/ForgotPassword';
+import ResetPassword from './modules/auth/components/ResetPassword';
 import AdminPanel from './modules/admin/components/AdminPanel';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Inscripcion from './modules/inscripcion/components/Inscripcion';
@@ -16,9 +18,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
     const location = useLocation();
+
     useEffect(() => {
         const path = location.pathname;
-    
+
         let pageTitle = 'Torneos de Fútbol';
         if (path === '/') pageTitle = 'Inicio';
         else if (path.startsWith('/torneos')) pageTitle = 'Torneos';
@@ -27,32 +30,41 @@ function App() {
         else if (path.startsWith('/partidos')) pageTitle = 'Partidos';
         else if (path.startsWith('/login')) pageTitle = 'Inicio de Sesión';
         else if (path.startsWith('/inscripcion')) pageTitle = 'Inscripción';
+        else if (path.startsWith('/forgotpassword')) pageTitle = 'Recuperar contraseña';
         document.title = pageTitle;
     }, [location]);
-    
+
     return (
         <>
-        <Routes>
-            <Route element={<MainLayout />}>
-            <Route path="/" element={<Inicio />} />
-            <Route path="/torneos" element={<Torneos />} />
-            <Route path="/inscripcion" element={<Inscripcion />} />
-            <Route path="/equipos" element={<Equipos />} />
-            <Route path="/jugadores" element={<Jugadores />} />
-            <Route path="/partidos" element={<Partidos />} />
-            {/* Ruta sin Navbar */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/admin/*" element={
-            <ProtectedRoute>
-                <AdminPanel />
-            </ProtectedRoute>
-            } />
-            <Route path="*" element={<div>Página no encontrada</div>} />
-            </Route>
-        </Routes>
-        <ToastContainer position="top-right" autoClose={3000} />
+            <Routes>
+                {/* Ruta sin layout (sin navbar) */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/forgotpassword" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+
+                {/* Rutas con layout */}
+                <Route element={<MainLayout />}>
+                    <Route path="/" element={<Inicio />} />
+                    <Route path="/torneos" element={<Torneos />} />
+                    <Route path="/inscripcion" element={<Inscripcion />} />
+                    <Route path="/equipos" element={<Equipos />} />
+                    <Route path="/jugadores" element={<Jugadores />} />
+                    <Route path="/partidos" element={<Partidos />} />
+                    <Route
+                        path="/admin/*"
+                        element={
+                            <ProtectedRoute>
+                                <AdminPanel />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="*" element={<div>Página no encontrada</div>} />
+                </Route>
+            </Routes>
+            <ToastContainer position="top-right" autoClose={3000} />
         </>
     );
 }
 
 export default App;
+

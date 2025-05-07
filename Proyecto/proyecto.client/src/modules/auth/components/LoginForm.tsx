@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './LoginForm.module.css';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
-import { Link } from 'react-router-dom';
 
 interface JwtPayload {
   unique_name?: string;
@@ -42,12 +41,11 @@ const LoginForm = () => {
           const decoded: JwtPayload = jwtDecode(Data.data.token);
           const userName = decoded.unique_name || 'Usuario';
 
-          login(Data.data.token); // Actualizar contexto
+          login(Data.data.token);
           toast.success(`¡Sesión iniciada! Bienvenido, ${userName}`);
           navigate('/admin');
           break;
         }
-
         case 400:
           toast.error('Verifica el correo y la contraseña.');
           break;
@@ -61,7 +59,6 @@ const LoginForm = () => {
           toast.error('🚨 Error inesperado. Intenta más tarde.');
           break;
       }
-
     } catch (err) {
       if (err instanceof Error) {
         toast.warn(`⚠️ Error de red: ${err.message}`);
@@ -81,12 +78,13 @@ const LoginForm = () => {
         />
 
         <h2 className={styles.title}>Iniciar Sesión</h2>
+
         <input
           id="email"
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          placeholder='Correo Electronico'
+          placeholder='Correo Electrónico'
           required
         />
         <input
@@ -102,11 +100,14 @@ const LoginForm = () => {
           Acceder
         </button>
 
-        <Link to="/recuperar-contrasena" className={styles.lostPassword}>¿Olvidó su contraseña?</Link>
+        <Link to="/forgotpassword" className={styles.lostPassword}>
+          ¿Olvidó su contraseña?
+        </Link>
       </form>
     </div>
   );
 };
 
 export default LoginForm;
+
 
