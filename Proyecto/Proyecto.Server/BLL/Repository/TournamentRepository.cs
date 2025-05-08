@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
+using Proyecto.Server.Models;
 using ZstdSharp.Unsafe;
 
 namespace Proyecto.Server.BLL.Repository
@@ -31,32 +32,52 @@ namespace Proyecto.Server.BLL.Repository
             return TiposTorneo;
         } 
 
-        public void CreateNewTournament(TournamentDTO tournament)
+        public async Task CreateNewTournament(TournamentDTO.CreateTournamenteParameter tournament)
         {
             try
             {
-                var parametrosEntrada = new Dictionary<string, object>
+                var nuevoTorneo = new Torneo
                 {
-                    {"nombre",tournament.Datos.Nombre },
-                    {"fechaInicio", tournament.Datos.FechaInicio.ToString("yyyy-MM-dd") },
-                    {"fechaFin",tournament.Datos.FechaFin.ToString("yyyy-MM-dd") },
-                    {"descripcion",tournament.Datos.Descripcion},
-                    {"bases",tournament.Datos.BasesTorneo},
-                    {"fechaInicioInscripcion", tournament.Datos.FechaInicioInscripcion.ToString("yyyy-MM-dd")},
-                    {"fechaFinInscripcion", tournament.Datos.FechaFinInscripcion.ToString("yyyy-MM-dd")},
-                    {"cantidadParticipantes", tournament.Datos.CantidadParticipantes },
-                    {"usuarioCreo", tournament.UsuarioId},
-                    {"tipoTorneo",tournament.Datos.TipoTorneoID},
-                    {"ramas",tournament.Datos.Ramas }
+                    Nombre = tournament.Nombre,
+                    FechaInicio = tournament.FechaInicio,
+                    FechaFin = tournament.FechaFin,
+                    Descripcion = tournament.Descripcion,
+                    BasesTorneo = tournament.BasesTorneo,
+                    FechaInicioInscripcion = tournament.FechaInicioInscripcion,
+                    FechaFinInscripcion = tournament.FechaFinInscripcion,
+                    UsuarioId = tournament.UsuarioIDCreo,
+                    TipoTorneoId = tournament.TipoTorneoID,
+                    TipoJuegoId = tournament.TipoJuegoID
                 };
 
-                _storeProcedure.EjecutarProcedimientoAlmacenado("sp_CreateNewTournament", CommandType.StoredProcedure, parametrosEntrada);
+                _appDbContext.Torneos.Add(nuevoTorneo);
+                await _appDbContext.SaveChangesAsync();
+
+                if (tournament.Subtorneos != null && tournament.Subtorneos.Any())
+                {
+                    foreach (var sub in tournament.Subtorneos)
+                    {
+                        var nuevoSubtorneo = new SubTorneo
+                        {
+                            TorneoId = nuevoTorneo.TorneoId,  
+                            Categoria = sub.categoria,
+                            CantidadEquipos = sub.cantidadEquipos
+                        };
+
+                        _appDbContext.SubTorneos.Add(nuevoSubtorneo);
+                    }
+
+                    // Guardar todos los subtorneos
+                    await _appDbContext.SaveChangesAsync();
+                }
+
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                throw new Exception("Error, no se registro el nuevo torneo correctamente" + ex.Message);
+                throw new Exception("Error al crear el torneo: " + ex.Message);
             }
         }
+
 
         public async Task<List<TournamentDTO.GetTournamentDTO>> GetTournaments()
         {
@@ -88,6 +109,7 @@ namespace Proyecto.Server.BLL.Repository
         public async Task<List<TournamentDTO.GetSubTournamentDTO>> GetSubTournaments(int TournamentID)
         {
             var consulta = await (from st in _appDbContext.SubTorneos
+                                  where st.TorneoId == TournamentID
                                   select new TournamentDTO.GetSubTournamentDTO
                                   {
                                       SubTorneoId = st.SubTorneoId,
@@ -113,7 +135,29 @@ namespace Proyecto.Server.BLL.Repository
 
             return consulta;
         }
-        
+
+        public async Task<int> GetLastIDTournaments()
+        {
+            try
+            {
+                var lastTournament = await _appDbContext.Torneos
+                    .OrderByDescending(t => t.TorneoId) 
+                    .FirstOrDefaultAsync();
+
+                // Verificar si se encontró un torneo
+                if (lastTournament == null)
+                    return 0; // Si no hay registros, devolver 0
+
+                return lastTournament.TorneoId; // Devolver el último ID encontrado
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el último ID: {ex.Message}");
+                return -1; 
+            }
+        }
+
+
 
     }
 }

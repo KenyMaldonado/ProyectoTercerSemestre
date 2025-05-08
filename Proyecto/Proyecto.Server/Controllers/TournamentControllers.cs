@@ -57,7 +57,7 @@ namespace Proyecto.Server.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost("CreateNewTournament")]
-        public IActionResult CreateNewTournament(TournamentDTO.CreateTournamenteParameter parametrosPeticion)
+        public async Task <IActionResult> CreateNewTournament(TournamentDTO.CreateTournamenteParameter parametrosPeticion)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace Proyecto.Server.Controllers
                     return ResponseHelper.HandleCustomException(new CustomException("No se obtuvo el ID del usuario", 401));
                 }
 
-                tournamentBLL.CreateTournament(parametrosPeticion, UsuarioId.Value);
+                await tournamentBLL.CreateTournament(parametrosPeticion, UsuarioId.Value);
                 return ResponseHelper.Created("Torneo creado exitosamente");
             }
             catch (CustomException ex)
@@ -160,13 +160,18 @@ namespace Proyecto.Server.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("UploadBasesTournaments")]
-        public async Task<IActionResult> UploadBasesTournaments(IFormFile file, [FromForm] string customFileName)
+        public async Task<IActionResult> UploadBasesTournaments(IFormFile file)
         {
             try
             {
                 // Limitar el tamaño del archivo a 5 MB (5 * 1024 * 1024 bytes)
                 long maxFileSize = 5 * 1024 * 1024;
-
+                int ultimoID = await tournamentBLL.GetLastIDTournament();
+                if (ultimoID == -1 || ultimoID == 0)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No se puedo obtener el último ID del torneo", 404));
+                }
+                int LastID = ultimoID + 1;
                 if (file == null || file.Length == 0)
                 {
                     return ResponseHelper.HandleCustomException(new CustomException("No se ha proporcionado un archivo válido.", 400));
@@ -182,15 +187,10 @@ namespace Proyecto.Server.Controllers
                     return ResponseHelper.HandleCustomException(new CustomException("Solo se permiten archivos PDF.", 415));
                 }
 
-                if (string.IsNullOrWhiteSpace(customFileName))
-                {
-                    return ResponseHelper.HandleCustomException(new CustomException("El nombre personalizado no puede estar vacío.", 400));
-                }
-
                 using (var stream = file.OpenReadStream())
                 {
                     // Asegurar que el nombre del archivo no tenga extensión
-                    string fileName = $"{customFileName}.pdf";
+                    string fileName = $"{LastID.ToString()}.pdf";
                     var fileUrl = await _blobService.UploadFileAsync(stream, fileName);
 
                     if (string.IsNullOrEmpty(fileUrl))

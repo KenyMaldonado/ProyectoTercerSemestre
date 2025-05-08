@@ -22,7 +22,7 @@ namespace Proyecto.Server.Models
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public EstadoSubTorneo Estado { get; set; }
 
-        public int CantidadEquipos { get; set; }
+        public int? CantidadEquipos { get; set; }
 
         public virtual ICollection<Equipo> Equipos { get; set; } = new List<Equipo>();
 

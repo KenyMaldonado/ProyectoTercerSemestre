@@ -5,9 +5,10 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
     public interface ITournamentRepository
     {
         Task<List<TournamentDTO.TypeOfTournament>> GetTypesTournaments();
-        void CreateNewTournament(TournamentDTO tournament);
+        Task CreateNewTournament(TournamentDTO.CreateTournamenteParameter tournament);
         Task<List<TournamentDTO.GetTournamentDTO>> GetTournaments();
         Task<List<TournamentDTO.GetSubTournamentDTO>> GetSubTournaments(int TournamentID);
         Task<List<TournamentDTO.TournamentGameTypes>> GetTournamentGameTypes();
+        Task<int> GetLastIDTournaments();
     }
 }

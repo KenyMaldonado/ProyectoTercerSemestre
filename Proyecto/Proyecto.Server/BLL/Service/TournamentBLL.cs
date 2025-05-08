@@ -21,13 +21,33 @@ namespace Proyecto.Server.BLL.Service
             return _torneoRepositorio.GetTypesTournaments();
         }
 
-        public void CreateTournament(TournamentDTO.CreateTournamenteParameter parametros, int UsuarioCreo)
+        public async Task CreateTournament(TournamentDTO.CreateTournamenteParameter parametros, int UsuarioCreo)
         {
-            TournamentDTO Torneo = new TournamentDTO();
-            Torneo.Datos = parametros;
-            Torneo.UsuarioId = UsuarioCreo;
-            _torneoRepositorio.CreateNewTournament(Torneo);
+            try
+            {
+                // Asignar el usuario que está creando el torneo
+                parametros.UsuarioIDCreo = UsuarioCreo;
+
+                // Llamada al repositorio para crear el torneo
+                await _torneoRepositorio.CreateNewTournament(parametros);
+            }
+            catch (ArgumentNullException ex)
+            {
+                // Captura un error específico si hay un valor nulo en los parámetros
+                throw new Exception("Uno de los parámetros obligatorios está vacío: " + ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Captura un error si ocurre una operación no válida (ejemplo: conflicto de datos)
+                throw new Exception("Hubo un problema con la operación: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Captura cualquier otro tipo de error general
+                throw new Exception("Error al crear el torneo: " + ex.Message);
+            }
         }
+
 
         public Task<List<TournamentDTO.GetTournamentDTO>> GetTournaments()
         {
@@ -42,6 +62,11 @@ namespace Proyecto.Server.BLL.Service
         public Task<List<TournamentDTO.TournamentGameTypes>> GetTiposJuego()
         {
             return _torneoRepositorio.GetTournamentGameTypes();
+        }
+
+        public Task <int> GetLastIDTournament()
+        {
+            return _torneoRepositorio.GetLastIDTournaments();
         }
     }
 }

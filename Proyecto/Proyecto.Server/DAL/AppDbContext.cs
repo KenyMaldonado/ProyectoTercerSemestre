@@ -119,6 +119,14 @@ public partial class AppDbContext : DbContext
         .Property(st => st.Estado)
         .HasConversion<string>();
 
+        modelBuilder.Entity<Torneo>()
+            .Property(t => t.Estado)
+            .HasDefaultValue(Torneo.EstadoTorneo.Activo);
+
+        modelBuilder.Entity<SubTorneo>()
+            .Property(t => t.Estado)
+            .HasDefaultValue(SubTorneo.EstadoSubTorneo.Activo);
+
 
         modelBuilder
             .UseCollation("utf8mb3_general_ci")

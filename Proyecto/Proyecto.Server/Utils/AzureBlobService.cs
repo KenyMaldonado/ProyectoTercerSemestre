@@ -24,9 +24,14 @@ namespace Proyecto.Server.Utils
                 // Asegurar que el contenedor exista
                 await containerClient.CreateIfNotExistsAsync();
 
-                // Generar nombre único para el archivo
-                string uniqueFileName = $"{fileName}";
-                var blobClient = containerClient.GetBlobClient(uniqueFileName);
+                // Crear el cliente para el blob específico
+                var blobClient = containerClient.GetBlobClient(fileName);
+
+                // Verificar si el archivo ya existe y eliminarlo
+                if (await blobClient.ExistsAsync())
+                {
+                    await blobClient.DeleteAsync();
+                }
 
                 // Definir las opciones de subida con el tipo de contenido PDF
                 var blobHttpHeaders = new BlobHttpHeaders
@@ -34,8 +39,11 @@ namespace Proyecto.Server.Utils
                     ContentType = "application/pdf"
                 };
 
-                // Subir el archivo con el tipo de contenido configurado
-                await blobClient.UploadAsync(fileStream, new BlobUploadOptions { HttpHeaders = blobHttpHeaders });
+                // Subir el archivo (esto lo sobrescribirá si ya fue eliminado)
+                await blobClient.UploadAsync(fileStream, new BlobUploadOptions
+                {
+                    HttpHeaders = blobHttpHeaders
+                });
 
                 // Devolver la URL pública del archivo
                 return blobClient.Uri.ToString();

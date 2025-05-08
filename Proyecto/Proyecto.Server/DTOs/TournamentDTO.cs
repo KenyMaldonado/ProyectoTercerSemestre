@@ -25,9 +25,6 @@ namespace Proyecto.Server.DTOs
 
         public CreateTournamenteParameter Datos { get; set; }
         public int UsuarioId { get; set; }
-        public int? EquipoMin { get; set; }
-        public int? EquipoMax { get; set; }
-        public List<SubTorneo> Ramas { get; set; }
         
 
 
@@ -58,9 +55,17 @@ namespace Proyecto.Server.DTOs
             public string BasesTorneo { get; set; } = null!;
             public DateOnly FechaInicioInscripcion { get; set; }
             public DateOnly FechaFinInscripcion { get; set; }
-            public int CantidadParticipantes { get; set; }
+            public int UsuarioIDCreo { get; set; }
             public int TipoTorneoID {  get; set; }
-            public string Ramas {  get; set; }
+            public int TipoJuegoID {  get; set; }
+            public List<CreateSubtorneo> Subtorneos { get; set; }
+        }
+
+        public class CreateSubtorneo
+        {
+            public int TorneoID {  get; set; }
+            public string categoria { get; set; }
+            public int? cantidadEquipos { get; set; }
         }
 
         public class GetTournamentDTO
@@ -109,7 +114,7 @@ namespace Proyecto.Server.DTOs
             [JsonConverter(typeof(JsonStringEnumConverter))]
             public EstadoSubTorneo Estado { get; set; }
 
-            public int CantidadEquipos { get; set; }
+            public int? CantidadEquipos { get; set; }
         }
     }
 }
