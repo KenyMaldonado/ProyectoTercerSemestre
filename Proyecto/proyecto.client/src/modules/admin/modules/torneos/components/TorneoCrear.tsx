@@ -1,144 +1,74 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-const CrearTorneo = () => {
-  const [formulario, setFormulario] = useState({
-    Nombre: "",
-    Fecha_Inicio: "",
-    Fecha_Fin: "",
-    Descripcion: "",
-    Bases_Torneo: "",
-    Fecha_Inicio_Inscripcion: "",
-    Fecha_Fin_Inscripcion: "",
-    Cantidad_Participantes: 0,
-    Tipo_Torneo_ID: 0,
+const TorneoCrear = () => {
+  const [form, setForm] = useState({
+    nombre: "",
+    fechaInicio: "",
+    fechaFin: "",
+    descripcion: "",
+    basesTorneo: "",
+    fechaInicioInscripcion: "",
+    fechaFinInscripcion: "",
+    cantidadParticipantes: 0,
+    tipoTorneoID: 0,
+    ramas: ""
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormulario((prev) => ({
-      ...prev,
-      [name]: name === "Cantidad_Participantes" || name === "Tipo_Torneo_ID"
-        ? Number(value)
-        : value,
-    }));
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://tu-api.com/api/torneo", {
+      const response = await fetch("http://localhost:5291/api/TournamentControllers/CreateNewTournament", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}` // si usas autenticación
         },
-        body: JSON.stringify(formulario),
+        body: JSON.stringify(form)
       });
 
-      if (res.ok) {
-        alert("✅ Torneo creado exitosamente");
-        setFormulario({
-          Nombre: "",
-          Fecha_Inicio: "",
-          Fecha_Fin: "",
-          Descripcion: "",
-          Bases_Torneo: "",
-          Fecha_Inicio_Inscripcion: "",
-          Fecha_Fin_Inscripcion: "",
-          Cantidad_Participantes: 0,
-          Tipo_Torneo_ID: 0,
+      if (response.ok) {
+        toast.success("✅ Torneo creado correctamente");
+        setForm({
+          nombre: "",
+          fechaInicio: "",
+          fechaFin: "",
+          descripcion: "",
+          basesTorneo: "",
+          fechaInicioInscripcion: "",
+          fechaFinInscripcion: "",
+          cantidadParticipantes: 0,
+          tipoTorneoID: 0,
+          ramas: ""
         });
       } else {
-        alert("❌ Error al crear el torneo");
+        toast.error("❌ Hubo un error al crear el torneo");
       }
     } catch (error) {
-      console.error("Error al enviar el formulario:", error);
+      toast.error("❌ Error al conectar con el servidor");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "600px" }}>
-      <h2>📋 Crear nuevo torneo</h2>
-
-      <input
-        type="text"
-        name="Nombre"
-        placeholder="Nombre del torneo"
-        value={formulario.Nombre}
-        onChange={handleChange}
-        required
-      />
-
-      <input
-        type="date"
-        name="Fecha_Inicio"
-        value={formulario.Fecha_Inicio}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="date"
-        name="Fecha_Fin"
-        value={formulario.Fecha_Fin}
-        onChange={handleChange}
-        required
-      />
-
-      <input
-        type="date"
-        name="Fecha_Inicio_Inscripcion"
-        value={formulario.Fecha_Inicio_Inscripcion}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="date"
-        name="Fecha_Fin_Inscripcion"
-        value={formulario.Fecha_Fin_Inscripcion}
-        onChange={handleChange}
-        required
-      />
-
-      <textarea
-        name="Descripcion"
-        placeholder="Descripción del torneo"
-        value={formulario.Descripcion}
-        onChange={handleChange}
-        required
-      />
-
-      <textarea
-        name="Bases_Torneo"
-        placeholder="Bases del torneo"
-        value={formulario.Bases_Torneo}
-        onChange={handleChange}
-        required
-      />
-
-      <input
-        type="number"
-        name="Cantidad_Participantes"
-        placeholder="Cantidad de participantes"
-        value={formulario.Cantidad_Participantes}
-        onChange={handleChange}
-        required
-      />
-
-      <input
-        type="number"
-        name="Tipo_Torneo_ID"
-        placeholder="ID del tipo de torneo"
-        value={formulario.Tipo_Torneo_ID}
-        onChange={handleChange}
-        required
-      />
-
-      <button type="submit" style={{ marginTop: "10px" }}>
-        Crear Torneo
-      </button>
+    <form onSubmit={handleSubmit}>
+      <input name="nombre" placeholder="Nombre del torneo" value={form.nombre} onChange={handleChange} required />
+      <input type="date" name="fechaInicio" value={form.fechaInicio} onChange={handleChange} required />
+      <input type="date" name="fechaFin" value={form.fechaFin} onChange={handleChange} required />
+      <textarea name="descripcion" placeholder="Descripción" value={form.descripcion} onChange={handleChange} />
+      <textarea name="basesTorneo" placeholder="Bases del torneo" value={form.basesTorneo} onChange={handleChange} />
+      <input type="date" name="fechaInicioInscripcion" value={form.fechaInicioInscripcion} onChange={handleChange} required />
+      <input type="date" name="fechaFinInscripcion" value={form.fechaFinInscripcion} onChange={handleChange} required />
+      <input type="number" name="cantidadParticipantes" value={form.cantidadParticipantes} onChange={handleChange} min="1" />
+      <input type="number" name="tipoTorneoID" value={form.tipoTorneoID} onChange={handleChange} />
+      <input name="ramas" placeholder="Ramas (separadas por coma, por ejemplo: masculina,femenina)" value={form.ramas} onChange={handleChange} />
+      <button type="submit">Crear Torneo</button>
     </form>
   );
 };
 
-export default CrearTorneo;
+export default TorneoCrear;

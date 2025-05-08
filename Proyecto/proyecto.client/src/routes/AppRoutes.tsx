@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Inicio from '../modules/Inicio';
 import Torneos from '../modules/torneos/components/Torneos';
+import TorneoCrear from '../modules/admin/modules/torneos/components/TorneoCrear';
 import Equipos from '../modules/equipos/components/Equipos';
 import Jugadores from '../modules/jugadores/components/Jugadores';
 import Partidos from '../modules/partidos/components/Partidos';
@@ -17,6 +18,7 @@ const AppRoutes = () => {
             <Routes>
                 <Route path="/" element={<Inicio />} />
                 <Route path="/torneos" element={<Torneos />} />
+                <Route path="/admin/creartorneo" element={<TorneoCrear />} />
                 <Route path="/equipos" element={<Equipos />} />
                 <Route path="/jugadores" element={<Jugadores />} />
                 <Route path="/partidos" element={<Partidos />} />
