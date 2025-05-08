@@ -99,6 +99,21 @@ namespace Proyecto.Server.BLL.Repository
             return consulta;
         }
        
+
+        public async Task<List<TournamentDTO.TournamentGameTypes>> GetTournamentGameTypes()
+        {
+            var consulta = await (_appDbContext.TipoJuegoTorneos.Select(x => new TournamentDTO.TournamentGameTypes
+            {
+                TipoJuegoId = x.TipoJuegoId,
+                Nombre = x.Nombre,
+                CantidadJugadores = x.CantidadJugadores,
+                Descripcion = x.Descripcion,
+
+            }).ToListAsync()); 
+
+            return consulta;
+        }
         
+
     }
 }

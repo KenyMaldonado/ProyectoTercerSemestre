@@ -38,6 +38,17 @@ namespace Proyecto.Server.DTOs
             public string DescripcionTipoTorneo { get; set; }
         }
 
+        public class TournamentGameTypes
+        {
+            public int TipoJuegoId { get; set; }
+
+            public string Nombre { get; set; } = null!;
+
+            public int? CantidadJugadores { get; set; }
+
+            public string? Descripcion { get; set; }
+        }
+
         public class CreateTournamenteParameter
         {
             public string Nombre { get; set; } = null!;

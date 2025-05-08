@@ -16,6 +16,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// Importar el visor de PDF
+import PdfViewer from "./modules/torneos/components/PdfViewer";
+
+
 function App() {
     const location = useLocation();
 
@@ -37,6 +41,9 @@ function App() {
     return (
         <>
             <Routes>
+                {/* Rutas adicionales para el visor de PDF */}
+                <Route path="/view-pdf/:fileUrl" element={<PdfViewer />} />
+
                 {/* Ruta sin layout (sin navbar) */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgotpassword" element={<ForgotPassword />} />
@@ -67,4 +74,3 @@ function App() {
 }
 
 export default App;
-
