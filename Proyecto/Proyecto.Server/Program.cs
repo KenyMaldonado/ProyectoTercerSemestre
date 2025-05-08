@@ -10,6 +10,7 @@ using System.IO;
 using MySqlConnector;
 using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.BLL.Interface.InterfacesService;
+using Proyecto.Server.Utils;
 
 namespace Proyecto.Server
 {
@@ -101,6 +102,7 @@ namespace Proyecto.Server
             builder.Services.AddScoped<ITeamManagementBLL, TeamManagementBLL>();
             builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
             builder.Services.AddScoped<IPlayerBLL, PlayerBLL>();
+            builder.Services.AddSingleton<AzureBlobService>();
 
 
             // Definir política de CORS
@@ -143,6 +145,11 @@ namespace Proyecto.Server
                                                 .AllowCredentials(); // Permitir cookies y autenticación
                                     });
             });
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 5 * 1024 * 1024; // 5 MB
+            });
+
 
             // Agregar servicios al contenedor.
             builder.Services.AddControllers();

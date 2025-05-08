@@ -15,12 +15,14 @@ namespace Proyecto.Server.Controllers
     public class TournamentControllers : ControllerBase
     {
         private readonly ITournamentBLL tournamentBLL;
+        private readonly AzureBlobService _blobService;
         /// <summary>
         /// Contructor
         /// </summary>
-        public TournamentControllers(ITournamentBLL tournamentBLL)
+        public TournamentControllers(ITournamentBLL tournamentBLL, AzureBlobService blobService)
         {
             this.tournamentBLL = tournamentBLL;
+            _blobService = blobService;
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace Proyecto.Server.Controllers
         /// Crea un nuevo torneo incluyendo las ramas que desea habilitar el administrador. Necesita Autenticación 
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateNewTournament")]
         public IActionResult CreateNewTournament(TournamentDTO.CreateTournamenteParameter parametrosPeticion)
         {
@@ -129,5 +131,87 @@ namespace Proyecto.Server.Controllers
                 return ResponseHelper.HandleGeneralException(ex);
             }
         }
+
+
+        [HttpGet("GetTournamentGameTypes")]
+
+        public async Task<IActionResult> GetTournamentGameTypes()
+        {
+            try
+            {
+                var result = await tournamentBLL.GetTiposJuego();
+                if (result == null || !result.Any())
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No hay tipos de juego en la base de datos", 404));
+                }
+
+                return ResponseHelper.Success("Torneos Actuales", result);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("UploadBasesTournaments")]
+        public async Task<IActionResult> UploadBasesTournaments(IFormFile file, [FromForm] string customFileName)
+        {
+            try
+            {
+                // Limitar el tamaño del archivo a 5 MB (5 * 1024 * 1024 bytes)
+                long maxFileSize = 5 * 1024 * 1024;
+
+                if (file == null || file.Length == 0)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No se ha proporcionado un archivo válido.", 400));
+                }
+
+                if (file.Length > maxFileSize)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("El archivo supera el límite de 5 MB.", 413));
+                }
+
+                if (Path.GetExtension(file.FileName).ToLower() != ".pdf")
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("Solo se permiten archivos PDF.", 415));
+                }
+
+                if (string.IsNullOrWhiteSpace(customFileName))
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("El nombre personalizado no puede estar vacío.", 400));
+                }
+
+                using (var stream = file.OpenReadStream())
+                {
+                    // Asegurar que el nombre del archivo no tenga extensión
+                    string fileName = $"{customFileName}.pdf";
+                    var fileUrl = await _blobService.UploadFileAsync(stream, fileName);
+
+                    if (string.IsNullOrEmpty(fileUrl))
+                    {
+                        return ResponseHelper.HandleCustomException(new CustomException("Error al subir el archivo a Azure Blob Storage.", 500));
+                    }
+
+                    return ResponseHelper.Success("Archivo subido correctamente.", new { fileUrl });
+                }
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+
     }
 }
+

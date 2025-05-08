@@ -39,6 +39,9 @@ namespace Proyecto.Server.BLL.Service
             return _torneoRepositorio.GetSubTournaments(TournamentID);
         }
 
-        
+        public Task<List<TournamentDTO.TournamentGameTypes>> GetTiposJuego()
+        {
+            return _torneoRepositorio.GetTournamentGameTypes();
+        }
     }
 }
