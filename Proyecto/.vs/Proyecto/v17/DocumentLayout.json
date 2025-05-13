@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\tournamentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\tournamentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\jugadordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\jugadordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -35,15 +47,51 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "TournamentDTO.cs",
+              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "RelativeToolTip": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAIwDwAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-10T18:37:44.357Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RegistrationTournamentsDTO.cs",
+              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
+              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
+              "RelativeToolTip": "Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-10T18:37:38.1Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "JugadorDTO.cs",
+              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\JugadorDTO.cs",
+              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
+              "RelativeToolTip": "Proyecto.Server\\DTOs\\JugadorDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-10T18:37:36.655Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "TournamentRepository.cs",
               "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAmwGYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAG4AAAAAAAAAAAAiwGYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-19T00:23:07.002Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-19T00:23:07.002Z"
             }
           ]
         }
