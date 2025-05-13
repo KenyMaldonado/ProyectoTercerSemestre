@@ -28,10 +28,11 @@ namespace Proyecto.Server.BLL.Repository
                     Fotografia = j.Fotografia,
                     MunicipioId = j.MunicipioId,
                     CarreraSemestreId = j.CarreraSemestreId,
-                    FechaNacimiento = (j.FechaNacimiento),
+                    FechaNacimiento = j.FechaNacimiento,
                     Edad = j.Edad,
                     Telefono = j.Telefono,
-                    EstadoTexto = Enum.GetName(typeof(JugadorDTO.EstadoJugador), j.Estado)
+                    EstadoTexto = Enum.GetName(typeof(JugadorDTO.EstadoJugador), j.Estado),
+                    Estado = (JugadorDTO.EstadoJugador)j.Estado // Convertimos el valor numérico al enum
                 })
                 .ToList();
 
@@ -39,10 +40,32 @@ namespace Proyecto.Server.BLL.Repository
             var resultado = carnets.Select(c =>
             {
                 var jugador = jugadoresExistentes.FirstOrDefault(j => j.Carne == c);
+
+                // Si el jugador no existe
+                if (jugador == null)
+                {
+                    return new JugadorDTO.VerifyPlayers
+                    {
+                        datosJugador = new JugadorDTO(), // Objeto vacío
+                        aprobado = true
+                    };
+                }
+
+                // Si el jugador existe pero no está en estado "Libre"
+                if (jugador.Estado != JugadorDTO.EstadoJugador.Libre)
+                {
+                    return new JugadorDTO.VerifyPlayers
+                    {
+                        datosJugador = null, // No se devuelven datos
+                        aprobado = false
+                    };
+                }
+
+                // Si el jugador existe y está en estado "Libre"
                 return new JugadorDTO.VerifyPlayers
                 {
                     datosJugador = jugador,
-                    existe = jugador != null
+                    aprobado = true
                 };
             }).ToList();
 

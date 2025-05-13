@@ -31,7 +31,7 @@
 
         public string? Telefono { get; set; }
 
-        public EstadoJugador estado {  get; set; }
+        public EstadoJugador Estado {  get; set; }
         public string? EstadoTexto { get; set; }
 
         public JugadorEquipoDTO asignacion {  get; set; }
@@ -40,7 +40,7 @@
         {
             public JugadorDTO datosJugador { get; set; }
 
-            public bool existe {  get; set; }
+            public bool aprobado {  get; set; }
         }
 
         public class JugadorEquipoDTO

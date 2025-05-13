@@ -3,6 +3,8 @@ using Proyecto.Server.BLL.Interface.InterfacesService;
 
 namespace Proyecto.Server.Controllers
 {
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [ApiController]
     public class PlayersController : Controller
     {
         private readonly IPlayerBLL _playerBLL;
