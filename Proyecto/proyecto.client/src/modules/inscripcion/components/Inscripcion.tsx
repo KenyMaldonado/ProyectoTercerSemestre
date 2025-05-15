@@ -207,9 +207,15 @@ const StepContent = () => {
   };
 
   const [isCarneValido, setIsCarneValido] = useState(false);
+  const [jugadorVerificado, setJugadorVerificado] = useState(false);
 
   useEffect(() => {
-    if (captain.carne && players.length === 0) {
+    if (
+      jugadorVerificado &&
+      captain.carne &&
+      players.length === 0 &&
+      !players.find((p) => p.isCaptain)
+    ) {
       setPlayers([
         {
           carne: captain.carne,
@@ -220,12 +226,34 @@ const StepContent = () => {
         },
       ]);
     }
-  }, [captain]);
+  }, [jugadorVerificado, captain]);
 
   const [showCapitanForm, setShowCapitanForm] = useState(false);
 
   useEffect(() => {
     setShowCapitanForm(false);
+    setJugadorVerificado(true);
+    Swal.fire(
+      "Jugador verificado",
+      "El jugador está disponible como capitán.",
+      "success"
+    ).then(() => {
+      setPlayers([
+        {
+          carne: captain.carne,
+          dorsal: captain.dorsal?.toString() || "",
+          municipioId: captain.municipioId,
+          carreraSemestreId: captain.carreraSemestreId,
+          posicionId: captain.posicionId?.toString() || "",
+          isCaptain: true,
+          nombre: captain.nombre,
+          apellido: captain.apellido,
+          telefono: captain.telefono,
+          fechaNacimiento: captain.fechaNacimiento,
+        },
+      ]);
+      stepper.next();
+    });
   }, [captain.carne]);
 
   useEffect(() => {
@@ -380,7 +408,7 @@ const StepContent = () => {
   const verificarJugador = async (carne: string) => {
     try {
       const response = await api.post("/Players/VerifyPlayers", [
-        parseInt(carne),
+        parseInt(captain.carne),
       ]);
       const result = response.data;
 
@@ -507,7 +535,6 @@ const StepContent = () => {
                         setCaptain({ ...captain, carne: e.target.value })
                       }
                       required
-                      readOnly={players.length > 0 && players[0].isCaptain}
                     />
                   </div>
                 </Form.Group>
@@ -517,13 +544,12 @@ const StepContent = () => {
                     <Form.Group className="mb-3">
                       <Form.Label>Nombre</Form.Label>
                       <Form.Control
-                        type="number"
-                        value={captain.carne}
+                        type="text"
+                        value={captain.nombre}
                         onChange={(e) =>
-                          setCaptain({ ...captain, carne: e.target.value })
+                          setCaptain({ ...captain, nombre: e.target.value })
                         }
                         required
-                        readOnly={players.length > 0 && players[0].isCaptain}
                       />
                     </Form.Group>
 
@@ -574,8 +600,6 @@ const StepContent = () => {
                         }}
                       />
                     </Form.Group>
-
-                    {/* Puedes agregar aquí los selects de municipio, carrera, semestre, posición, etc. */}
 
                     <Button
                       className="mt-3"
@@ -892,14 +916,13 @@ const StepContent = () => {
                         setShowCapitanForm(true);
                         return;
                       }
-
                       const resultado = data[0];
+                      console.log("Respuesta del backend:", resultado);
+                      const existe =
+                        resultado?.existe === true ||
+                        resultado?.existe === "true";
 
-                      if (
-                        !resultado.existe ||
-                        resultado.existe === "false" ||
-                        resultado.existe === false
-                      ) {
+                      if (!existe) {
                         setShowCapitanForm(true);
                         Swal.fire(
                           "Jugador no registrado",
