@@ -85,6 +85,8 @@ namespace Proyecto.Server.BLL.Repository
                                   join tt in _appDbContext.TipoTorneos on t.TipoTorneoId equals tt.TipoTorneoId
                                   join u in _appDbContext.Usuarios on t.UsuarioId equals u.UsuarioId
                                   join tj in _appDbContext.TipoJuegoTorneos on t.TipoJuegoId equals tj.TipoJuegoId
+                                  join um in _appDbContext.Usuarios on t.UsuarioModifico equals um.UsuarioId into UmGroup
+                                  from um in UmGroup.DefaultIfEmpty()
                                   select new TournamentDTO.GetTournamentDTO
                                   {
                                       TorneoId = t.TorneoId,
@@ -101,7 +103,11 @@ namespace Proyecto.Server.BLL.Repository
                                       NameTipoTorneo = tt.Nombre,
                                       Estado = (TournamentDTO.EstadoTorneo)t.Estado,
                                       TipoJuegoId = t.TipoJuegoId,
-                                      NameTipoJuego = tj.Nombre
+                                      NameTipoJuego = tj.Nombre,
+                                      UserModifyId = t.UsuarioModifico,
+                                      NameUserModify = um != null ? um.Nombre + " " + um.Apellido : "No modificado",
+                                      FechaModificacion = t.FechaModificacion,
+
                                   }).ToListAsync();
             return consulta;
         }
@@ -157,6 +163,44 @@ namespace Proyecto.Server.BLL.Repository
             }
         }
 
+        public void UpdateLinkBasesTorneo(int torneoId, string linkNuevo)
+        {
+            // Buscar el torneo directamente con FirstOrDefault
+            var torneo = _appDbContext.Torneos.FirstOrDefault(t => t.TorneoId == torneoId);
+
+            // Verificar si el torneo existe antes de intentar actualizar
+            if (torneo != null)
+            {
+                torneo.BasesTorneo = linkNuevo;
+                _appDbContext.SaveChanges();
+            }
+            else
+            {
+                throw new Exception(("Error al encontrar el torneo"));
+            }
+        }
+
+        public async Task UpdateTournament(TournamentDTO.UpdateTournamentDTO torneoModify, int usuarioModificoId)
+        {
+            var horaGuatemala = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time"));
+            var torneo = await _appDbContext.Torneos
+                         .Where(t => t.TorneoId == torneoModify.TorneoId)
+                         .FirstOrDefaultAsync();
+
+            if (torneo == null)
+                throw new KeyNotFoundException("El torneo no fue encontrado.");
+
+            torneo.Nombre = torneoModify.Nombre;
+            torneo.FechaFinInscripcion = torneoModify.FechaFinInscripcion;
+            torneo.FechaInicio = torneoModify.FechaInicio;
+            torneo.FechaFin = torneoModify.FechaFin;
+            torneo.Descripcion = torneoModify.Descripcion;
+            torneo.FechaInicioInscripcion = torneoModify.FechaInicioInscripcion;
+            torneo.UsuarioModifico = usuarioModificoId;
+            torneo.FechaModificacion = horaGuatemala;
+
+            await _appDbContext.SaveChangesAsync();
+        }
 
 
     }

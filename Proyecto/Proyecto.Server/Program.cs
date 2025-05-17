@@ -103,6 +103,9 @@ namespace Proyecto.Server
             builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
             builder.Services.AddScoped<IPlayerBLL, PlayerBLL>();
             builder.Services.AddSingleton<AzureBlobService>();
+            builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+            builder.Services.AddScoped<ITeamBLL, TeamBLL>();
+
 
 
             // Definir política de CORS

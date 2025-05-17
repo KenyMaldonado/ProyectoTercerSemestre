@@ -212,6 +212,83 @@ namespace Proyecto.Server.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("UpdateBasesTournaments")]
+        public async Task<IActionResult> UpdateBasesTournaments(IFormFile file, int TorneoId)
+        {
+            try
+            {
+                // Limitar el tamaño del archivo a 5 MB (5 * 1024 * 1024 bytes)
+                long maxFileSize = 5 * 1024 * 1024;
+                if (file == null || file.Length == 0)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("No se ha proporcionado un archivo válido.", 400));
+                }
+
+                if (file.Length > maxFileSize)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("El archivo supera el límite de 5 MB.", 413));
+                }
+
+                if (Path.GetExtension(file.FileName).ToLower() != ".pdf")
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("Solo se permiten archivos PDF.", 415));
+                }
+
+                using (var stream = file.OpenReadStream())
+                {
+                    // Asegurar que el nombre del archivo no tenga extensión
+                    string fileName = $"{TorneoId.ToString()}.pdf";
+                    var fileUrl = await _blobService.UploadFileAsync(stream, fileName);
+
+                    if (string.IsNullOrEmpty(fileUrl))
+                    {
+                        return ResponseHelper.HandleCustomException(new CustomException("Error al subir el archivo a Azure Blob Storage.", 500));
+                    }
+                    tournamentBLL.ActualizarLinkBasesTorneo(fileUrl,TorneoId);
+                    return ResponseHelper.Success("Archivo subido correctamente.", new { fileUrl });
+                }
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateTournament")]
+        public async Task<IActionResult> UpdateTournament(TournamentDTO.UpdateTournamentDTO datosNuevos)
+        {
+            try
+            {
+               var UsuarioId = User.GetUsuarioId();
+               if (UsuarioId == null)
+                {
+                    return ResponseHelper.HandleCustomException(new CustomException("Error, El usuarioId del quien actualiza no se encontro", 404));
+                }
+
+                await tournamentBLL.UpdateTournament(datosNuevos, UsuarioId.Value);
+                return NoContent();
+            }
+            catch(KeyNotFoundException) 
+            {
+                return ResponseHelper.HandleCustomException(new CustomException("Error, el torneo no fue encontrado para actualizar", 404));
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+
     }
 }
 

@@ -68,5 +68,15 @@ namespace Proyecto.Server.BLL.Service
         {
             return _torneoRepositorio.GetLastIDTournaments();
         }
+
+        public void ActualizarLinkBasesTorneo(string link, int torneoId)
+        {
+            _torneoRepositorio.UpdateLinkBasesTorneo(torneoId, link);   
+        }
+
+        public async Task UpdateTournament(TournamentDTO.UpdateTournamentDTO datosNuevos, int UsuarioModificoId)
+        {
+            await _torneoRepositorio.UpdateTournament(datosNuevos, UsuarioModificoId);
+        } 
     }
 }

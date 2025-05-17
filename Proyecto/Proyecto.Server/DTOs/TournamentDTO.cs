@@ -11,7 +11,8 @@ namespace Proyecto.Server.DTOs
             Finalizado = 2,
             Suspendido = 3,
             EnCurso = 4,
-            Cancelado = 5
+            Cancelado = 5,
+            Eliminado = 6
         }
 
         public enum EstadoSubTorneo
@@ -20,13 +21,12 @@ namespace Proyecto.Server.DTOs
             Finalizado = 2,
             Suspendido = 3,
             EnCurso = 4,
-            Cancelado = 5
+            Cancelado = 5,
+            Eliminado = 6
         }
 
         public CreateTournamenteParameter Datos { get; set; }
         public int UsuarioId { get; set; }
-        
-
 
         public class TypeOfTournament
         {
@@ -100,6 +100,29 @@ namespace Proyecto.Server.DTOs
             public int TipoJuegoId { get; set; }
 
             public string NameTipoJuego { get; set; }
+
+            public string? NameUserModify { get; set; }
+
+            public int? UserModifyId { get; set; }
+
+            public DateTime? FechaModificacion { get; set; }
+        }
+
+        public class UpdateTournamentDTO
+        {
+            public int TorneoId { get; set; }
+
+            public string Nombre { get; set; } = null!;
+
+            public DateOnly FechaFinInscripcion { get; set; }
+
+            public DateOnly FechaInicio { get; set; }
+
+            public DateOnly FechaFin { get; set; }
+
+            public string Descripcion { get; set; } = null!;
+
+            public DateOnly FechaInicioInscripcion { get; set; }
 
         }
 

@@ -10,7 +10,8 @@ namespace Proyecto.Server.Models
             Finalizado = 2,
             Suspendido = 3,
             EnCurso = 4,
-            Cancelado = 5
+            Cancelado = 5,
+            Eliminado = 6
         }
 
         public int TorneoId { get; set; }
@@ -37,6 +38,10 @@ namespace Proyecto.Server.Models
         public EstadoTorneo Estado { get; set; }
 
         public int TipoJuegoId { get; set; }
+
+        public int? UsuarioModifico { get; set; }
+
+        public DateTime? FechaModificacion { get; set; }
 
         public virtual ICollection<SubTorneo> SubTorneos { get; set; } = new List<SubTorneo>();
 
