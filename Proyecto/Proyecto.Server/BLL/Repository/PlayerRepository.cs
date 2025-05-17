@@ -1,6 +1,8 @@
-﻿using Proyecto.Server.BLL.Interface.InterfacesRepository;
+﻿using Microsoft.EntityFrameworkCore;
+using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
+using Proyecto.Server.Models;
 
 namespace Proyecto.Server.BLL.Repository
 {
@@ -70,6 +72,56 @@ namespace Proyecto.Server.BLL.Repository
             }).ToList();
 
             return resultado;
+        }
+
+        public List<JugadorDTO> GetJugadoresByTeam(int TeamId)
+        {
+            JugadorDTO.JugadorEquipoDTO asignaciones = new JugadorDTO.JugadorEquipoDTO();
+            var Jugadores = _appDbContext.JugadorEquipos
+                            .Where(j => j.EquipoId == TeamId)
+                            .Select(j => new JugadorDTO
+                            {
+                                JugadorId = j.JugadorId,
+                                Carne = j.Jugador.Carne,
+                                Nombre = j.Jugador.Nombre,
+                                Apellido = j.Jugador.Apellido,
+                                Fotografia = j.Jugador.Fotografia,
+                                Estado = (JugadorDTO.EstadoJugador)j.Jugador.Estado,
+                                MunicipioId = j.Jugador.MunicipioId,
+                                MunicipioName = j.Jugador.Municipio.Nombre,
+                                DepartamentoId = j.Jugador.Municipio.DepartamentoId,
+                                DepartamentoName = j.Jugador.Municipio.Departamento.Nombre,
+                                CarreraSemestreId = j.Jugador.CarreraSemestreId,
+                                CarreraId = j.Jugador.CarreraSemestre.CarreraId,
+                                CarreraName = j.Jugador.CarreraSemestre.CarreraId1Navigation.Nombre,
+                                CodigoCarrera = j.Jugador.CarreraSemestre.CodigoCarrera,
+                                Semestre = j.Jugador.CarreraSemestre.Semestre,
+                                Seccion = j.Jugador.CarreraSemestre.Seccion,
+                                FechaNacimiento = j.Jugador.FechaNacimiento,
+                                Edad = j.Jugador.Edad,
+                                Telefono = j.Jugador.Telefono,
+                                asignacion = new JugadorDTO.JugadorEquipoDTO
+                                {
+                                    EquipoId = j.EquipoId,
+                                    PosicionId = j.PosicionId,
+                                    PosicionName = j.Posicion.Nombre,
+                                    Dorsal = j.Dorsal,
+                                    Estado = j.Estado
+                                }
+                            });
+            return Jugadores.ToList();
+        }
+
+        public async Task<List<JugadorDTO.PosicionJugadorDTO>> GetPosicionesJugadores()
+        {
+            var consulta = await _appDbContext.PosicionJugadors
+                            .Select(j => new JugadorDTO.PosicionJugadorDTO
+                            {
+                                PosicionId = j.PosicionId,
+                                NombrePosicion = j.Nombre,
+                                Abreviatura = j.Abreviatura
+                            }).ToListAsync();
+            return consulta;
         }
 
     }

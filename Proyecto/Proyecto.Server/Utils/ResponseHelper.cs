@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.Utils;
 
 public static class ResponseHelper
@@ -24,6 +25,7 @@ public static class ResponseHelper
         };
         return new ObjectResult(response) { StatusCode = 201 };
     }
+
 
     public static IActionResult HandleCustomException(CustomException ex)
     {

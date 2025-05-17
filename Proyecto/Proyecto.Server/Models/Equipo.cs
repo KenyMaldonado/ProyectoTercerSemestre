@@ -29,6 +29,8 @@ namespace Proyecto.Server.Models
 
         public int SubTorneoId { get; set; }
 
+        public string? ImagenEquipo { get; set; }
+
         public virtual ICollection<Cambio> Cambios { get; set; } = new List<Cambio>();
 
         public virtual Facultad Facultad { get; set; } = null!;

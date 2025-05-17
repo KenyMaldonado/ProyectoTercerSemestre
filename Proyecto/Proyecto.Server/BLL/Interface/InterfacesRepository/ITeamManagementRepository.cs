@@ -1,4 +1,5 @@
 ﻿using Proyecto.Server.DTOs;
+using Proyecto.Server.Models;
 
 namespace Proyecto.Server.BLL.Interface.InterfacesRepository
 {
@@ -14,6 +15,7 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<string?> GetLastCode();
         Task SaveRegistration(string codigoInscripcion, string json);
         Task CreateNewRegistration(RegistrationTournamentsDTO.NewTeamRegistration datos);
-        
+
+
     }
 }

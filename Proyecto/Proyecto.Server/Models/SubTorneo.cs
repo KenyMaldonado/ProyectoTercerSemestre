@@ -10,7 +10,8 @@ namespace Proyecto.Server.Models
             Finalizado = 2,
             Suspendido = 3,
             EnCurso = 4,
-            Cancelado = 5
+            Cancelado = 5,
+            Eliminado = 6
         }
 
         public int SubTorneoId { get; set; }

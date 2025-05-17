@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface.InterfacesService;
+using Proyecto.Server.Utils;
 
 namespace Proyecto.Server.Controllers
 {
@@ -19,6 +20,32 @@ namespace Proyecto.Server.Controllers
         {
             var respuesta = _playerBLL.VerificacionJugadores(listaCarnets);
             return ResponseHelper.Success("Estado de los jugadores",respuesta);
+        }
+
+
+        [HttpGet("GetPlayersByTeam")]
+        public IActionResult GetPlayersByTeam(int TeamId)
+        {
+            var respuesta = _playerBLL.GetJugadoresByTeam(TeamId);
+            return ResponseHelper.Success("Estado de los jugadores", respuesta);
+        }
+
+        [HttpGet("GetPosicionesJugadores")]
+        public async Task <IActionResult> GetPosicionesJugadores()
+        {
+            try
+            {
+                var ListaPosiciones = await _playerBLL.GetPosicionesJugadores();
+                return ResponseHelper.Success("Posiciones de los jugadores", ListaPosiciones);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
         }
     }
 }

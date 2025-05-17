@@ -23,7 +23,20 @@
 
         public int MunicipioId { get; set; }
 
+        public string MunicipioName { get; set; }
+
+        public int? DepartamentoId { get; set; }
+
+        public string? DepartamentoName { get; set; }
+        public int CarreraId { get; set; }
+        public string CarreraName { get; set; }
         public int CarreraSemestreId { get; set; }
+
+        public int Semestre { get; set; }
+
+        public string Seccion { get; set; }
+
+        public string CodigoCarrera { get; set; }
 
         public DateOnly FechaNacimiento { get; set; }
 
@@ -46,11 +59,19 @@
         public class JugadorEquipoDTO
         {
             public int PosicionId { get; set; }
+            public string PosicionName {get; set;}
             public int Dorsal { get; set; }
             public int EquipoId { get; set; }
             public int JugadorId { get; set; }
             public bool Estado {  get; set; }
 
+        }
+
+        public class PosicionJugadorDTO
+        {
+            public int PosicionId { get; set; }
+            public string NombrePosicion { get; set; }
+            public string Abreviatura { get; set; }
         }
     }
 

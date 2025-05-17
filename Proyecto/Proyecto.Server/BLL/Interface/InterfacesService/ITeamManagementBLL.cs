@@ -1,4 +1,5 @@
 ﻿using Proyecto.Server.DTOs;
+using Proyecto.Server.Models;
 
 namespace Proyecto.Server.BLL.Interface.InterfacesService
 {
@@ -12,7 +13,7 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task<RegistrationTournamentsDTO.RegistrationStartDTO> RegistrationStart(string correo);
         Task GuardarFormulario(string json, string Code);
         Task CrearNuevaInscripcion(RegistrationTournamentsDTO.NewTeamRegistration datos);
-
+        
 
     }
 }

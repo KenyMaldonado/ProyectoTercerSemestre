@@ -1,0 +1,30 @@
+.equipo-card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+    .equipo-card:hover {
+        transform: scale(1.05);
+    }
+
+    .equipo-card img {
+        height: 180px;
+        object-fit: cover;
+    }
+
+.btn-info-modal {
+    margin-top: 8px;
+    background-color: #007bff;
+    border: none;
+    font-weight: bold;
+}
+
+    .btn-info-modal:hover {
+        background-color: #0056b3;
+    }
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
