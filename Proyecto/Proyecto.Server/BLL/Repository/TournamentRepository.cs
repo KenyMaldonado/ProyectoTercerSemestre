@@ -106,7 +106,7 @@ namespace Proyecto.Server.BLL.Repository
                                       NameTipoJuego = tj.Nombre,
                                       UserModifyId = t.UsuarioModifico,
                                       NameUserModify = um != null ? um.Nombre + " " + um.Apellido : "No modificado",
-                                      FechaModificacion = t.FechaModificacion,
+                                      FechaModificacion = t.FechaModificacion
 
                                   }).ToListAsync();
             return consulta;

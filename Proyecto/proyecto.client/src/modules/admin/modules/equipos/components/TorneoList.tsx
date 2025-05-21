@@ -1,6 +1,6 @@
 // src/components/TorneoList.jsx
 import React, { useState, useEffect } from 'react';
-import { getTorneos } from '../Services/api';
+import { getTorneos } from '../../../services/api';
 import { ListGroup } from 'react-bootstrap';
 
 const TorneoList = ({ onSelect }) => {
