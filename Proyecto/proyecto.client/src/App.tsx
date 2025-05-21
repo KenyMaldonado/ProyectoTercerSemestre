@@ -51,7 +51,7 @@ function App() {
       <Routes>
         {/* Rutas adicionales para el visor de PDF */}
         <Route path="/view-pdf/:fileUrl" element={<PdfViewer />} />
-
+        <Route path="/admin/editar-torneo/:id" element={<TorneoAdminEditar />} />
         {/* Rutas sin layout (sin navbar) */}
         <Route path="/login" element={<Login />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />

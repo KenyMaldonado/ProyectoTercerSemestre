@@ -2,12 +2,16 @@
 import useTournamentData, { Tournament } from '../../../hook/useTournamentData';
 import { FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 
 interface TipoJuego {
   tipoJuegoId: number;
   nombre: string;
   descripcion: string;
 }
+
+const navigate = useNavigate();
 
 const Torneos: React.FC = () => {
   const {
@@ -56,8 +60,9 @@ const Torneos: React.FC = () => {
   const subtorneos = nuevoTorneo.ramas.map(rama => ({
   torneoID: 0,
   categoria: rama,
-  cantidadEquipos: 0
+  cantidadEquipos: Number(nuevoTorneo.participantesPorRama[rama as 'masculina' | 'femenina']) || 0
 }));
+
 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,6 +185,13 @@ const Torneos: React.FC = () => {
     fetchTiposTorneo();
     fetchTiposJuego();
   }, []);
+
+
+  useEffect(() => {
+  console.log("🔍 Torneos cargados:", tournaments);
+}, [tournaments]);
+
+
 
   return (
     <div className="container mt-4">
@@ -400,7 +412,7 @@ const Torneos: React.FC = () => {
               tournaments.map((t: Tournament) => (
                 <React.Fragment key={t.torneoId}>
                   <tr>
-                    <td><button className="btn btn-sm btn-outline-warning" onClick={() => console.log("editar", t.torneoId)}><FaEdit /></button></td>
+                    <td><button className="btn btn-warning btn-sm" onClick={() => navigate(`/admin/editar-torneo/${t.torneoId}`)}>✏️ Editar</button></td>
                     <td>{t.nombre}</td>
                     <td>{t.nameTipoTorneo}</td>
                     <td>{t.nameTipoJuego}</td>
