@@ -31,7 +31,10 @@ namespace Proyecto.Server.BLL.Repository
                     FacultadId = e.FacultadId,
                     SubTorneoId = e.SubTorneoId,
                     NameFacultad = e.Facultad.Nombre,
-                    ImagenEquipo = e.ImagenEquipo
+                    ImagenEquipo = e.ImagenEquipo,
+                    NameTournament = e.SubTorneo.Torneo.Nombre,
+                    NameSubTournament = e.SubTorneo.Categoria,
+                    Estado = (EquipoDTO.EstadoEquipo)e.Estado
                 })
                 .ToListAsync();
 
@@ -45,7 +48,36 @@ namespace Proyecto.Server.BLL.Repository
                 .CountAsync();
         }
 
+        public async Task UpdateTeam(EquipoDTO.UpdateTeamDTO datosNuevos)
+        {
+            var team = await _appDbContext.Equipos
+                        .Where(e => e.EquipoId == datosNuevos.EquipoId)
+                        .FirstOrDefaultAsync();
+            if (team == null)
+                throw new KeyNotFoundException("El equipo no fue encontrado.");
 
+            team.Nombre = datosNuevos.Nombre;
+            team.ColorUniforme = datosNuevos.ColorUniforme;
+            team.ColorUniformeSecundario = datosNuevos.ColorUniformeSecundario;
+            await _appDbContext.SaveChangesAsync();
+        }
+
+        public void UpdateLinkLogoTeam(int TeamId, string linkNuevo)
+        {
+            // Buscar el torneo directamente con FirstOrDefault
+            var torneo = _appDbContext.Equipos.FirstOrDefault(e => e.EquipoId == TeamId);
+
+  
+            if (torneo != null)
+            {
+                torneo.ImagenEquipo = linkNuevo;
+                _appDbContext.SaveChanges();
+            }
+            else
+            {
+                throw new Exception(("Error al encontrar el Equipo"));
+            }
+        }
 
     }
 }

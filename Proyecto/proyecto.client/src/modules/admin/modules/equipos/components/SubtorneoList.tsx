@@ -1,6 +1,6 @@
 // src/components/SubtorneoList.jsx
 import React, { useState, useEffect } from 'react';
-import { getSubtorneos } from '../Services/api';
+import { getSubtorneos } from '../../../services/api';
 import { ListGroup } from 'react-bootstrap';
 
 const SubtorneoList = ({ torneoId, onSelect }) => {

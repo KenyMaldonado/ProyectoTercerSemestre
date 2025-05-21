@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Row, Col, Image, Spinner, Card, Table } from 'react-bootstrap';
-import { getJugadoresPorEquipo } from '../Services/api';
+import { getJugadoresPorEquipo } from '../../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 interface Asignacion {
     posicionId: number;
@@ -36,8 +37,9 @@ interface Equipo {
     colorUniformeSecundario: string | null;
     nameFacultad: string | null;
     imagenEquipo: string | null;
-    torneo: string;
-    subtorneo: string;
+    nameSubTournament: string;
+    nameTournament: string;
+    estado: string;
 }
 
 interface Props {
@@ -60,6 +62,29 @@ const posicionCoordenadas = {
     MC: { top: '50%', left: '50%' }
 };
 
+const colorMap: { [key: string]: string } = {
+    rojo: 'red',
+    azul: 'blue',
+    verde: 'green',
+    amarillo: 'yellow',
+    negro: 'black',
+    blanco: 'white',
+    morado: 'purple',
+    rosa: 'pink',
+    naranja: 'orange',
+    gris: 'gray',
+    marrón: 'brown',
+    celeste: 'skyblue',
+    violeta: 'violet',
+    dorado: 'gold',
+    plateado: 'silver',
+};
+
+const getColor = (color: string): string => {
+    // Convertir el nombre del color a minúsculas para asegurar coincidencias
+    return colorMap[color.toLowerCase()] || color;
+};
+
 const posicionMap = [
     'GK', 'DCD', 'RB', 'LB', 'RM', 'LM', 'RW', 'LW', 'ST', 'DCI', 'MC'
 ];
@@ -67,7 +92,7 @@ const posicionMap = [
 const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
     const [jugadores, setJugadores] = useState<Jugador[]>([]);
     const [loadingJugadores, setLoadingJugadores] = useState(false);
-
+    const navigate = useNavigate();
     useEffect(() => {
         if (equipo && show) {
             setLoadingJugadores(true);
@@ -90,25 +115,74 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
                 <Modal.Title>{equipo?.nombre}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+               
                 <Row>
+                    {/* Logo del equipo */}
                     <Col md={4} className="text-center">
-                        <Image src={equipo?.imagenEquipo || 'https://documentstorneoumes.blob.core.windows.net/asset/ImagenEquipoNull.png'} fluid rounded className="mb-3" />
+                        <Image
+                            src={equipo?.imagenEquipo || 'https://documentstorneoumes.blob.core.windows.net/asset/ImagenEquipoNull.png'}
+                            fluid
+                            rounded
+                            className="mb-3"
+                            style={{ maxHeight: '200px', objectFit: 'contain' }}
+                        />
                     </Col>
+
+                    {/* Informaci�n del equipo + bot�n */}
                     <Col md={8}>
-                        <h5>Informaci�n del Equipo</h5>
-                        <p><strong>Color Primario:</strong> {equipo?.colorUniforme || 'N/A'}</p>
-                        <p><strong>Color Secundario:</strong> {equipo?.colorUniformeSecundario || 'N/A'}</p>
-                        <p><strong>Facultad:</strong> {equipo?.nameFacultad || 'N/A'}</p>
-                        <p><strong>Torneo:</strong> {equipo?.torneo || 'N/A'}</p>
-                        <p><strong>Subtorneo:</strong> {equipo?.subtorneo || 'N/A'}</p>
+                        <div style={{
+                            borderRadius: '12px',
+                            backgroundColor: '#f9f9f9',
+                            padding: '20px',
+                            boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between'
+                        }}>
+                            <div>
+                                <h4 style={{ color: '#1e3a8a', marginBottom: '15px', fontWeight: '700' }}>Detalles del Equipo</h4>
+                                <Row>
+                                    <Col xs={6}>
+                                        <p><strong>Color Primario:</strong> <span style={{ color: getColor(equipo?.colorUniforme || '#555') }}>{equipo?.colorUniforme || 'N/A'}</span></p>
+                                        <p><strong>Color Secundario:</strong> <span style={{ color: getColor(equipo?.colorUniformeSecundario || '#555') }}>{equipo?.colorUniformeSecundario || 'N/A'}</span></p>
+                                        <p><strong>Facultad:</strong> {equipo?.nameFacultad || 'N/A'}</p>
+                                    </Col>
+                                    <Col xs={6}>
+                                        <p><strong>Torneo:</strong> {equipo?.nameTournament || 'N/A'}</p>
+                                        <p><strong>Subtorneo:</strong> {equipo?.nameSubTournament || 'N/A'}</p>
+                                        <p><strong>Estado:</strong> <span style={{ color: equipo?.estado === 'Activo' ? '#059669' : '#dc2626' }}>{equipo?.estado || 'N/A'}</span></p>
+                                    </Col>
+                                </Row>
+                            </div>
+
+                            <div className="mt-3" style={{ textAlign: 'right' }}>
+                                <Button
+                                    variant="primary"
+                                    style={{
+                                        borderRadius: '25px',
+                                        padding: '10px 25px',
+                                        fontWeight: '600',
+                                        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+                                        transition: 'background-color 0.3s ease'
+                                    }}
+                                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#2563eb')}
+                                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#3b82f6')}
+                                    onClick={() => navigate(`/admin/editar-equipo/${equipo?.equipoId}`, { state: { equipo } })}
+                                >
+                                    Modificar Información
+                                </Button>
+                            </div>
+                        </div>
                     </Col>
                 </Row>
+
 
                 <h5 className="mt-4">Jugadores</h5>
                 {loadingJugadores ? (
                     <Spinner animation="border" />
                 ) : (
-                    <Table striped bordered hover responsive className="text-center" style={{ backgroundColor: '#f0f0f0', color: '#333' }} >
+                    <Table striped bordered hover responsive className="text-center" style={{ backgroundColor: '#f0f0f0', color: '#333' }}>
                         <thead>
                             <tr>
                                 <th>Foto</th>
@@ -116,7 +190,7 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Dorsal</th>
-                                <th>Posici�n</th>
+                                <th>Posición</th>
                             </tr>
                         </thead>
                         <tbody>

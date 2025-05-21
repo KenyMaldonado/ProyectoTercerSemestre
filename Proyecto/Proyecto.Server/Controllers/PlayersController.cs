@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface.InterfacesService;
+using Proyecto.Server.BLL.Service;
 using Proyecto.Server.Utils;
 
 namespace Proyecto.Server.Controllers
@@ -47,5 +48,26 @@ namespace Proyecto.Server.Controllers
                 return ResponseHelper.HandleGeneralException(ex);
             }
         }
+
+        [HttpGet("GetPlayers")]
+        public async Task<IActionResult> GetPlayers(int pagina = 1, int tamañoPagina = 10)
+        {
+            try
+            {
+                var resultado = await _playerBLL.GetPlayers(pagina, tamañoPagina);
+                return Ok(resultado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+
+
+        }
+
     }
 }

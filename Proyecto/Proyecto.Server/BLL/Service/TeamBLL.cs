@@ -32,6 +32,14 @@ namespace Proyecto.Server.BLL.Service
             };
         }
 
+        public async Task UpdateEquipo(EquipoDTO.UpdateTeamDTO datosNuevos)
+        {
+            await teamRepository.UpdateTeam(datosNuevos);
+        }
 
+        public void UpdateLinkLogoTeam(int TeamId, string linkNuevo)
+        {
+            teamRepository.UpdateLinkLogoTeam(TeamId, linkNuevo);
+        }
     }
 }

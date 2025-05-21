@@ -8,5 +8,7 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         List<JugadorDTO.VerifyPlayers> VerifyPlayers(List<int> carnets);
         List<JugadorDTO> GetJugadoresByTeam(int TeamId);
         Task<List<JugadorDTO.PosicionJugadorDTO>> GetPosicionesJugadores();
+        Task<List<JugadorDTO>> GetPLayers(int pageNumber, int pageSize);
+        Task<int> CountPlayers();
     }
 }

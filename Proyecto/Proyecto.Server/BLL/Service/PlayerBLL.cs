@@ -31,5 +31,23 @@ namespace Proyecto.Server.BLL.Service
         {
             return await _playerRepository.GetPosicionesJugadores();
         }
+
+        public async Task<PagedResultDTO<JugadorDTO>> GetPlayers(int pagina, int tamañoPagina)
+        {
+            var totalJugadores = await _playerRepository.CountPlayers();
+
+            int totalPaginas = (int)Math.Ceiling((double)totalJugadores / tamañoPagina);
+
+            var jugadores = await _playerRepository.GetPLayers(pagina, tamañoPagina);
+
+            return new PagedResultDTO<JugadorDTO>
+            {
+                Items = jugadores,
+                TotalPages = totalPaginas,
+                CurrentPage = pagina,
+                PageSize = tamañoPagina,
+                TotalItems = totalJugadores
+            };
+        }
     }
 }

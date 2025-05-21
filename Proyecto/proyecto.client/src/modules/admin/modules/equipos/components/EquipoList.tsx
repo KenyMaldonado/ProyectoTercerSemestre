@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTorneos, getSubtorneos, getEquipos } from '../Services/api';
+import { getTorneos, getSubtorneos, getEquipos } from '../../../services/api';
 import { Spinner, Button, Card, Form, Col, Row, Container } from 'react-bootstrap';
 import EquipoModal from '../components/EquipoModal';
 import './StyleSheet.css';
@@ -35,7 +35,7 @@ const EquipoList = () => {
         }
     }, [selectedTorneo]);
 
-    // Cargar equipos cuando cambie el subtorneo seleccionado o la página
+    // Cargar equipos cuando cambie el subtorneo seleccionado o la pï¿½gina
     useEffect(() => {
         if (selectedSubtorneo !== null) {
             const fetchEquipos = async () => {
@@ -108,7 +108,7 @@ const EquipoList = () => {
                                         className="btn-info-modal"
                                         onClick={() => handleShowModal(equipo)}
                                     >
-                                        Más Información
+                                        MÃ¡s InformaciÃ³n
                                     </Button>
                                 </Card.Body>
                             </Card>
@@ -117,15 +117,15 @@ const EquipoList = () => {
                 </Row>
             )}
 
-            {/* Modal de Información del Equipo */}
+            {/* Modal de Informaciï¿½n del Equipo */}
             <EquipoModal show={showModal} onHide={handleCloseModal} equipo={selectedEquipo} />
 
-            {/* Paginación */}
+            {/* Paginaciï¿½n */}
             <div className="mt-4 d-flex justify-content-center">
                 <Button variant="secondary" onClick={() => setCurrentPage((prev) => prev - 1)} disabled={currentPage === 1}>
                     Anterior
                 </Button>
-                <span className="mx-2">Página {currentPage} de {totalPages}</span>
+                <span className="mx-2">PÃ¡gina {currentPage} de {totalPages}</span>
                 <Button variant="secondary" onClick={() => setCurrentPage((prev) => prev + 1)} disabled={currentPage === totalPages}>
                     Siguiente
                 </Button>

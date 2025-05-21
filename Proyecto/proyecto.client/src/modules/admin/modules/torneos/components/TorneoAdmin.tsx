@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useTournamentData, { Tournament } from '../../../hook/useTournamentData';
 import { FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
