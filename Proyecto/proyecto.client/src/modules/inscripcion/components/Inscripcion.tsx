@@ -30,7 +30,7 @@ const { Scoped, useStepper, steps } = defineStepper(
   }
 );
 
-const StepperHeader = () => {
+const StepperHeader = ({ handleNext }: { handleNext: () => void }) => {
   const stepper = useStepper();
   return (
     <>
@@ -140,6 +140,20 @@ const StepContent = () => {
     fetchMunicipios();
   }, [selectedDepartamentoId]);
 
+  const fetchCarreras = async (facultadId: string) => {
+    try {
+      const res = await api.get(
+        "/TeamManagementControllers/GetCarrerasByFacultad",
+        {
+          params: { facultadId: facultadId },
+        }
+      );
+      setCarreras(res.data.data);
+    } catch (error) {
+      console.error("Error al cargar carreras:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCarreras = async () => {
       if (!selectedFacultadId) return;
@@ -196,65 +210,70 @@ const StepContent = () => {
   });
 
   const addPlayer = () => {
+    // Filtrar carreras basadas en la facultad del capitán
+    const carrerasFiltradas = carreras.filter(
+      (c) => c.facultadId === parseInt(captain.facultadId || "0")
+    );
+
     const newPlayer = {
       carne: "",
       dorsal: "",
-      facultadId: "",
+      nombre: "",
+      apellido: "",
+      telefono: "",
+      fechaNacimiento: "",
+      edad: 0,
+      municipioId: 0,
+      carreraSemestreId: 0,
+      facultadId: captain.facultadId || "",
+      carreraId: "",
+      departamentoId: "",
       posicionId: "",
       isCaptain: false,
+      jugadorVerificado: false,
+      carrerasFiltradas: carrerasFiltradas,
+      semestresFiltrados: [],
+      asignacion: {
+        posicionId: "",
+        posicionName: "",
+        dorsal: "",
+        equipoId: 0,
+        jugadorId: 0,
+        estado: true,
+      },
     };
     setPlayers((prev) => [...prev, newPlayer]);
+  };
+  const handleNext = async () => {
+    if (stepper.current.id === "capitan") {
+      if (isCarneValido) {
+        // No inicializamos players aquí, solo avanzamos
+        stepper.next();
+      } else {
+        if (
+          !captain.nombre ||
+          !captain.apellido ||
+          !captain.telefono ||
+          !captain.fechaNacimiento ||
+          !captain.facultadId
+        ) {
+          Swal.fire(
+            "Campos incompletos",
+            "Por favor complete todos los campos requeridos",
+            "warning"
+          );
+          return;
+        }
+        stepper.next();
+      }
+    } else {
+      stepper.next();
+    }
   };
 
   const [isCarneValido, setIsCarneValido] = useState(false);
   const [jugadorVerificado, setJugadorVerificado] = useState(false);
-
-  useEffect(() => {
-    if (
-      jugadorVerificado &&
-      captain.carne &&
-      players.length === 0 &&
-      !players.find((p) => p.isCaptain)
-    ) {
-      setPlayers([
-        {
-          carne: captain.carne,
-          dorsal: captain.dorsal.toString(),
-          facultadId: "",
-          posicionId: captain.posicionId.toString(),
-          isCaptain: true,
-        },
-      ]);
-    }
-  }, [jugadorVerificado, captain]);
-
   const [showCapitanForm, setShowCapitanForm] = useState(false);
-
-  useEffect(() => {
-    setShowCapitanForm(false);
-    setJugadorVerificado(true);
-    Swal.fire(
-      "Jugador verificado",
-      "El jugador está disponible como capitán.",
-      "success"
-    ).then(() => {
-      setPlayers([
-        {
-          carne: captain.carne,
-          dorsal: captain.dorsal?.toString() || "",
-          municipioId: captain.municipioId,
-          carreraSemestreId: captain.carreraSemestreId,
-          posicionId: captain.posicionId?.toString() || "",
-          isCaptain: true,
-          nombre: captain.nombre,
-          apellido: captain.apellido,
-          telefono: captain.telefono,
-          fechaNacimiento: captain.fechaNacimiento,
-        },
-      ]);
-      stepper.next();
-    });
-  }, [captain.carne]);
 
   useEffect(() => {
     if (selectedDepartamentoId) {
@@ -283,10 +302,30 @@ const StepContent = () => {
     }
   }, [selectedCarreraId, carrerasFiltradas]);
 
+  useEffect(() => {
+    const fetchPosiciones = async () => {
+      try {
+        const response = await api.get("/Players/GetPosicionesJugadores");
+        console.log("Posiciones cargadas:", response.data); // Para depuración
+        setPosiciones(response.data.data || []); // Acceder a response.data.data en lugar de response.data
+      } catch (error) {
+        console.error("Error al cargar posiciones:", error);
+        setPosiciones([]);
+      }
+    };
+
+    fetchPosiciones();
+  }, []);
+
   const updatePlayer = (index: number, field: string, value: string) => {
     const updated = [...players];
     updated[index][field] = value;
     setPlayers(updated);
+
+    // Verificar jugador cuando se ingresa el carné y tiene la longitud adecuada
+    if (field === "carne" && value.length >= 8 && value.length <= 9) {
+      verificarJugadorEquipo(value, index);
+    }
   };
 
   const eliminarJugador = (index: number) => {
@@ -299,36 +338,117 @@ const StepContent = () => {
 
   const updatePlayerDependentFields = (index, field, value) => {
     const updated = [...players];
-    updated[index][field] = value;
-
-    if (field === "departamentoId") {
-      updated[index].municipiosFiltrados = municipios.filter(
-        (m) => m.departamentoId === parseInt(value)
-      );
-      updated[index].municipioId = "";
-    }
 
     if (field === "facultadId") {
-      updated[index].carrerasFiltradas = carrerasFiltradas.filter(
+      const carrerasFiltradas = carreras.filter(
         (c) => c.facultadId === parseInt(value)
       );
-      updated[index].carrerasFiltradas = carrerasFiltradas;
-      updated[index].facultadId = value;
-      updated[index].carreraId = "";
+      updated[index] = {
+        ...updated[index],
+        facultadId: value,
+        carrerasFiltradas: carrerasFiltradas,
+        carreraId: "",
+        carreraSemestreId: "",
+        semestresFiltrados: [],
+      };
     }
 
     if (field === "carreraId") {
-      updated[index].semestresFiltrados = updated[
-        index
-      ].carrerasFiltradas.filter((s) => s.carreraId === parseInt(value));
-      updated[index].carreraSemestreId = "";
+      // Obtener semestres para la carrera seleccionada
+      const fetchSemestres = async () => {
+        try {
+          const res = await api.get(
+            "/TeamManagementControllers/GetSemestreByCarrera",
+            {
+              params: { carreraId: value },
+            }
+          );
+
+          console.log("Semestres cargados (estructura completa):", res.data); // Para depuración detallada
+
+          // Actualizar solo el jugador específico con los semestres obtenidos
+          const updatedPlayers = [...players];
+          updatedPlayers[index] = {
+            ...updatedPlayers[index],
+            carreraId: value,
+            semestresFiltrados: res.data.data || [],
+            carreraSemestreId: "", // Establecer explícitamente como cadena vacía
+          };
+          setPlayers(updatedPlayers);
+        } catch (error) {
+          console.error("Error al cargar semestres:", error);
+        }
+      };
+
+      fetchSemestres();
     }
 
+    // No modificar el estado global, solo el jugador específico
     setPlayers(updated);
   };
 
   const handleSubmit = async () => {
     try {
+      // Validar que todos los campos necesarios estén completos
+      if (
+        !teamName ||
+        !uniformColor ||
+        !selectedTournament ||
+        !selectedSubTournament
+      ) {
+        Swal.fire(
+          "Información incompleta",
+          "Por favor completa toda la información del equipo y torneo",
+          "warning"
+        );
+        return;
+      }
+
+      // Validar que el capitán tenga toda la información necesaria
+      if (
+        !captain.nombre ||
+        !captain.apellido ||
+        !captain.carne ||
+        !captain.telefono ||
+        !captain.fechaNacimiento ||
+        !captain.facultadId ||
+        !captain.carreraId ||
+        !captain.carreraSemestreId ||
+        !captain.posicionId ||
+        !captain.dorsal
+      ) {
+        Swal.fire(
+          "Información del capitán incompleta",
+          "Por favor completa toda la información del capitán",
+          "warning"
+        );
+        return;
+      }
+
+      // Validar que todos los jugadores tengan la información completa
+      const jugadoresIncompletos = players.filter(
+        (p) =>
+          !p.nombre ||
+          !p.apellido ||
+          !p.carne ||
+          !p.telefono ||
+          !p.fechaNacimiento ||
+          !p.facultadId ||
+          !p.carreraId ||
+          !p.carreraSemestreId ||
+          !p.posicionId ||
+          !p.dorsal
+      );
+
+      if (jugadoresIncompletos.length > 0) {
+        Swal.fire(
+          "Información de jugadores incompleta",
+          `Hay ${jugadoresIncompletos.length} jugador(es) con información incompleta`,
+          "warning"
+        );
+        return;
+      }
+
       const payload = {
         idSubtorneo: parseInt(selectedSubTournament),
         preInscripcionId: parseInt(codigo),
@@ -340,15 +460,15 @@ const StepContent = () => {
             carne: parseInt(captain.carne),
             fotografia: "",
             municipioId: captain.municipioId,
-            carreraSemestreId: captain.carreraSemestreId,
+            carreraSemestreId: parseInt(captain.carreraSemestreId),
             fechaNacimiento: captain.fechaNacimiento,
             edad: captain.edad,
             telefono: captain.telefono,
             estado: 1,
             estadoTexto: "Activo",
             asignacion: {
-              posicionId: captain.posicionId,
-              dorsal: captain.dorsal,
+              posicionId: parseInt(captain.posicionId),
+              dorsal: parseInt(captain.dorsal),
               equipoId: 0,
               jugadorId: 0,
               estado: true,
@@ -364,19 +484,20 @@ const StepContent = () => {
           colorUniformeSecundario: secondaryColor,
           torneoId: parseInt(selectedTournament),
           grupoId: 0,
-          facultadId: 0,
+          facultadId: parseInt(captain.facultadId),
+          logoEquipo: imagenEquipo || "",
         },
         listaJugadores: players.map((p) => ({
-          nombre: "",
-          apellido: "",
+          nombre: p.nombre,
+          apellido: p.apellido,
           jugadorId: 0,
           carne: parseInt(p.carne),
           fotografia: "",
-          municipioId: 0,
-          carreraSemestreId: 0,
-          fechaNacimiento: new Date().toISOString().split("T")[0],
-          edad: 0,
-          telefono: "",
+          municipioId: p.municipioId,
+          carreraSemestreId: parseInt(p.carreraSemestreId),
+          fechaNacimiento: p.fechaNacimiento,
+          edad: p.edad,
+          telefono: p.telefono,
           estado: 1,
           estadoTexto: "Activo",
           asignacion: {
@@ -389,16 +510,37 @@ const StepContent = () => {
         })),
       };
 
-      await api.post(
+      // Mostrar indicador de carga
+      Swal.fire({
+        title: "Enviando inscripción...",
+        text: "Por favor espera mientras procesamos tu solicitud",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      const response = await api.post(
         "/TeamManagementControllers/CreateRegistrationTeam",
         payload
       );
 
-      Swal.fire(
-        "Inscripción completada",
-        "Tu inscripción ha sido enviada",
-        "success"
-      );
+      if (response.data.success) {
+        Swal.fire(
+          "Inscripción completada",
+          "Tu inscripción ha sido enviada correctamente",
+          "success"
+        ).then(() => {
+          // Redirigir a la página principal o reiniciar el formulario
+          window.location.href = "/";
+        });
+      } else {
+        Swal.fire(
+          "Error",
+          response.data.message || "Ocurrió un error al enviar la inscripción",
+          "error"
+        );
+      }
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       Swal.fire("Error", "Ocurrió un error al enviar la inscripción", "error");
@@ -408,639 +550,1239 @@ const StepContent = () => {
   const verificarJugador = async (carne: string) => {
     try {
       const response = await api.post("/Players/VerifyPlayers", [
-        parseInt(captain.carne),
+        parseInt(carne),
       ]);
       const result = response.data;
 
-      if (result.success && result.data.length > 0 && result.data[0].existe) {
-        setIsCarneValido(true);
-        Swal.fire("Carné válido", "El jugador ya está registrado.", "info");
-        return true;
+      if (result.success && result.data && result.data.length > 0) {
+        const jugador = result.data[0];
+
+        if (jugador.datosJugador.estadoTexto === "Libre") {
+          setIsCarneValido(true);
+          setShowCapitanForm(true);
+          setJugadorVerificado(true);
+
+          // Llenar los campos con los datos del jugador
+          setCaptain((prev) => ({
+            ...prev,
+            nombre: jugador.datosJugador.nombre,
+            apellido: jugador.datosJugador.apellido,
+            telefono: jugador.datosJugador.telefono,
+            fechaNacimiento: jugador.datosJugador.fechaNacimiento.split("T")[0],
+            edad: jugador.datosJugador.edad,
+            municipioId: jugador.datosJugador.municipioId,
+            carreraSemestreId: jugador.datosJugador.carreraSemestreId,
+            facultadId: jugador.datosJugador.facultadId || 0,
+            posicionId: jugador.datosJugador.asignacion?.posicionId || 0,
+            dorsal: jugador.datosJugador.asignacion?.dorsal || 0,
+          }));
+
+          // Solo mostrar mensaje de confirmación sin pedir llenar formulario
+          Swal.fire(
+            "Jugador Encontrado",
+            "Los datos del jugador han sido cargados correctamente.",
+            "success"
+          );
+          return true;
+        } else if (jugador.datosJugador.estadoTexto === null) {
+          // Si estadoTexto es null, mostrar formulario completo
+          setIsCarneValido(false);
+          setShowCapitanForm(true);
+          setJugadorVerificado(false);
+
+          // Limpiar los campos del formulario excepto el carné
+          setCaptain((prev) => ({
+            ...prev,
+            nombre: "",
+            apellido: "",
+            telefono: "",
+            fechaNacimiento: "",
+            edad: 0,
+            facultadId: 0,
+            carreraSemestreId: 0,
+            municipioId: 0,
+            posicionId: 0,
+            dorsal: 0,
+          }));
+
+          // Aquí sí mostramos el mensaje de jugador no registrado
+          Swal.fire({
+            icon: "info",
+            title: "Jugador no registrado",
+            text: "Llena el formulario para crear un nuevo capitán.",
+            showConfirmButton: true,
+          });
+          return false;
+        } else {
+          // Si tiene otro estado, no está disponible
+          setIsCarneValido(false);
+          setShowCapitanForm(false);
+          setJugadorVerificado(false);
+          Swal.fire(
+            "Jugador No Disponible",
+            "El jugador no está disponible para inscripción.",
+            "warning"
+          );
+          return false;
+        }
       } else {
         setIsCarneValido(false);
+        setShowCapitanForm(false);
+        setJugadorVerificado(false);
         Swal.fire(
-          "Carné no válido",
-          "El jugador no está registrado o no existe.",
-          "warning"
+          "Error de Validación",
+          "No se pudo verificar el estado del jugador.",
+          "error"
         );
         return false;
       }
     } catch (error) {
       setIsCarneValido(false);
+      setShowCapitanForm(false);
+      setJugadorVerificado(false);
       console.error("Error al verificar el jugador", error);
       Swal.fire("Error", "No se pudo verificar el jugador", "error");
       return false;
     }
   };
 
+  const isCarnetDuplicado = (carne: string, currentIndex: number) => {
+    // Verificar si el carné coincide con el del capitán
+    if (captain.carne === carne) {
+      return true;
+    }
+
+    // Verificar si el carné existe en otros jugadores
+    return players.some(
+      (player, index) => index !== currentIndex && player.carne === carne
+    );
+  };
+
+  const verificarJugadorEquipo = async (carne: string, index: number) => {
+    try {
+      if (!carne || carne.length < 8 || carne.length > 9) {
+        return;
+      }
+      // Primero verificar si el carné está duplicado
+      if (isCarnetDuplicado(carne, index)) {
+        Swal.fire(
+          "Carné Duplicado",
+          "Este carné ya ha sido registrado en el equipo.",
+          "warning"
+        );
+
+        // Limpiar el campo de carné y otros campos
+        const updatedPlayers = [...players];
+        updatedPlayers[index] = {
+          ...updatedPlayers[index],
+          carne: "",
+          nombre: "",
+          apellido: "",
+          telefono: "",
+          fechaNacimiento: "",
+          edad: 0,
+          municipioId: 0,
+          carreraSemestreId: 0,
+          facultadId: "",
+          carreraId: "",
+          departamentoId: "",
+          posicionId: "",
+          jugadorVerificado: false,
+        };
+        setPlayers(updatedPlayers);
+        return;
+      }
+      // Si no está duplicado, verificar el jugador
+      const response = await api.post("/Players/VerifyPlayers", [
+        parseInt(carne),
+      ]);
+      const result = response.data;
+
+      if (result.success && result.data && result.data.length > 0) {
+        const jugador = result.data[0];
+
+        if (jugador.datosJugador.estadoTexto === "Libre") {
+          const updatedPlayers = [...players];
+          // Usar la facultad del capitán en lugar de la del jugador
+          const facultadId = captain.facultadId || "";
+
+          // Filtrar carreras para este jugador específico basado en la facultad del capitán
+          const carrerasFiltradas = carreras.filter(
+            (c) => c.facultadId === parseInt(facultadId)
+          );
+
+          updatedPlayers[index] = {
+            ...updatedPlayers[index],
+            carne: carne,
+            nombre: jugador.datosJugador.nombre || "",
+            apellido: jugador.datosJugador.apellido || "",
+            telefono: jugador.datosJugador.telefono || "",
+            fechaNacimiento: jugador.datosJugador.fechaNacimiento
+              ? jugador.datosJugador.fechaNacimiento.split("T")[0]
+              : "",
+            edad: jugador.datosJugador.edad || 0,
+            municipioId: jugador.datosJugador.municipioId || 0,
+            facultadId: facultadId,
+            carreraId: "",
+            carreraSemestreId: "",
+            jugadorVerificado: true,
+            carrerasFiltradas: carrerasFiltradas,
+            semestresFiltrados: [],
+          };
+
+          setPlayers(updatedPlayers);
+
+          Swal.fire(
+            "Jugador Encontrado",
+            "Los datos del jugador han sido cargados correctamente. Selecciona la carrera y el semestre.",
+            "success"
+          );
+        }
+      } else {
+        // Jugador no encontrado
+        const updatedPlayers = [...players];
+        updatedPlayers[index] = {
+          ...updatedPlayers[index],
+          carne: carne,
+          jugadorVerificado: false,
+        };
+        setPlayers(updatedPlayers);
+
+        Swal.fire({
+          icon: "info",
+          title: "Jugador no registrado",
+          text: "Por favor, complete todos los datos del jugador.",
+          showConfirmButton: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error al verificar el jugador", error);
+      Swal.fire("Error", "No se pudo verificar el jugador", "error");
+    }
+  };
+
   return (
     <div key={stepper.current.id} className="step-form animated-form">
-      {isCorreoValidado && (
-        <>
-          <StepperHeader />
-          {stepper.switch({
-            tipoTorneo: () => (
-              <div>
-                {!isCorreoValidado ? (
-                  <>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Correo institucional</Form.Label>
-                      <Form.Control
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </Form.Group>
-                    <Button
-                      onClick={async () => {
-                        if (!correoRegex.test(email)) {
-                          Swal.fire(
-                            "Correo inválido",
-                            "Ingresa un correo con dominio válido: @umes.edu.gt, @gmail.com, @outlook.com o @yahoo.com",
-                            "warning"
-                          );
-                          return;
-                        }
-                        const response = await api.post(
-                          "/TeamManagementControllers/RegistrationStart",
-                          null,
-                          {
-                            params: { correo: email },
-                          }
+      <StepperHeader handleNext={handleNext} />
+      <div className="step-content">
+        {stepper.switch({
+          tipoTorneo: () => (
+            <div>
+              {!isCorreoValidado ? (
+                <>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Correo institucional</Form.Label>
+                    <Form.Control
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Button
+                    onClick={async () => {
+                      if (!correoRegex.test(email)) {
+                        Swal.fire(
+                          "Correo inválido",
+                          "Ingresa un correo con dominio válido: @umes.edu.gt, @gmail.com, @outlook.com o @yahoo.com",
+                          "warning"
                         );
-                        if (response.data.success) {
-                          setCodigo(response.data.data.codigo);
-                          setIsCorreoValidado(true);
-                          Swal.fire(
-                            "Código asignado",
-                            `Tu código es: ${response.data.data.codigo}`,
-                            "info"
-                          );
+                        return;
+                      }
+                      const response = await api.post(
+                        "/TeamManagementControllers/RegistrationStart",
+                        null,
+                        {
+                          params: { correo: email },
                         }
-                      }}
+                      );
+                      if (response.data.success) {
+                        setCodigo(response.data.data.codigo);
+                        setIsCorreoValidado(true);
+                        Swal.fire(
+                          "Código asignado",
+                          `Tu código es: ${response.data.data.codigo}`,
+                          "info"
+                        );
+                      }
+                    }}
+                  >
+                    Validar correo y comenzar inscripción
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Form.Group className="mb-4">
+                    <Form.Label>Torneo</Form.Label>
+                    <Form.Text className="text-muted d-block mb-2">
+                      Elige el torneo al que deseas inscribirte. Solo se
+                      mostrarán los torneos disponibles.
+                    </Form.Text>
+                    <Form.Select
+                      value={selectedTournament}
+                      onChange={(e) => setSelectedTournament(e.target.value)}
+                      required
                     >
-                      Validar correo y comenzar inscripción
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Form.Group className="mb-4">
-                      <Form.Label>Torneo</Form.Label>
-                      <Form.Text className="text-muted d-block mb-2">
-                        Elige el torneo al que deseas inscribirte. Solo se
-                        mostrarán los torneos disponibles.
-                      </Form.Text>
-                      <Form.Select
-                        value={selectedTournament}
-                        onChange={(e) => setSelectedTournament(e.target.value)}
-                      >
-                        <option value="">Selecciona un torneo</option>
-                        {tournaments.map((t) => (
-                          <option key={t.torneoId} value={t.torneoId}>
-                            {t.nombre}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
+                      <option value="">Selecciona un torneo</option>
+                      {tournaments.map((t) => (
+                        <option key={t.torneoId} value={t.torneoId}>
+                          {t.nombre}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
 
-                    <Form.Group className="mb-4">
-                      <Form.Label>Subtorneo</Form.Label>
-                      <Form.Select
-                        value={selectedSubTournament}
-                        onChange={(e) =>
-                          setSelectedSubTournament(e.target.value)
-                        }
-                      >
-                        <option value="">Selecciona un subtorneo</option>
-                        {filteredSubTournaments.map((sub) => (
-                          <option key={sub.subTorneoId} value={sub.subTorneoId}>
-                            {`${sub.categoria} (${sub.estado}) - ${sub.cantidadEquipos} equipos`}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </>
-                )}
-              </div>
-            ),
-            capitan: () => (
-              <div>
-                <Form.Group className="mb-3">
-                  <Form.Label>Carné del capitán</Form.Label>
-                  <div className="d-flex gap-2">
+                  <Form.Group className="mb-4">
+                    <Form.Label>Subtorneo</Form.Label>
+                    <Form.Select
+                      value={selectedSubTournament}
+                      onChange={(e) => setSelectedSubTournament(e.target.value)}
+                      required
+                    >
+                      <option value="">Selecciona un subtorneo</option>
+                      {filteredSubTournaments.map((sub) => (
+                        <option key={sub.subTorneoId} value={sub.subTorneoId}>
+                          {`${sub.categoria} (${sub.estado}) - ${sub.cantidadEquipos} equipos`}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </>
+              )}
+            </div>
+          ),
+          capitan: () => (
+            <div>
+              <Form.Group className="mb-3">
+                <Form.Label>Carné del capitán</Form.Label>
+                <div className="d-flex gap-2">
+                  <Form.Control
+                    type="text"
+                    value={captain.carne}
+                    onChange={(e) => {
+                      setCaptain({ ...captain, carne: e.target.value });
+                      // Resetear el formulario cuando se cambia el carné
+                      setShowCapitanForm(false);
+                      setIsCarneValido(false);
+                      setJugadorVerificado(false);
+                    }}
+                    onBlur={async () => {
+                      if (captain.carne) {
+                        await verificarJugador(captain.carne);
+                      }
+                    }}
+                    required
+                  />
+                </div>
+              </Form.Group>
+
+              {showCapitanForm && (
+                <>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Facultad</Form.Label>
+                    <Form.Select
+                      value={captain.facultadId}
+                      onChange={(e) => {
+                        setCaptain({
+                          ...captain,
+                          facultadId: parseInt(e.target.value),
+                        });
+                        setSelectedFacultadId(e.target.value);
+                      }}
+                      required
+                    >
+                      <option value="">Selecciona una facultad</option>
+                      {facultades.map((facultad) => (
+                        <option
+                          key={facultad.facultadId}
+                          value={facultad.facultadId}
+                        >
+                          {facultad.nombre}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Nombre</Form.Label>
                     <Form.Control
                       type="text"
-                      value={captain.carne}
+                      value={captain.nombre}
                       onChange={(e) =>
-                        setCaptain({ ...captain, carne: e.target.value })
+                        setCaptain({ ...captain, nombre: e.target.value })
                       }
                       required
+                      disabled={isCarneValido}
                     />
-                  </div>
-                </Form.Group>
+                  </Form.Group>
 
-                {showCapitanForm && (
-                  <>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Apellido</Form.Label>
+                    <Form.Control
+                      value={captain.apellido}
+                      onChange={(e) =>
+                        setCaptain({ ...captain, apellido: e.target.value })
+                      }
+                      disabled={isCarneValido}
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Teléfono</Form.Label>
+                    <Form.Control
+                      value={captain.telefono}
+                      onChange={(e) =>
+                        setCaptain({ ...captain, telefono: e.target.value })
+                      }
+                      disabled={isCarneValido}
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Fecha de nacimiento</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={captain.fechaNacimiento}
+                      onChange={(e) => {
+                        const fecha = e.target.value;
+                        const hoy = new Date();
+                        const nacimiento = new Date(fecha);
+                        let edadCalculada =
+                          hoy.getFullYear() - nacimiento.getFullYear();
+                        const m = hoy.getMonth() - nacimiento.getMonth();
+                        if (
+                          m < 0 ||
+                          (m === 0 && hoy.getDate() < nacimiento.getDate())
+                        ) {
+                          edadCalculada--;
+                        }
+
+                        setCaptain((prev) => ({
+                          ...prev,
+                          fechaNacimiento: fecha,
+                          edad: edadCalculada,
+                        }));
+                      }}
+                      disabled={isCarneValido}
+                    />
+                  </Form.Group>
+                </>
+              )}
+            </div>
+          ),
+
+          equipo: () => (
+            <div className="container">
+              <h4>Datos del Equipo</h4>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Nombre del Equipo</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={teamName}
+                        onChange={(e) => setTeamName(e.target.value)}
+                        required
+                      />
+                    </Form.Group>
+                  </div>
+                  <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Logo del Equipo</Form.Label>
+                      <ImagenUploader onImagenSeleccionada={setImagenEquipo} />
+                      {imagenEquipo && (
+                        <div className="mt-2">
+                          <img
+                            src={imagenEquipo}
+                            alt="Logo del equipo"
+                            style={{ maxWidth: "100px", maxHeight: "100px" }}
+                            className="img-thumbnail"
+                          />
+                        </div>
+                      )}
+                    </Form.Group>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Color de Camisola Principal</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={uniformColor}
+                        onChange={(e) => setUniformColor(e.target.value)}
+                        required
+                      />
+                    </Form.Group>
+                  </div>
+                  <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Color de Camisola Secundario</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={secondaryColor}
+                        onChange={(e) => setSecondaryColor(e.target.value)}
+                        required
+                      />
+                    </Form.Group>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sección del Capitán */}
+              <div className="mb-4 p-3 border rounded bg-light">
+                <h5>Capitán (Jugador 1)</h5>
+                <div className="row">
+                  <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Carné</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={captain.carne}
+                        disabled
+                      />
+                    </Form.Group>
+                  </div>
+                  <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Nombre</Form.Label>
                       <Form.Control
                         type="text"
                         value={captain.nombre}
-                        onChange={(e) =>
-                          setCaptain({ ...captain, nombre: e.target.value })
-                        }
-                        required
+                        disabled
                       />
                     </Form.Group>
+                  </div>
+                </div>
 
+                <div className="row">
+                  <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Apellido</Form.Label>
                       <Form.Control
+                        type="text"
                         value={captain.apellido}
-                        onChange={(e) =>
-                          setCaptain({ ...captain, apellido: e.target.value })
-                        }
+                        disabled
                       />
                     </Form.Group>
-
+                  </div>
+                  <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Teléfono</Form.Label>
                       <Form.Control
+                        type="text"
                         value={captain.telefono}
-                        onChange={(e) =>
-                          setCaptain({ ...captain, telefono: e.target.value })
-                        }
+                        disabled
                       />
                     </Form.Group>
+                  </div>
+                </div>
 
+                <div className="row">
+                  <div className="col-md-6">
                     <Form.Group className="mb-3">
-                      <Form.Label>Fecha de nacimiento</Form.Label>
+                      <Form.Label>Fecha de Nacimiento</Form.Label>
                       <Form.Control
                         type="date"
                         value={captain.fechaNacimiento}
-                        onChange={(e) => {
-                          const fecha = e.target.value;
-                          const hoy = new Date();
-                          const nacimiento = new Date(fecha);
-                          let edadCalculada =
-                            hoy.getFullYear() - nacimiento.getFullYear();
-                          const m = hoy.getMonth() - nacimiento.getMonth();
-                          if (
-                            m < 0 ||
-                            (m === 0 && hoy.getDate() < nacimiento.getDate())
-                          ) {
-                            edadCalculada--;
-                          }
-
-                          setCaptain((prev) => ({
-                            ...prev,
-                            fechaNacimiento: fecha,
-                            edad: edadCalculada,
-                          }));
-                        }}
+                        disabled
                       />
                     </Form.Group>
+                  </div>
 
-                    <Button
-                      className="mt-3"
-                      onClick={() => {
-                        setPlayers([
-                          {
-                            carne: captain.carne,
-                            dorsal: captain.dorsal?.toString() || "",
-                            municipioId: captain.municipioId,
-                            carreraSemestreId: captain.carreraSemestreId,
-                            posicionId: captain.posicionId?.toString() || "",
-                            isCaptain: true,
-                            nombre: captain.nombre,
-                            apellido: captain.apellido,
-                            telefono: captain.telefono,
-                            fechaNacimiento: captain.fechaNacimiento,
-                          },
-                        ]);
-                        stepper.next();
-                      }}
-                    >
-                      Continuar
-                    </Button>
-                  </>
-                )}
-              </div>
-            ),
-
-            equipo: () => (
-              <div>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nombre del equipo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={teamName}
-                    onChange={(e) => setTeamName(e.target.value)}
-                  />
-                </Form.Group>
-
-                <ImagenUploader
-                  label="Imagen del equipo"
-                  onBase64Change={setImagenEquipo}
-                />
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Color uniforme principal</Form.Label>
-                  <Form.Control
-                    value={uniformColor}
-                    onChange={(e) => setUniformColor(e.target.value)}
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Color uniforme secundario</Form.Label>
-                  <Form.Control
-                    value={secondaryColor}
-                    onChange={(e) => setSecondaryColor(e.target.value)}
-                  />
-                </Form.Group>
-
-                {players.map((player, index) => (
-                  <div key={index} className="mb-4 border p-3">
-                    <h5>
-                      {player.isCaptain
-                        ? "Capitán (Jugador 1)"
-                        : `Jugador ${index + 1}`}
-                    </h5>
-
-                    <Form.Control
-                      className="mb-2"
-                      placeholder="Carné"
-                      value={player.carne}
-                      readOnly={player.isCaptain}
-                    />
-
-                    <Form.Control
-                      className="mb-2"
-                      placeholder="Dorsal"
-                      value={player.dorsal}
-                      onChange={(e) =>
-                        updatePlayer(index, "dorsal", e.target.value)
-                      }
-                    />
-
-                    <Form.Group className="mb-3">
-                      <Form.Label>Departamento</Form.Label>
-                      <Form.Select
-                        value={selectedDepartamentoId}
-                        onChange={(e) =>
-                          setSelectedDepartamentoId(e.target.value)
-                        }
-                      >
-                        <option value="">Selecciona un departamento</option>
-                        {departamentos.map((d) => (
-                          <option
-                            key={d.departamentoId}
-                            value={d.departamentoId}
-                          >
-                            {d.nombre}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
-                      <Form.Label>Municipio</Form.Label>
-                      <Form.Select
-                        className="mb-2"
-                        value={player.municipioId || ""}
-                        onChange={(e) =>
-                          updatePlayer(index, "municipioId", e.target.value)
-                        }
-                      >
-                        <option value="">Selecciona un municipio</option>
-                        {(player.municipiosFiltrados || []).map((m) => (
-                          <option key={m.municipioId} value={m.municipioId}>
-                            {m.nombre}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-
+                  {/* Facultad Capitan */}
+                  <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Facultad</Form.Label>
                       <Form.Select
-                        value={captain.facultadId || ""}
+                        value={captain.facultadId}
                         onChange={(e) => {
-                          const value = e.target.value;
-                          setCaptain({ ...captain, facultadId: value });
-                          setSelectedFacultadId(value);
+                          setPlayers({
+                            ...captain,
+                            facultadId: parseInt(e.target.value),
+                          });
+                          setSelectedFacultadId(e.target.value);
                         }}
+                        required
+                        disabled
                       >
                         <option value="">Selecciona una facultad</option>
-                        {facultades.map((f) => (
-                          <option key={f.facultadId} value={f.facultadId}>
-                            {f.nombre}
+                        {facultades.map((facultad) => (
+                          <option
+                            key={facultad.facultadId}
+                            value={facultad.facultadId}
+                          >
+                            {facultad.nombre}
                           </option>
                         ))}
                       </Form.Select>
                     </Form.Group>
+                  </div>
+                </div>
 
+                {/* Carrera y Semestre Capitan */}
+                <div className="row">
+                  <div className="col-md-6">
                     <Form.Group className="mb-3">
+                      <Form.Label>Carrera</Form.Label>
                       <Form.Select
-                        value={player.carreraId || ""}
-                        onChange={(e) =>
-                          updatePlayerDependentFields(
-                            index,
-                            "carreraId",
-                            e.target.value
-                          )
-                        }
+                        value={selectedCarreraId}
+                        onChange={(e) => setSelectedCarreraId(e.target.value)}
+                        required
                       >
                         <option value="">Selecciona una carrera</option>
-                        {(player.carrerasFiltradas || []).map((c) => (
-                          <option key={c.carreraId} value={c.carreraId}>
-                            {c.nombre}
+                        {carreras.map((carrera: any) => (
+                          <option
+                            key={carrera.carreraId}
+                            value={carrera.carreraId}
+                          >
+                            {carrera.nombre}
                           </option>
                         ))}
                       </Form.Select>
                     </Form.Group>
-
+                  </div>
+                  <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Semestre</Form.Label>
                       <Form.Select
-                        className="mb-2"
-                        value={player.carreraSemestreId || ""}
-                        onChange={(e) =>
-                          updatePlayer(
-                            index,
-                            "carreraSemestreId",
-                            e.target.value
-                          )
-                        }
+                        value={captain.carreraId}
+                        onChange={(e) => {
+                          setCaptain({
+                            ...captain,
+                            carreraId: parseInt(e.target.value),
+                          });
+                        }}
+                        required
                       >
                         <option value="">Selecciona un semestre</option>
-                        {(player.semestresFiltrados || []).map((s) => (
+                        {semestresFiltrados.map((semestre) => (
                           <option
-                            key={s.carreraSemestreId}
-                            value={s.carreraSemestreId}
+                            key={semestre.carreraId}
+                            value={semestre.carreraId}
                           >
-                            Semestre {s.semestre}
+                            {semestre.codigoCarrera}
                           </option>
                         ))}
                       </Form.Select>
                     </Form.Group>
+                  </div>
 
-                    <Form.Select
-                      className="mb-2"
-                      value={player.posicionId}
-                      onChange={(e) =>
-                        updatePlayer(index, "posicionId", e.target.value)
-                      }
-                    >
-                      <option value="">Selecciona una posición</option>
-                      {posiciones.map((p: any) => (
-                        <option key={p.posicionId} value={p.posicionId}>
-                          {p.nombre}
-                        </option>
-                      ))}
-                    </Form.Select>
-
-                    {!player.isCaptain && (
-                      <Button
-                        variant="danger"
-                        onClick={() => eliminarJugador(index)}
+                  {/* Posicion Capitan */}
+                  <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Posición</Form.Label>
+                      <Form.Select
+                        value={captain.posicionId || ""}
+                        onChange={(e) => {
+                          setCaptain({
+                            ...captain,
+                            posicionId: parseInt(e.target.value),
+                          });
+                        }}
+                        required
                       >
-                        Eliminar jugador
-                      </Button>
-                    )}
+                        <option value="">Selecciona una posición</option>
+                        {Array.isArray(posiciones) &&
+                          posiciones.map((posicion) => (
+                            <option
+                              key={posicion.posicionId}
+                              value={posicion.posicionId}
+                            >
+                              {posicion.nombrePosicion} ({posicion.abreviatura})
+                            </option>
+                          ))}
+                      </Form.Select>
+                    </Form.Group>
+                  </div>
+                  {/* Dorsal Capitan */}
+                  <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Dorsal</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="1"
+                        max="99"
+                        value={captain.dorsal || ""}
+                        onChange={(e) => {
+                          setCaptain({
+                            ...captain,
+                            dorsal: parseInt(e.target.value),
+                          });
+                        }}
+                        required
+                      />
+                    </Form.Group>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sección para agregar nuevos jugadores */}
+              <div className="mt-4">
+                <h5>Otros Jugadores</h5>
+                {players.map((player, index) => (
+                  <div key={index} className="mb-4 p-3 border rounded">
+                    <h6>Jugador {index + 2}</h6>
+                    <div className="row">
+                      <div className="col-md-6">
+                        {/* Carné y Nombre */}
+                        <Form.Group className="mb-3">
+                          <Form.Label>Carné</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={player.carne}
+                            onChange={(e) =>
+                              updatePlayer(index, "carne", e.target.value)
+                            }
+                            required
+                          />
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Nombre</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={player.nombre}
+                            onChange={(e) =>
+                              updatePlayer(index, "nombre", e.target.value)
+                            }
+                            required
+                            disabled={player.jugadorVerificado}
+                          />
+                        </Form.Group>
+                      </div>
+                    </div>
+
+                    {/* Apellido y Teléfono */}
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Apellido</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={player.apellido}
+                            onChange={(e) =>
+                              updatePlayer(index, "apellido", e.target.value)
+                            }
+                            required
+                            disabled={player.jugadorVerificado}
+                          />
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Teléfono</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={player.telefono}
+                            onChange={(e) =>
+                              updatePlayer(index, "telefono", e.target.value)
+                            }
+                            required
+                            disabled={player.jugadorVerificado}
+                          />
+                        </Form.Group>
+                      </div>
+                    </div>
+
+                    {/* Fecha de Nacimiento */}
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Fecha de Nacimiento</Form.Label>
+                          <Form.Control
+                            type="date"
+                            value={player.fechaNacimiento}
+                            onChange={(e) =>
+                              updatePlayer(
+                                index,
+                                "fechaNacimiento",
+                                e.target.value
+                              )
+                            }
+                            required
+                            disabled={player.jugadorVerificado}
+                          />
+                        </Form.Group>
+                      </div>
+                    </div>
+
+                    {/* Facultad y Carrera */}
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Facultad</Form.Label>
+                          <Form.Select
+                            value={captain.facultadId}
+                            disabled={true}
+                            required
+                          >
+                            <option value="">Seleccione una facultad</option>
+                            {facultades.map((facultad) => (
+                              <option
+                                key={facultad.facultadId}
+                                value={facultad.facultadId}
+                              >
+                                {facultad.nombre}
+                              </option>
+                            ))}
+                          </Form.Select>
+                          <Form.Text className="text-muted">
+                            La facultad es la misma que la del capitán
+                          </Form.Text>
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Carrera</Form.Label>
+                          <Form.Select
+                            value={player.carreraId}
+                            onChange={(e) => {
+                              updatePlayer(index, "carreraId", e.target.value);
+                              updatePlayerDependentFields(
+                                index,
+                                "carreraId",
+                                e.target.value
+                              );
+                            }}
+                            required
+                          >
+                            <option value="">Selecciona una carrera</option>
+                            {player.carrerasFiltradas?.map((carrera) => (
+                              <option
+                                key={carrera.carreraId}
+                                value={carrera.carreraId}
+                              >
+                                {carrera.nombre}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Semestre</Form.Label>
+                          <Form.Select
+                            value={player.carreraSemestreId || ""}
+                            onChange={(e) => {
+                              console.log(
+                                "Semestre seleccionado:",
+                                e.target.value
+                              ); // Para depuración
+                              updatePlayer(
+                                index,
+                                "carreraSemestreId",
+                                e.target.value
+                              );
+                            }}
+                            required
+                          >
+                            <option value="">Selecciona un semestre</option>
+                            {Array.isArray(player.semestresFiltrados) &&
+                            player.semestresFiltrados.length > 0 ? (
+                              player.semestresFiltrados.map((semestre) => (
+                                <option
+                                  key={semestre.carreraId}
+                                  value={semestre.carreraId}
+                                >
+                                  {semestre.codigoCarrera}
+                                </option>
+                              ))
+                            ) : (
+                              <option disabled>
+                                No hay semestres disponibles
+                              </option>
+                            )}
+                          </Form.Select>
+                        </Form.Group>
+                      </div>
+                    </div>
+
+                    {/* Posición y Dorsal */}
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Posición</Form.Label>
+                          <Form.Select
+                            value={player.posicionId}
+                            onChange={(e) =>
+                              updatePlayer(index, "posicionId", e.target.value)
+                            }
+                            required
+                          >
+                            <option value="">Selecciona una posición</option>
+                            {Array.isArray(posiciones) &&
+                              posiciones.map((posicion) => (
+                                <option
+                                  key={posicion.posicionId}
+                                  value={posicion.posicionId}
+                                >
+                                  {posicion.nombrePosicion} (
+                                  {posicion.abreviatura})
+                                </option>
+                              ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Dorsal</Form.Label>
+                          <Form.Control
+                            type="number"
+                            min="1"
+                            max="99"
+                            value={player.dorsal}
+                            onChange={(e) =>
+                              updatePlayer(index, "dorsal", e.target.value)
+                            }
+                            required
+                          />
+                        </Form.Group>
+                      </div>
+                    </div>
+
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => eliminarJugador(index)}
+                    >
+                      Eliminar jugador
+                    </Button>
                   </div>
                 ))}
 
-                <Button variant="outline-primary" onClick={addPlayer}>
-                  + Agregar jugador
+                <Button
+                  variant="outline-primary"
+                  onClick={addPlayer}
+                  className="mt-3"
+                >
+                  <i className="fas fa-plus me-2"></i>
+                  Agregar jugador
                 </Button>
               </div>
-            ),
-            confirmacion: () => (
-              <div>
-                <h4>Resumen</h4>
-                <p>
-                  <strong>Correo:</strong> {email}
-                </p>
-                <p>
-                  <strong>Capitán:</strong> {captain.nombre} {captain.apellido}{" "}
-                  - {captain.telefono}
-                </p>
-                <p>
-                  <strong>Equipo:</strong> {teamName}
-                </p>
-                <p>
-                  <strong>Colores:</strong> {uniformColor} / {secondaryColor}
-                </p>
-                <p>
-                  <strong>Jugadores:</strong> {players.length}
-                </p>
-                <ul>
-                  {players.map((p, i) => (
-                    <li key={i}>
-                      Carné: {p.carne}, Dorsal: {p.dorsal}
-                    </li>
-                  ))}
-                </ul>
+            </div>
+          ),
+          confirmacion: () => (
+            <div className="confirmation-container">
+              <h3 className="text-center mb-4">Resumen de Inscripción</h3>
+
+              <div className="card mb-4">
+                <div className="card-header bg-primary text-white">
+                  <h4>Información del Torneo</h4>
+                </div>
+                <div className="card-body">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <p>
+                        <strong>Torneo:</strong>{" "}
+                        {tournaments.find(
+                          (t) => t.torneoId === parseInt(selectedTournament)
+                        )?.nombre || "No seleccionado"}
+                      </p>
+                    </div>
+                    <div className="col-md-6">
+                      <p>
+                        <strong>Subtorneo:</strong>{" "}
+                        {subTournaments.find(
+                          (s) =>
+                            s.subtorneoId === parseInt(selectedSubTournament)
+                        )?.nombre || "No seleccionado"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            ),
-          })}
-          <div className="step-buttons d-flex gap-3 justify-content-between align-items-center flex-wrap mt-4">
-            {!stepper.isFirst && (
-              <Button variant="secondary" onClick={stepper.prev}>
-                Atrás
-              </Button>
-            )}
 
-            {!stepper.isLast ? (
-              <Button
-                variant="primary"
-                onClick={async () => {
-                  if (stepper.current.id === "tipoTorneo") {
-                    if (!selectedTournament) {
-                      Swal.fire(
-                        "Campo requerido",
-                        "Debes seleccionar un torneo",
-                        "warning"
-                      );
-                      return;
-                    }
-                    if (!selectedSubTournament) {
-                      Swal.fire(
-                        "Campo requerido",
-                        "Debes seleccionar un subtorneo",
-                        "warning"
-                      );
-                      return;
-                    }
-                  }
+              <div className="card mb-4">
+                <div className="card-header bg-success text-white">
+                  <h4>Información del Equipo</h4>
+                </div>
+                <div className="card-body">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <p>
+                        <strong>Nombre del Equipo:</strong> {teamName}
+                      </p>
+                    </div>
+                    <div className="col-md-6 d-flex align-items-center">
+                      <p className="mb-0 me-3">
+                        <strong>Color Principal:</strong>
+                      </p>
+                      <div
+                        className="color-preview"
+                        style={{
+                          backgroundColor: uniformColor,
+                          display: "inline-block",
+                          width: "20px",
+                          height: "20px",
+                          marginRight: "5px",
+                          border: "1px solid #ccc",
+                        }}
+                      ></div>
+                      <span>{uniformColor}</span>
 
-                  if (stepper.current.id === "capitan") {
-                    if (!captain.carne) {
-                      Swal.fire(
-                        "Campo requerido",
-                        "Debes ingresar el carné del capitán",
-                        "warning"
-                      );
-                      return;
-                    }
+                      <p className="mb-0 ms-4 me-3">
+                        <strong>Color Secundario:</strong>
+                      </p>
+                      <div
+                        className="color-preview"
+                        style={{
+                          backgroundColor: secondaryColor,
+                          display: "inline-block",
+                          width: "20px",
+                          height: "20px",
+                          marginRight: "5px",
+                          border: "1px solid #ccc",
+                        }}
+                      ></div>
+                      <span>{secondaryColor}</span>
+                    </div>
+                  </div>
+                  {imagenEquipo && (
+                    <div className="row mt-3">
+                      <div className="col-12">
+                        <p>
+                          <strong>Logo del Equipo:</strong>
+                        </p>
+                        <img
+                          src={imagenEquipo}
+                          alt="Logo del equipo"
+                          style={{ maxWidth: "150px", maxHeight: "150px" }}
+                          className="img-thumbnail"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-                    try {
-                      const response = await api.post(
-                        "/Players/VerifyPlayers",
-                        [parseInt(captain.carne)]
-                      );
+              <div className="card mb-4">
+                <div className="card-header bg-info text-white">
+                  <h4>Información del Capitán</h4>
+                </div>
+                <div className="card-body">
+                  <div className="row">
+                    <div className="col-md-4">
+                      <p>
+                        <strong>Nombre:</strong> {captain.nombre}{" "}
+                        {captain.apellido}
+                      </p>
+                      <p>
+                        <strong>Carné:</strong> {captain.carne}
+                      </p>
+                      <p>
+                        <strong>Teléfono:</strong> {captain.telefono}
+                      </p>
+                      <p>
+                        <strong>Fecha de Nacimiento:</strong>{" "}
+                        {new Date(captain.fechaNacimiento).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong>Edad:</strong> {captain.edad}
+                      </p>
+                    </div>
+                    <div className="col-md-4">
+                      <p>
+                        <strong>Facultad:</strong>{" "}
+                        {facultades.find(
+                          (f) => f.facultadId === parseInt(captain.facultadId)
+                        )?.nombre || "No seleccionada"}
+                      </p>
+                      <p>
+                        <strong>Departamento:</strong>{" "}
+                        {departamentos.find(
+                          (d) =>
+                            d.departamentoId ===
+                            parseInt(captain.departamentoId)
+                        )?.nombre || "No seleccionado"}
+                      </p>
+                      <p>
+                        <strong>Municipio:</strong>{" "}
+                        {municipios.find(
+                          (m) => m.municipioId === parseInt(captain.municipioId)
+                        )?.nombre || "No seleccionado"}
+                      </p>
+                    </div>
+                    <div className="col-md-4">
+                      <p>
+                        <strong>Carrera:</strong>{" "}
+                        {carreras.find(
+                          (c) => c.carreraId === parseInt(captain.carreraId)
+                        )?.nombre || "No seleccionada"}
+                      </p>
+                      <p>
+                        <strong>Semestre:</strong>{" "}
+                        {semestresFiltrados.find(
+                          (s) =>
+                            s.semestreId === parseInt(captain.carreraSemestreId)
+                        )?.nombre || "No seleccionado"}
+                      </p>
+                      <p>
+                        <strong>Posición:</strong>{" "}
+                        {posiciones.find(
+                          (p) => p.posicionId === parseInt(captain.posicionId)
+                        )?.nombre || "No seleccionada"}
+                      </p>
+                      <p>
+                        <strong>Dorsal:</strong> {captain.dorsal}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                      const { data, success } = response.data;
+              {players.length > 0 && (
+                <div className="card mb-4">
+                  <div className="card-header bg-warning text-dark">
+                    <h4>Jugadores del Equipo</h4>
+                  </div>
+                  <div className="card-body">
+                    <div className="accordion" id="jugadoresAccordion">
+                      {players.map((player, index) => (
+                        <div className="accordion-item" key={index}>
+                          <h2
+                            className="accordion-header"
+                            id={`heading${index}`}
+                          >
+                            <button
+                              className="accordion-button collapsed"
+                              type="button"
+                              data-bs-toggle="collapse"
+                              data-bs-target={`#collapse${index}`}
+                              aria-expanded="false"
+                              aria-controls={`collapse${index}`}
+                            >
+                              <strong>Jugador {index + 1}:</strong>{" "}
+                              {player.nombre} {player.apellido} - Dorsal:{" "}
+                              {player.dorsal}
+                            </button>
+                          </h2>
+                          <div
+                            id={`collapse${index}`}
+                            className="accordion-collapse collapse"
+                            aria-labelledby={`heading${index}`}
+                            data-bs-parent="#jugadoresAccordion"
+                          >
+                            <div className="accordion-body">
+                              <div className="row">
+                                <div className="col-md-4">
+                                  <p>
+                                    <strong>Nombre:</strong> {player.nombre}{" "}
+                                    {player.apellido}
+                                  </p>
+                                  <p>
+                                    <strong>Carné:</strong> {player.carne}
+                                  </p>
+                                  <p>
+                                    <strong>Teléfono:</strong> {player.telefono}
+                                  </p>
+                                  <p>
+                                    <strong>Fecha de Nacimiento:</strong>{" "}
+                                    {new Date(
+                                      player.fechaNacimiento
+                                    ).toLocaleDateString()}
+                                  </p>
+                                  <p>
+                                    <strong>Edad:</strong> {player.edad}
+                                  </p>
+                                </div>
+                                <div className="col-md-4">
+                                  <p>
+                                    <strong>Facultad:</strong>{" "}
+                                    {facultades.find(
+                                      (f) =>
+                                        f.facultadId ===
+                                        parseInt(player.facultadId)
+                                    )?.nombre || "No seleccionada"}
+                                  </p>
+                                  <p>
+                                    <strong>Departamento:</strong>{" "}
+                                    {departamentos.find(
+                                      (d) =>
+                                        d.departamentoId ===
+                                        parseInt(player.departamentoId)
+                                    )?.nombre || "No seleccionado"}
+                                  </p>
+                                  <p>
+                                    <strong>Municipio:</strong>{" "}
+                                    {municipios.find(
+                                      (m) =>
+                                        m.municipioId ===
+                                        parseInt(player.municipioId)
+                                    )?.nombre || "No seleccionado"}
+                                  </p>
+                                </div>
+                                <div className="col-md-4">
+                                  <p>
+                                    <strong>Carrera:</strong>{" "}
+                                    {carreras.find(
+                                      (c) =>
+                                        c.carreraId ===
+                                        parseInt(player.carreraId)
+                                    )?.nombre || "No seleccionada"}
+                                  </p>
+                                  <p>
+                                    <strong>Semestre:</strong>{" "}
+                                    {player.semestresFiltrados?.find(
+                                      (s) =>
+                                        s.semestreId ===
+                                        parseInt(player.carreraSemestreId)
+                                    )?.nombre || "No seleccionado"}
+                                  </p>
+                                  <p>
+                                    <strong>Posición:</strong>{" "}
+                                    {posiciones.find(
+                                      (p) =>
+                                        p.posicionId ===
+                                        parseInt(player.posicionId)
+                                    )?.nombre || "No seleccionada"}
+                                  </p>
+                                  <p>
+                                    <strong>Dorsal:</strong> {player.dorsal}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
 
-                      if (!success) {
-                        Swal.fire(
-                          "Error",
-                          "El servidor respondió con error",
-                          "error"
-                        );
-                        return;
-                      }
-
-                      if (
-                        !Array.isArray(data) ||
-                        data.length === 0 ||
-                        !data[0]
-                      ) {
-                        Swal.fire(
-                          "Jugador no encontrado",
-                          "El carné ingresado no está registrado.",
-                          "warning"
-                        );
-                        setShowCapitanForm(true);
-                        return;
-                      }
-                      const resultado = data[0];
-                      console.log("Respuesta del backend:", resultado);
-                      const existe =
-                        resultado?.existe === true ||
-                        resultado?.existe === "true";
-
-                      if (!existe) {
-                        setShowCapitanForm(true);
-                        Swal.fire(
-                          "Jugador no registrado",
-                          "Llena el formulario para crear un nuevo capitán.",
-                          "info"
-                        );
-                        return;
-                      }
-
-                      if (resultado.datosJugador.estadoTexto !== "Libre") {
-                        Swal.fire(
-                          "Jugador no disponible",
-                          "Este jugador ya está asignado a un equipo. Por favor, ingresa otro carné.",
-                          "error"
-                        );
-                        return;
-                      }
-
-                      const jugador = resultado.datosJugador;
-
-                      setCaptain({
-                        nombre: jugador.nombre,
-                        apellido: jugador.apellido,
-                        carne: jugador.carne,
-                        telefono: jugador.telefono,
-                        fechaNacimiento: jugador.fechaNacimiento,
-                        edad: jugador.edad,
-                        municipioId: jugador.municipioId,
-                        carreraSemestreId: jugador.carreraSemestreId,
-                        posicionId: jugador.asignacion?.posicionId || 0,
-                        dorsal: jugador.asignacion?.dorsal || 0,
-                      });
-
-                      setPlayers([
-                        {
-                          carne: jugador.carne,
-                          dorsal: jugador.asignacion?.dorsal?.toString() || "",
-                          municipioId: jugador.municipioId,
-                          carreraSemestreId: jugador.carreraSemestreId,
-                          posicionId:
-                            jugador.asignacion?.posicionId?.toString() || "",
-                          isCaptain: true,
-                          nombre: jugador.nombre,
-                          apellido: jugador.apellido,
-                          telefono: jugador.telefono,
-                          fechaNacimiento: jugador.fechaNacimiento,
-                        },
-                      ]);
-
-                      setShowCapitanForm(false);
-                      Swal.fire(
-                        "Jugador verificado",
-                        "El jugador está disponible como capitán.",
-                        "success"
-                      );
-                      stepper.next();
-                      return;
-                    } catch (error) {
-                      console.error("Error al verificar jugador", error);
-                      Swal.fire(
-                        "Error",
-                        "No se pudo verificar el jugador",
-                        "error"
-                      );
-                      return;
-                    }
-                  } else {
-                    stepper.next();
-                  }
-                }}
-              >
-                Siguiente
-              </Button>
-            ) : (
-              <Button variant="success" onClick={handleSubmit}>
-                Finalizar inscripción
-              </Button>
-            )}
-          </div>
-        </>
-      )}
-      {!isCorreoValidado && (
-        <div className="correo-validacion">
-          <Form.Group className="mb-3">
-            <Form.Label>Correo institucional</Form.Label>
-            <Form.Control
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Form.Group>
+              <div className="text-center mt-4">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={handleSubmit}
+                  className="btn-confirmar"
+                >
+                  Confirmar Inscripción
+                </Button>
+              </div>
+            </div>
+          ),
+        })}
+      </div>
+      {stepper.current.id === "tipoTorneo" && !isCorreoValidado ? null : (
+        <div className="d-flex justify-content-between mt-4">
           <Button
-            onClick={async () => {
-              if (!correoRegex.test(email)) {
-                Swal.fire(
-                  "Correo inválido",
-                  "Ingresa un correo con dominio válido: @umes.edu.gt, @gmail.com, @outlook.com o @yahoo.com",
-                  "warning"
-                );
-                return;
-              }
-              const response = await api.post(
-                "/TeamManagementControllers/RegistrationStart",
-                null,
-                { params: { correo: email } }
-              );
-              if (response.data.success) {
-                setCodigo(response.data.data.codigo);
-                setIsCorreoValidado(true);
-                Swal.fire(
-                  "Código asignado",
-                  `Tu código es: ${response.data.data.codigo}`,
-                  "info"
-                );
-              }
-            }}
+            variant="secondary"
+            onClick={stepper.prev}
+            disabled={stepper.isFirst}
           >
-            Validar correo y comenzar inscripción
+            Anterior
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleNext}
+            disabled={stepper.isLast}
+          >
+            Siguiente
           </Button>
         </div>
       )}
@@ -1059,3 +1801,8 @@ const InscripcionTorneo = () => {
 };
 
 export default InscripcionTorneo;
+
+// TODO: Facultad se debe pedir en el formulario del capitán
+// TODO: Validacion del carne en "tiempo real" y "autocompletar" la informacion del jugador en caso de ya estar registrado en la base de datos
+// TODO: Validar que el carné no este asignado a otro equipo
+// TODO: Mejorar interfaz de usuario
