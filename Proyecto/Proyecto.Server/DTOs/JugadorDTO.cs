@@ -64,6 +64,7 @@
             public int EquipoId { get; set; }
             public int JugadorId { get; set; }
             public bool Estado {  get; set; }
+            public int FacultadID { get; set; }
 
         }
 
@@ -72,6 +73,28 @@
             public int PosicionId { get; set; }
             public string NombrePosicion { get; set; }
             public string Abreviatura { get; set; }
+        }
+
+        public class UpdateJugadorDTO
+        {
+            public string Nombre { get; set; } = null!;
+
+            public string Apellido { get; set; } = null!;
+
+            public int Carne { get; set; }
+
+            public int MunicipioId { get; set; }
+
+            public int CarreraId { get; set; }
+
+            public int CarreraSemestreId { get; set; }
+
+            public DateOnly FechaNacimiento { get; set; }
+
+            public int Edad { get; set; }
+
+            public string? Telefono { get; set; }
+
         }
     }
 

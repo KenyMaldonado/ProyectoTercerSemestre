@@ -39,11 +39,15 @@ namespace Proyecto.Server.DTOs
 
         public class CarreraSemestreDTO
         {
-            public int CarreraId { get; set; }
+            public int? CarreraSemestreId { get; set; }
 
             public string CodigoCarrera { get; set; } = null!;
 
-            public int? CarreraId1 { get; set; }
+            public int? CarreraId { get; set; }
+
+            public int Semestre { get; set; }
+
+            public string Seccion { get; set; }
         }
 
         public class CapitanDTO

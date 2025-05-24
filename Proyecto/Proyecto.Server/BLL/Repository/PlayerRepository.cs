@@ -105,7 +105,8 @@ namespace Proyecto.Server.BLL.Repository
                                     PosicionId = j.PosicionId,
                                     PosicionName = j.Posicion.Nombre,
                                     Dorsal = j.Dorsal,
-                                    Estado = j.Estado
+                                    Estado = j.Estado,
+                                    FacultadID = j.Equipo.FacultadId
                                 }
                             });
             return Jugadores.ToList();
@@ -162,7 +163,8 @@ namespace Proyecto.Server.BLL.Repository
                                     PosicionId = j.PosicionId,
                                     PosicionName = j.Posicion.Nombre,
                                     Dorsal = j.Dorsal,
-                                    Estado = j.Estado
+                                    Estado = j.Estado,
+                                    FacultadID = j.Equipo.FacultadId
                                 }
                             }).ToListAsync();   
             return jugadores;

@@ -10,6 +10,7 @@ export interface Asignacion {
     equipoId: number;
     jugadorId: number;
     estado: boolean;
+    facultadID: number;
 }
 
 export interface Jugador {

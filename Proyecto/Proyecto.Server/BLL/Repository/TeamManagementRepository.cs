@@ -79,9 +79,11 @@ namespace Proyecto.Server.BLL.Repository
                 .OrderBy(x => x.Semestre)
                 .Select(x => new RegistrationTournamentsDTO.CarreraSemestreDTO
                 {
-                    CarreraId = x.CarreraId,
+                    CarreraSemestreId = x.CarreraId,
                     CodigoCarrera = x.CodigoCarrera,
-                    CarreraId1 = x.CarreraId1
+                    CarreraId = x.CarreraId1,
+                    Semestre = x.Semestre,
+                    Seccion = x.Seccion
                 })
                 .OrderBy(x => x.CodigoCarrera)
                 .ToList();
