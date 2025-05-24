@@ -11,10 +11,10 @@ interface TipoJuego {
   descripcion: string;
 }
 
-const navigate = useNavigate();
 
 const Torneos: React.FC = () => {
-  const {
+    const navigate = useNavigate();
+    const {
     tournaments,
     subTournamentsMap,
     tiposTorneo,

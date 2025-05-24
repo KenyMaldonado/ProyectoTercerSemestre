@@ -11,6 +11,7 @@ import ResetPassword from './modules/auth/components/ResetPassword';
 import AdminPanel from './modules/admin/components/AdminPanel';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Inscripcion from './modules/inscripcion/components/Inscripcion';
+import TorneoAdminEditar from './modules/admin/modules/torneos/components/TorneoAdminEditar';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
