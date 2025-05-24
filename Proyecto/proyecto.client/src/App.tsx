@@ -11,6 +11,7 @@ import ResetPassword from './modules/auth/components/ResetPassword';
 import AdminPanel from './modules/admin/components/AdminPanel';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Inscripcion from './modules/inscripcion/components/Inscripcion';
+import TorneoAdminEditar from './modules/admin/modules/torneos/components/TorneoAdminEditar';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -51,7 +52,7 @@ function App() {
       <Routes>
         {/* Rutas adicionales para el visor de PDF */}
         <Route path="/view-pdf/:fileUrl" element={<PdfViewer />} />
-
+        <Route path="/admin/editar-torneo/:id" element={<TorneoAdminEditar />} />
         {/* Rutas sin layout (sin navbar) */}
         <Route path="/login" element={<Login />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
