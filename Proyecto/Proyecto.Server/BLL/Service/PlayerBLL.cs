@@ -3,6 +3,7 @@ using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.BLL.Repository;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
+using Proyecto.Server.Utils;
 
 namespace Proyecto.Server.BLL.Service
 {
@@ -48,6 +49,19 @@ namespace Proyecto.Server.BLL.Service
                 PageSize = tamañoPagina,
                 TotalItems = totalJugadores
             };
+        }
+
+        public async Task UpdateJugador (string linkNuevo, int jugadorId, JugadorDTO.UpdateJugadorDTO datos)
+        {
+            try
+            {
+                await _playerRepository.UpdatePlayer(linkNuevo, jugadorId, datos);
+            }
+            catch
+            {
+                new CustomException("Jugador no encontrado", 404);
+            }
+            
         }
     }
 }

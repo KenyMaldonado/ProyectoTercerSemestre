@@ -91,7 +91,7 @@ namespace Proyecto.Server.BLL.Repository
                                 DepartamentoId = j.Jugador.Municipio.DepartamentoId,
                                 DepartamentoName = j.Jugador.Municipio.Departamento.Nombre,
                                 CarreraSemestreId = j.Jugador.CarreraSemestreId,
-                                CarreraId = j.Jugador.CarreraSemestre.CarreraId,
+                                CarreraId = j.Jugador.CarreraSemestre.CarreraId1,
                                 CarreraName = j.Jugador.CarreraSemestre.CarreraId1Navigation.Nombre,
                                 CodigoCarrera = j.Jugador.CarreraSemestre.CodigoCarrera,
                                 Semestre = j.Jugador.CarreraSemestre.Semestre,
@@ -149,7 +149,7 @@ namespace Proyecto.Server.BLL.Repository
                                 DepartamentoId = j.Jugador.Municipio.DepartamentoId,
                                 DepartamentoName = j.Jugador.Municipio.Departamento.Nombre,
                                 CarreraSemestreId = j.Jugador.CarreraSemestreId,
-                                CarreraId = j.Jugador.CarreraSemestre.CarreraId,
+                                CarreraId = j.Jugador.CarreraSemestre.CarreraId1,
                                 CarreraName = j.Jugador.CarreraSemestre.CarreraId1Navigation.Nombre,
                                 CodigoCarrera = j.Jugador.CarreraSemestre.CodigoCarrera,
                                 Semestre = j.Jugador.CarreraSemestre.Semestre,
@@ -169,6 +169,41 @@ namespace Proyecto.Server.BLL.Repository
                             }).ToListAsync();   
             return jugadores;
         }
+
+        public async Task UpdatePlayer (string linkNuevo, int jugadorID,JugadorDTO.UpdateJugadorDTO datosNuevos)
+        {
+            var jugador = await _appDbContext.Jugadors.Where(j => j.JugadorId == jugadorID).FirstOrDefaultAsync();
+
+            if (jugador != null)
+            {
+                if (linkNuevo != null)
+                {
+                    if (linkNuevo.ToLower() == "borrar")
+                    {
+                        jugador.Fotografia = null;
+                    }
+                    else
+                    {
+                        jugador.Fotografia = linkNuevo;
+                    }  
+                }
+                jugador.Nombre = datosNuevos.Nombre;
+                jugador.Apellido = datosNuevos.Apellido;
+                jugador.Carne = datosNuevos.Carne;
+                jugador.MunicipioId = datosNuevos.MunicipioId;
+                jugador.CarreraSemestreId = datosNuevos.CarreraSemestreId;
+                jugador.FechaNacimiento = datosNuevos.FechaNacimiento;
+                jugador.Edad = datosNuevos.Edad;
+                jugador.Telefono = datosNuevos.Telefono;
+
+                await _appDbContext.SaveChangesAsync();
+            } else
+            {
+                throw new Exception("El jugador no fue encontrado");
+            }
+
+        }
+
 
     }
 }

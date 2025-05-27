@@ -89,7 +89,7 @@ namespace Proyecto.Server.Controllers
                 {
                     // Asegurar que el nombre del archivo no tenga extensión
                     string fileName = $"{TeamId.ToString()}.jpg";
-                    var fileUrl = await _blobService.UploadImageAsync(stream, fileName);
+                    var fileUrl = await _blobService.UploadImageTeamAsync(stream, fileName);
 
                     if (string.IsNullOrEmpty(fileUrl))
                     {

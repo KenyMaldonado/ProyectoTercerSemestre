@@ -1,22 +1,58 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
+  "WorkspaceRootPath": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\tournamentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\playerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\playerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\utils\\azureblobservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\utils\\azureblobservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\playerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\playerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesservice\\iplayerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesservice\\iplayerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesrepository\\iplayerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesrepository\\iplayerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\service\\playerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\service\\playerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\tournamentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\tournamentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\jugadordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\jugadordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\jugadordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\microquetzal\\documents\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\teammanagementrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\teammanagementrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\onedrive\\documentos\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +62,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -45,53 +81,177 @@
               "Name": "ST:131:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "PlayersController.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\PlayersController.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\PlayersController.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\PlayersController.cs",
+              "RelativeToolTip": "Proyecto.Server\\Controllers\\PlayersController.cs",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAcwFcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T04:34:17.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PlayerRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
+              "ViewState": "AgIAAKEAAAAAAAAAAAAWwM0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T04:34:07.067Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TeamManagementRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T04:25:10.507Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\appsettings.json",
+              "RelativeDocumentMoniker": "Proyecto.Server\\appsettings.json",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\appsettings.json",
+              "RelativeToolTip": "Proyecto.Server\\appsettings.json",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-05-25T02:49:43.757Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AzureBlobService.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Utils\\AzureBlobService.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\Utils\\AzureBlobService.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Utils\\AzureBlobService.cs",
+              "RelativeToolTip": "Proyecto.Server\\Utils\\AzureBlobService.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAtwIQAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T02:47:45.012Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "TeamController.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamController.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\TeamController.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamController.cs",
+              "RelativeToolTip": "Proyecto.Server\\Controllers\\TeamController.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAkwEAAAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T02:38:19.69Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IPlayerBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAQwAsAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T02:37:04.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PlayerBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAWwDkAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T02:34:14.782Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IPlayerRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAQwAwAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-25T02:33:55.908Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "TournamentDTO.cs",
-              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
-              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
               "RelativeToolTip": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAAAIwDwAAABBAAAAAAAAAA==",
+              "ViewState": "AgIAABoAAAAAAAAAAAAQwCsAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-10T18:37:44.357Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 10,
               "Title": "RegistrationTournamentsDTO.cs",
-              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
-              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
               "RelativeToolTip": "Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T18:37:38.1Z"
+              "WhenOpened": "2025-05-10T18:37:38.1Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 9,
               "Title": "JugadorDTO.cs",
-              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\JugadorDTO.cs",
-              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
               "RelativeToolTip": "Proyecto.Server\\DTOs\\JugadorDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAgwB4AAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T18:37:36.655Z"
+              "WhenOpened": "2025-05-10T18:37:36.655Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "TournamentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
-              "ToolTip": "C:\\Users\\MICROQUETZAL\\Documents\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\OneDrive\\Documentos\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "ViewState": "AgIAAG4AAAAAAAAAAAAiwGYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-19T00:23:07.002Z"
+              "WhenOpened": "2025-04-19T00:23:07.002Z",
+              "EditorCaption": ""
             }
           ]
         }

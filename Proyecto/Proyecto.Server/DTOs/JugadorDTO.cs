@@ -28,7 +28,7 @@
         public int? DepartamentoId { get; set; }
 
         public string? DepartamentoName { get; set; }
-        public int CarreraId { get; set; }
+        public int? CarreraId { get; set; }
         public string CarreraName { get; set; }
         public int CarreraSemestreId { get; set; }
 
@@ -84,8 +84,6 @@
             public int Carne { get; set; }
 
             public int MunicipioId { get; set; }
-
-            public int CarreraId { get; set; }
 
             public int CarreraSemestreId { get; set; }
 
