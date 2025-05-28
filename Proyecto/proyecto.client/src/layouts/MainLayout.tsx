@@ -3,26 +3,28 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 
 
-
-
 const MainLayout = () => {
   const location = useLocation();
-  const hideNavbarRoutes = ["/login", "/admin"]; // rutas donde ocultas el navbar
+
+  const hideNavbarRoutes = ["/login", "/admin"];
+  const hideFooterRoutes = ["/admin"];
+
+  const shouldHideNavbar = hideNavbarRoutes.some(route => location.pathname.startsWith(route));
+  const shouldHideFooter = hideFooterRoutes.some(route => location.pathname.startsWith(route));
 
   return (
     <>
-      {/* Mostrar Navbar solo si no es una ruta oculta */}
-      {!hideNavbarRoutes.some(route => location.pathname.startsWith(route)) && <Navbar />}
-      
+      {!shouldHideNavbar && <Navbar />}
+
       <main>
         <Outlet />
       </main>
 
-      {/* Siempre mostrar el footer */}
-      <Footer />
+      {!shouldHideFooter && <Footer />}
     </>
   );
 };
 
 export default MainLayout;
+
 

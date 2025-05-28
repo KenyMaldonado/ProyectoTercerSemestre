@@ -1,0 +1,22 @@
+.modalAnim {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.bigX {
+  font-size: 60px;
+  color: #dc3545;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
