@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import useTournamentData, { Tournament } from '../../../hook/useTournamentData';
-import { FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
@@ -429,7 +428,8 @@ const Torneos: React.FC = () => {
                       <td colSpan={11}>
                         <div className="p-3 bg-light rounded">
                           <p><strong>📖 Descripción:</strong> {t.descripcion || '—'}</p>
-                          <p><strong>📚 Bases:</strong> {t.basesTorneo ? (<a href={t.basesTorneo} target="_blank" rel="noopener noreferrer">Ver documento</a>) : '—'}</p>
+                          <p><strong>📚 Bases:</strong> {t.basesTorneo ? (<a href={`${t.basesTorneo}?v=${new Date().getTime()}`} target="_blank" rel="noopener noreferrer">Ver documento</a>) : '—'}</p>
+
                           {subTournamentsMap[t.torneoId] && subTournamentsMap[t.torneoId].length > 0 ? (
                             <div className="mt-3">
                               <h6>🏆 Subtorneos:</h6>
