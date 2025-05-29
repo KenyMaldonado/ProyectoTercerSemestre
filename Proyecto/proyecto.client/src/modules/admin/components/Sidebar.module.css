@@ -104,3 +104,64 @@
   padding: 0.4rem 0.7rem !important;
   font-size: 0.85rem !important;
 }
+.submenu {
+  display: flex;
+  flex-direction: column;
+}
+
+.submenuList {
+  list-style: none;
+  padding-left: 1rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.subItem {
+  font-size: 1rem;
+  padding-left: 2.5rem;
+  gap: 0.7rem;
+}
+
+.subItem:hover {
+  background-color: #096636;
+}
+
+.submenu button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+.arrowIcon {
+  margin-left: auto;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+/* NUEVOS estilos para subitems y expandible */
+
+.expandable {
+  justify-content: space-between;
+}
+
+.arrowIcon {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.submenu {
+  list-style: none;
+  padding-left: 1rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.subItem {
+  padding-left: 2rem;
+  font-size: 1.1rem;
+}
+
+/* LOS ESTILOS EXISTENTES PERMANECEN IGUAL */

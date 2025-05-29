@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../auth/context/AuthContext';
-import { FaBars, FaTrophy, FaUsers, FaSignOutAlt, FaHome, FaUser } from 'react-icons/fa';
+import {
+  FaBars, FaTrophy, FaUsers, FaSignOutAlt,
+  FaHome, FaUser, FaAngleDown, FaAngleRight, FaToolbox, FaUserCog, FaNewspaper
+} from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
 import gsap from 'gsap';
 import styles from './Sidebar.module.css';
@@ -11,6 +14,7 @@ const Sidebar = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(true);
   const [hoveringSidebar, setHoveringSidebar] = useState(false);
+  const [showExtraFunctions, setShowExtraFunctions] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -80,6 +84,57 @@ const Sidebar = () => {
               </NavLink>
             </li>
           ))}
+
+          {/* Funciones Extra */}
+          <li>
+            <button
+              className={`${styles.sidebarLink} ${styles.expandable}`}
+              onClick={() => setShowExtraFunctions(!showExtraFunctions)}
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Funciones extra"
+            >
+              <FaToolbox />
+              {(expanded || hoveringSidebar) && (
+                <>
+                  <span className={styles.linkLabel}>Funciones extra</span>
+                  <span className={styles.arrowIcon}>
+                    {showExtraFunctions ? <FaAngleDown /> : <FaAngleRight />}
+                  </span>
+                </>
+              )}
+            </button>
+
+            {(showExtraFunctions && (expanded || hoveringSidebar)) && (
+              <ul className={styles.submenu}>
+                <li>
+                  <NavLink
+                    to="/admin/funciones-extra/usuarios"
+                    className={({ isActive }) =>
+                      `${styles.sidebarLink} ${styles.subItem} ${isActive ? styles.active : ''}`
+                    }
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="Gestionar Usuarios"
+                  >
+                    <FaUserCog />
+                    <span className={styles.linkLabel}>Gestionar Usuarios</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/admin/funciones-extra/noticias"
+                    className={({ isActive }) =>
+                      `${styles.sidebarLink} ${styles.subItem} ${isActive ? styles.active : ''}`
+                    }
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="Gestionar Noticias"
+                  >
+                    <FaNewspaper />
+                    <span className={styles.linkLabel}>Gestionar Noticias</span>
+                  </NavLink>
+                </li>
+              </ul>
+            )}
+          </li>
         </ul>
       </nav>
 

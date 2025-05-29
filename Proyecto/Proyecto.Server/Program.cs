@@ -14,6 +14,40 @@ using Proyecto.Server.Utils;
 
 namespace Proyecto.Server
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.OpenApi.Models;
+    using Swashbuckle.AspNetCore.SwaggerGen;
+
+    public class SwaggerSecurityRequirementsOperationFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var hasAuthorize = context.MethodInfo.DeclaringType?.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any() == true
+                            || context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any();
+
+            if (!hasAuthorize)
+                return;
+
+            operation.Security = new List<OpenApiSecurityRequirement>
+        {
+            new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new List<string>()
+                }
+            }
+        };
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
@@ -37,25 +71,14 @@ namespace Proyecto.Server
                     Description = "Ingrese el token en este formato: Bearer {token}"
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
+                // Aplicar solo a endpoints con [Authorize]
+                c.OperationFilter<SwaggerSecurityRequirementsOperationFilter>();
 
                 // Incluir el archivo XML en Swagger
-                var xmlFile = Path.Combine(AppContext.BaseDirectory, "ProyectoAPI.xml"); // Ajusta el nombre según el nombre de tu proyecto
-                c.IncludeXmlComments(xmlFile); // Incluir los comentarios XML en Swagger
+                var xmlFile = Path.Combine(AppContext.BaseDirectory, "ProyectoAPI.xml");
+                c.IncludeXmlComments(xmlFile);
             });
+
 
             builder.Services.AddAuthentication(options =>
             {
@@ -105,7 +128,8 @@ namespace Proyecto.Server
             builder.Services.AddSingleton<AzureBlobService>();
             builder.Services.AddScoped<ITeamRepository, TeamRepository>();
             builder.Services.AddScoped<ITeamBLL, TeamBLL>();
-
+            builder.Services.AddScoped<IAdditionalFeaturesRepository, AdditionalFeaturesRepository>();
+            builder.Services.AddScoped<IAdditionalFeaturesBLL, AdditionalFeaturesBLL>();
 
 
             // Definir política de CORS

@@ -149,6 +149,8 @@ namespace Proyecto.Server.Controllers
             }
         }
 
+
+
         [Authorize(Roles = "Admin")]
         [HttpGet("SearchPlayers")]
         public async Task<IActionResult> SearchPlayers(string query)

@@ -22,6 +22,8 @@
 
         public int? PreInscripcionId { get; set; }
 
+        public string? ComentarioInscripcion { get; set; }
+
         public virtual Equipo Equipo { get; set; } = null!;
 
         public virtual PreInscripcion? PreInscripcion { get; set; }

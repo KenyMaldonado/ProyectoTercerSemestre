@@ -9,6 +9,9 @@ import EquiposPage from '../modules/equipos/components/EquiposAdmin';
 import JugadorDetail from '../modules/jugadores/components/JugadorDetail';
 import JugadorList from '../modules/jugadores/components/JugadorList';
 import TorneoAdminEditar from '../modules/torneos/components/TorneoAdminEditar';
+import NoticiasAdmin from '../modules/funciones/gestionNoticias/components/noticiasAdmin';
+import UsuariosAdmin from '../modules/funciones/gestionUsuarios/components/usuariosAdmin';
+
 const AdminPanel = () => {
     return (
         <div className={styles.adminPanel}>
@@ -22,6 +25,8 @@ const AdminPanel = () => {
             <Route path="equipos/editar-equipo/:id" element={<EquipoForm />} />
             <Route path="jugadores/:id" element={<JugadorDetail />} />
             <Route path="torneos/editar-torneo/:id" element={<TorneoAdminEditar />} />
+            <Route path="funciones-extra/noticias" element={<NoticiasAdmin />} />
+            <Route path="funciones-extra/usuarios" element={<UsuariosAdmin />} />
             <Route path="*" element={<Navigate to="dashboard" />} />
             </Routes>
         </main>

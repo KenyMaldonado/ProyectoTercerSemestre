@@ -58,6 +58,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Municipio> Municipios { get; set; }
 
+    public virtual DbSet<Noticia> Noticia { get; set; }
+
     public virtual DbSet<Partido> Partidos { get; set; }
 
     public virtual DbSet<PosicionJugador> PosicionJugadors { get; set; }
@@ -389,6 +391,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.PreInscripcionId, "fk_Pre_Inscripcion");
 
             entity.Property(e => e.InscripcionId).HasColumnName("Inscripcion_ID");
+            entity.Property(e => e.ComentarioInscripcion).HasColumnType("text");
             entity.Property(e => e.EquipoId).HasColumnName("Equipo_ID");
             entity.Property(e => e.Estado)
                 .HasDefaultValueSql("'EnRevision'")
@@ -414,6 +417,7 @@ public partial class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Relationship18");
         });
+
 
         modelBuilder.Entity<Jornada>(entity =>
         {
@@ -506,6 +510,42 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.DepartamentoId)
                 .HasConstraintName("municipio_ibfk_1");
         });
+
+        modelBuilder.Entity<Noticia>(entity =>
+        {
+            entity.HasKey(e => e.IdNoticia).HasName("PRIMARY");
+
+            entity.ToTable("noticia");
+
+            entity.HasIndex(e => e.UsuarioId, "Usuario_ID");
+
+            entity.Property(e => e.IdNoticia).HasColumnName("id_noticia");
+            entity.Property(e => e.Contenido)
+                .HasColumnType("text")
+                .HasColumnName("contenido");
+            entity.Property(e => e.Estado)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("estado");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_creacion");
+            entity.Property(e => e.ImagenUrl)
+                .HasMaxLength(255)
+                .HasColumnName("imagen_url");
+            entity.Property(e => e.Publicado)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("publicado");
+            entity.Property(e => e.Titulo)
+                .HasMaxLength(200)
+                .HasColumnName("titulo");
+            entity.Property(e => e.UsuarioId).HasColumnName("Usuario_ID");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.Noticia)
+                .HasForeignKey(d => d.UsuarioId)
+                .HasConstraintName("noticia_ibfk_1");
+        });
+
 
         modelBuilder.Entity<Partido>(entity =>
         {
