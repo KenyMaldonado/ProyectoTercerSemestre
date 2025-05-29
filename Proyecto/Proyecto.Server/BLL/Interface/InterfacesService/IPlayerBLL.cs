@@ -10,5 +10,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task<List<JugadorDTO.PosicionJugadorDTO>> GetPosicionesJugadores();
         Task<PagedResultDTO<JugadorDTO>> GetPlayers(int pagina, int tamañoPagina);
         Task UpdateJugador(string linkNuevo, int jugadorId, JugadorDTO.UpdateJugadorDTO datos);
+        Task<List<JugadorDTO>> SearchPlayers(string query);
     }
 }

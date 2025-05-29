@@ -13,7 +13,9 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task<RegistrationTournamentsDTO.RegistrationStartDTO> RegistrationStart(string correo);
         Task GuardarFormulario(string json, string Code);
         Task CrearNuevaInscripcion(RegistrationTournamentsDTO.NewTeamRegistration datos);
-        
+        Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripciones();
+
+
 
     }
 }

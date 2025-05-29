@@ -1,81 +1,106 @@
 .sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; 
-    height: 100vh;
-    width: 220px;
-    background-color: #0a4735;
-    padding: 1rem;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  }
-
-.logoutButton {
-    background: #d9534f;
-    font-size: 1.5rem;
-    color: white;
-    border: none;
-    padding: 0.6rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 1rem;
-    transition: background 0.2s ease;
-  }
-  
-.logoutButton:hover {
-    background: #c9302c;
-    background-color: #580000;
-    transform: translatey(5px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  width: 220px;
+  background-color: #0a4735;
+  padding: 1rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: width 0.3s ease, box-shadow 0.3s ease; /* <-- esta línea es clave */
 }
 
 
-.sidebar h2 {
-    margin-bottom: 0.10rem;
-    text-align:  center;
-    color: white;
-    font-size: 3rem;
+.collapsed {
+  width: 80px !important;
 }
 
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    }
-
-.sidebar li {
-    margin: 0.5rem 0;
-    
+.topSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.sidebar a {
-    color: white;
-    text-decoration: none;
+.title {
+  color: white;
+  font-size: 2rem;
 }
 
-.sidebar a.active {
-    font-weight: bold;
-    text-decoration: underline;
+.toggleButton {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.toggleButton:hover {
+  transform: rotate(90deg);
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
 }
 
 .sidebarLink {
-    display: block;
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    font-size: 25px;
-    text-decoration: none;
-    transition: transform 0.3s ease, background 0.3s ease;
-  }
-  
-  .sidebarLink:hover {
-    color: yellow;
-    background-color: #097740;
-    transform: translateX(8px);
-    text-decoration: underline;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-.sidebar nav {
-    margin-top: 0.5rem;
-  }
-  
+.sidebarLink:hover {
+  background-color: #097740;
+  color: yellow;
+  transform: translateX(8px);
+}
+
+.active {
+  font-weight: bold;
+  text-decoration: underline;
+  background-color: #075c30;
+}
+
+.linkLabel {
+  transition: opacity 0.3s ease;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #d9534f;
+  font-size: 1.2rem;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 1rem;
+  transition: background 0.2s ease, transform 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #580000;
+  transform: translateY(3px);
+}
+
+.tooltip {
+  background-color: #0a4735 !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 4px !important;
+  padding: 0.4rem 0.7rem !important;
+  font-size: 0.85rem !important;
+}

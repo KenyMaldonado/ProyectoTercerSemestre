@@ -202,3 +202,6 @@ Proyecto/.vs/Proyecto/v17/.suo
 *.v2
 Proyecto/.vs/Proyecto/v17/.suo
 *.json
+*.db-wal
+*.db-shm
+*.db

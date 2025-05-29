@@ -411,7 +411,7 @@ const Torneos: React.FC = () => {
               tournaments.map((t: Tournament) => (
                 <React.Fragment key={t.torneoId}>
                   <tr>
-                    <td><button className="btn btn-warning btn-sm" onClick={() => navigate(`/admin/editar-torneo/${t.torneoId}`)}>✏️ Editar</button></td>
+                    <td><button className="btn btn-warning btn-sm" onClick={() => navigate(`/admin/torneos/editar-torneo/${t.torneoId}`)}>✏️ Editar</button></td>
                     <td>{t.nombre}</td>
                     <td>{t.nameTipoTorneo}</td>
                     <td>{t.nameTipoJuego}</td>

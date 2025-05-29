@@ -4,6 +4,7 @@ using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.BLL.Service;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Utils;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Proyecto.Server.Controllers
 {
@@ -148,7 +149,24 @@ namespace Proyecto.Server.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Admin")]
+        [HttpGet("SearchPlayers")]
+        public async Task<IActionResult> SearchPlayers(string query)
+        {
+            try
+            {
+                var listado = await _playerBLL.SearchPlayers(query);
+                return ResponseHelper.Success("Jugadores encontrados", listado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
 
     }
 }

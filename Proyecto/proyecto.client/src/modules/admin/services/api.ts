@@ -131,3 +131,28 @@ export const getJugadoresPaginados = async (page = 1, pageSize = 8): Promise<any
         return { items: [], totalPages: 0 };
     }
 };
+
+// Buscar jugadores por nombre (o parte del nombre) - con autenticación
+export const searchPlayers = async (query: string): Promise<any[]> => {
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/Players/SearchPlayers?query=${encodeURIComponent(query)}`, 
+            {
+                method: 'GET',
+                headers: getAuthHeaders(), // añade el token
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error al buscar jugadores: ${errorText}`);
+        }
+
+        const data = await response.json();
+        return data; // o data.data si tu API devuelve así
+    } catch (error) {
+        console.error('Error searching players:', error);
+        return [];
+    }
+};
+

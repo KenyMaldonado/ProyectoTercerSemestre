@@ -32,7 +32,7 @@ namespace Proyecto.Server.Controllers
             {
                 return ResponseHelper.HandleGeneralException(ex);
             }
-            
+
         }
 
         [HttpGet("GetMunicipiosByDepartamento")]
@@ -45,7 +45,7 @@ namespace Proyecto.Server.Controllers
                 {
                     return ResponseHelper.HandleCustomException(new CustomException("El departamento no existe", 404));
                 }
-                return ResponseHelper.Success("Municipios Obtenidos Exitosamente",listaMunicipios);
+                return ResponseHelper.Success("Municipios Obtenidos Exitosamente", listaMunicipios);
             }
             catch (CustomException ex)
             {
@@ -75,7 +75,7 @@ namespace Proyecto.Server.Controllers
             }
         }
 
-        [HttpGet("GetCarrerasByFacultad")]    
+        [HttpGet("GetCarrerasByFacultad")]
         public IActionResult GetCarrerasByFacultad(int FacultadId)
         {
             try
@@ -146,7 +146,7 @@ namespace Proyecto.Server.Controllers
             try
             {
                 var datos = await _teamManagementBLL.RegistrationStart(correo);
-                return ResponseHelper.Success("Se obtuvo el número de inscripción exitosamente",datos);
+                return ResponseHelper.Success("Se obtuvo el número de inscripción exitosamente", datos);
             }
             catch (CustomException ex)
             {
@@ -160,7 +160,7 @@ namespace Proyecto.Server.Controllers
         }
 
         [HttpPatch("SaveRegistration")]
-        public async Task <IActionResult> SaveRegistration (string json, string NumeroFormulario)
+        public async Task<IActionResult> SaveRegistration(string json, string NumeroFormulario)
         {
             try
             {
@@ -177,7 +177,23 @@ namespace Proyecto.Server.Controllers
             }
         }
 
+        [HttpGet("GetInscripciones")]
+        public async Task<IActionResult> GetInscripciones()
+        {
+            try
+            {
+                var inscripciones = await _teamManagementBLL.GetInscripciones();
+                return ResponseHelper.Success("Inscripciones obtenidas exitosamente", inscripciones);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
 
-        
+        }
     }
 }

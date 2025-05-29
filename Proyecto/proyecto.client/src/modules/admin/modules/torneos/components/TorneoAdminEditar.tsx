@@ -4,7 +4,6 @@ import useTournamentData from '../../../hook/useTournamentData';
 import { toast } from 'react-toastify';
 import styles from './TorneoAdminEditar.module.css';
 import { usePromptExitGuard } from '../hooks/usePromptExitGuard';
-import Sidebar from '../../../components/Sidebar'; // Asegúrate que la ruta sea correcta
 
 const TorneoAdminEditar: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -109,7 +108,6 @@ const TorneoAdminEditar: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar />
       <div className="container mt-4" style={{ flex: 1, padding: '20px' }}>
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h2 className="m-0">✏️ Editar Torneo</h2>

@@ -168,7 +168,7 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
                                     }}
                                     onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#2563eb')}
                                     onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#3b82f6')}
-                                    onClick={() => navigate(`/admin/editar-equipo/${equipo?.equipoId}`, { state: { equipo } })}
+                                    onClick={() => navigate(`/admin/equipos/editar-equipo/${equipo?.equipoId}`, { state: { equipo } })}
                                 >
                                     Modificar Información
                                 </Button>

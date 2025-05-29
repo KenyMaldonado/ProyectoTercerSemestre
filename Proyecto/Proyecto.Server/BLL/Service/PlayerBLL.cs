@@ -63,5 +63,11 @@ namespace Proyecto.Server.BLL.Service
             }
             
         }
+
+        public async Task<List<JugadorDTO>> SearchPlayers(string query)
+        {
+             var listado = await _playerRepository.SearchPlayer(query);
+             return listado;
+        }
     }
 }

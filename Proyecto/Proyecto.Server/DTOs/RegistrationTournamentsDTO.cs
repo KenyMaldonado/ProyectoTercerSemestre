@@ -81,6 +81,21 @@ namespace Proyecto.Server.DTOs
 
             public string? DataSave { get; set; }
         }
+
+        public class GetRegistrationDTO 
+        {
+            public int InscripcionId { get; set; }
+            public int? PreInscripcionId { get; set; }
+            public string Codigo { get; set; } = null!;
+            public int EquipoId { get; set; }
+            public string NombreEquipo { get; set; } = null!;
+            public string Estado { get; set; } = null!;
+            public string FechaInscripcion { get; set; } = null!;
+            public int subTorneoId {get; set; }
+            public string Descripcion { get; set; } = null!;
+            public string NombreCapitan { get; set; } = null!;
+            public string CorreoCapitan { get; set; } = null!;  
+        }
     }
 
 }

@@ -20,15 +20,15 @@ namespace Proyecto.Server.BLL.Repository
         public List<RegistrationTournamentsDTO.MunicipiosDTO> GetMunicipiosByDepartamento(int IdDepartamento)
         {
             var municipio = _appDbContext.Municipios
-                .Where(x=> x.DepartamentoId == IdDepartamento)
+                .Where(x => x.DepartamentoId == IdDepartamento)
                 .Select(
-                x=> new RegistrationTournamentsDTO.MunicipiosDTO
+                x => new RegistrationTournamentsDTO.MunicipiosDTO
                 {
                     DepartamentoId = x.DepartamentoId,
                     MunicipioId = x.MunicipioId,
                     Nombre = x.Nombre
                 })
-                .OrderBy(x=> x.Nombre)
+                .OrderBy(x => x.Nombre)
                 .ToList();
 
             return municipio;
@@ -47,10 +47,10 @@ namespace Proyecto.Server.BLL.Repository
 
         public List<RegistrationTournamentsDTO.FacultadDTO> GetFacultades()
         {
-            var ListaFacultades = _appDbContext.Facultads.Where(x=>x.Estado == true)
-                .Select(x=> new RegistrationTournamentsDTO.FacultadDTO
+            var ListaFacultades = _appDbContext.Facultads.Where(x => x.Estado == true)
+                .Select(x => new RegistrationTournamentsDTO.FacultadDTO
                 {
-                    Nombre= x.Nombre,
+                    Nombre = x.Nombre,
                     FacultadId = x.FacultadId
                 }).ToList();
             return ListaFacultades;
@@ -59,13 +59,13 @@ namespace Proyecto.Server.BLL.Repository
         public List<RegistrationTournamentsDTO.carreraDTO> GetCarreras(int FacultadId)
         {
             var ListaCarreras = _appDbContext.Carreras
-                .Where (x=>x.Estado == true && x.FacultadId == FacultadId)
-                .Select(x=> new RegistrationTournamentsDTO.carreraDTO
+                .Where(x => x.Estado == true && x.FacultadId == FacultadId)
+                .Select(x => new RegistrationTournamentsDTO.carreraDTO
                 {
                     CarreraId = x.CarreraId,
                     Nombre = x.Nombre,
                     Estado = x.Estado,
-                    FacultadId= x.FacultadId
+                    FacultadId = x.FacultadId
                 })
                 .ToList();
 
@@ -114,7 +114,7 @@ namespace Proyecto.Server.BLL.Repository
                 DataSave = datos.DataSave,
                 Email = datos.Email,
             };
-            
+
             _appDbContext.PreInscripcions.Add(Data);
             _appDbContext.SaveChanges();
         }
@@ -129,10 +129,10 @@ namespace Proyecto.Server.BLL.Repository
 
         public async Task SaveRegistration(string codigoInscripcion, string json)
         {
-            var consulta =  _appDbContext.PreInscripcions
+            var consulta = _appDbContext.PreInscripcions
                             .SingleOrDefault(x => x.Codigo == codigoInscripcion);
 
-            if (consulta == null) 
+            if (consulta == null)
             {
                 throw new Exception("Error al guardar los datos");
             }
@@ -198,7 +198,7 @@ namespace Proyecto.Server.BLL.Repository
 
                 // 4. Crear lista de asignaciones (incluye al capitan y demás jugadores)
                 var ListaAsignaciones = new List<JugadorEquipo>();
-                foreach(var jugador in ListaJugadores)
+                foreach (var jugador in ListaJugadores)
                 {
                     var asignacion = jugador.Carne == datos.capitan.jugadorCapitan.Carne
                     ? datos.capitan.jugadorCapitan.asignacion
@@ -234,7 +234,7 @@ namespace Proyecto.Server.BLL.Repository
                 await _appDbContext.Inscripcions.AddAsync(nuevaInscripcion);
 
                 await _appDbContext.SaveChangesAsync();
-                await transaction.CommitAsync(); 
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
@@ -244,7 +244,41 @@ namespace Proyecto.Server.BLL.Repository
             }
         }
 
-        
+        public async Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripciones()
+        {
+            var listado = await _appDbContext.Inscripcions
+                .Where(i => i.Estado != Inscripcion.EstadosInscripcion.Aprobada
+                         && i.Estado != Inscripcion.EstadosInscripcion.Cancelada
+                         && i.Estado != Inscripcion.EstadosInscripcion.Rechazada)
+                .Select(i => new RegistrationTournamentsDTO.GetRegistrationDTO
+                {
+                    InscripcionId = i.InscripcionId,
+                    PreInscripcionId = i.PreInscripcionId,
+                    Codigo = i.PreInscripcion.Codigo ?? "No encontrado",
+                    EquipoId = i.EquipoId,
+                    NombreEquipo = i.Equipo.Nombre,
+                    Estado = i.Estado.ToString(),
+                    FechaInscripcion = i.FechaInscripcion.ToString("dd/MM/yyyy"),
+                    subTorneoId = i.SubTorneoId,
+                    Descripcion = "Prueba",
+
+                    NombreCapitan = (from c in _appDbContext.Capitans
+                                     join j in _appDbContext.Jugadors on c.JugadorId equals j.JugadorId
+                                     join je in _appDbContext.JugadorEquipos on j.JugadorId equals je.JugadorId
+                                     where je.EquipoId == i.EquipoId
+                                     select j.Nombre + " " + j.Apellido).FirstOrDefault() ?? "No encontrado",
+
+                    CorreoCapitan = (from c in _appDbContext.Capitans
+                                     join j in _appDbContext.Jugadors on c.JugadorId equals j.JugadorId
+                                     join je in _appDbContext.JugadorEquipos on j.JugadorId equals je.JugadorId
+                                     where je.EquipoId == i.EquipoId
+                                     select c.CorreoElectronico).FirstOrDefault() ?? "No encontrado"
+                })
+                .ToListAsync();
+
+            return listado;
+        }
 
     }
+
 }

@@ -15,7 +15,7 @@ namespace Proyecto.Server.BLL.Service
         {
             _teamManagementRepository = teamManagementRepository;
             _configuration = configuration;
-        }   
+        }
 
         public List<RegistrationTournamentsDTO.DepartametosDTO> ObtenerDepartamentos()
         {
@@ -24,7 +24,7 @@ namespace Proyecto.Server.BLL.Service
                 var ListaDepartamentos = _teamManagementRepository.GetDepartamentos();
                 if (ListaDepartamentos == null)
                 {
-                    throw new CustomException("No se obtenieron Datos, intente más tarde",404);
+                    throw new CustomException("No se obtenieron Datos, intente más tarde", 404);
                 }
                 return ListaDepartamentos;
             }
@@ -32,7 +32,7 @@ namespace Proyecto.Server.BLL.Service
             {
                 throw new CustomException("Error al consultar los departamentos", 500);
             }
-            
+
         }
 
         public List<RegistrationTournamentsDTO.MunicipiosDTO> ObtenerMunicios(int DepartamentoId)
@@ -81,7 +81,7 @@ namespace Proyecto.Server.BLL.Service
         {
             try
             {
-                return _teamManagementRepository.GetSemestreSeccion(CarreraId);  
+                return _teamManagementRepository.GetSemestreSeccion(CarreraId);
             }
             catch (CustomException ex)
             {
@@ -127,7 +127,7 @@ namespace Proyecto.Server.BLL.Service
                             IsNew = true
                         };
 
-                         _teamManagementRepository.CreateDataRegistration(datos);
+                        _teamManagementRepository.CreateDataRegistration(datos);
 
                         return await _teamManagementRepository.GetDataRegistration(correo);
                     }
@@ -166,7 +166,7 @@ namespace Proyecto.Server.BLL.Service
             {
                 throw new CustomException("Error al guardar el formulario ", 500);
             }
-            
+
 
         }
 
@@ -214,6 +214,22 @@ namespace Proyecto.Server.BLL.Service
             }
         }
 
-        
+        public async Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripciones()
+        {
+            try
+            {
+                var inscripciones = await _teamManagementRepository.GetInscripciones();
+                return inscripciones;
+            }
+            catch (CustomException ex)
+            {
+                throw new CustomException(ex.Message, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomException($"Error inesperado: {ex.Message}", 500);
+            }
+
+        }
     }
 }
