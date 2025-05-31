@@ -3,7 +3,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: #0a4735;
-    padding: 1.2rem 2.5rem;
+    padding: 0px 50px;
     color: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     position: sticky;
@@ -11,13 +11,28 @@
     z-index: 1000;
 }
 
+.logoContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Ajusta el espacio entre las dos imágenes */
+}
+
 .logo img {
     height: auto;
     transition: transform 0.3s ease;
-    width: 200px;
+    width: 150px;
+}
+
+.logoSistema img {
+    height: auto;
+    transition: transform 0.3s ease;
+    width: 90px;
 }
 
 .logo img:hover {
+    transform: scale(1.05);
+}
+.logoSistema img:hover {
     transform: scale(1.05);
 }
 

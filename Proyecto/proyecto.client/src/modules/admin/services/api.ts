@@ -156,3 +156,35 @@ export const searchPlayers = async (query: string): Promise<any[]> => {
     }
 };
 
+// src/api.ts
+
+export interface Inscripcion {
+  inscripcionId: number;
+  preInscripcionId: number;
+  codigo: string;
+  equipoId: number;
+  nombreEquipo: string;
+  estado: string;
+  fechaInscripcion: string;
+  subTorneoId: number;
+  descripcion: string;
+  nombreCapitan: string;
+  correoCapitan: string;
+}
+
+export const obtenerInscripciones = async (): Promise<Inscripcion[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/TeamManagementControllers/GetInscripciones`);
+    const json = await response.json();
+
+    if (json.success) {
+      return json.data;
+    } else {
+      console.error('Error en respuesta:', json.message);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error en fetch:', error);
+    return [];
+  }
+};

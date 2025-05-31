@@ -11,6 +11,7 @@ import JugadorList from '../modules/jugadores/components/JugadorList';
 import TorneoAdminEditar from '../modules/torneos/components/TorneoAdminEditar';
 import NoticiasAdmin from '../modules/funciones/gestionNoticias/components/noticiasAdmin';
 import UsuariosAdmin from '../modules/funciones/gestionUsuarios/components/usuariosAdmin';
+import InscripcionesAdmin from '../modules/inscripciones/components/InscripcionesAdmin';
 
 const AdminPanel = () => {
     return (
@@ -27,6 +28,7 @@ const AdminPanel = () => {
             <Route path="torneos/editar-torneo/:id" element={<TorneoAdminEditar />} />
             <Route path="funciones-extra/noticias" element={<NoticiasAdmin />} />
             <Route path="funciones-extra/usuarios" element={<UsuariosAdmin />} />
+            <Route path="inscripciones" element={<InscripcionesAdmin />} />
             <Route path="*" element={<Navigate to="dashboard" />} />
             </Routes>
         </main>

@@ -258,7 +258,42 @@ namespace Proyecto.Server.BLL.Repository
                     EquipoId = i.EquipoId,
                     NombreEquipo = i.Equipo.Nombre,
                     Estado = i.Estado.ToString(),
-                    FechaInscripcion = i.FechaInscripcion.ToString("dd/MM/yyyy"),
+                    FechaInscripcion = i.FechaInscripcion,
+                    subTorneoId = i.SubTorneoId,
+                    Descripcion = "Prueba",
+
+                    NombreCapitan = (from c in _appDbContext.Capitans
+                                     join j in _appDbContext.Jugadors on c.JugadorId equals j.JugadorId
+                                     join je in _appDbContext.JugadorEquipos on j.JugadorId equals je.JugadorId
+                                     where je.EquipoId == i.EquipoId
+                                     select j.Nombre + " " + j.Apellido).FirstOrDefault() ?? "No encontrado",
+
+                    CorreoCapitan = (from c in _appDbContext.Capitans
+                                     join j in _appDbContext.Jugadors on c.JugadorId equals j.JugadorId
+                                     join je in _appDbContext.JugadorEquipos on j.JugadorId equals je.JugadorId
+                                     where je.EquipoId == i.EquipoId
+                                     select c.CorreoElectronico).FirstOrDefault() ?? "No encontrado"
+                })
+                .ToListAsync();
+
+            return listado;
+        }
+
+        public async Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripcionesBySubTorneo(int subTorneo)
+        {
+            var listado = await _appDbContext.Inscripcions
+                .Where(i => i.Estado != Inscripcion.EstadosInscripcion.Aprobada
+                         && i.Estado != Inscripcion.EstadosInscripcion.Cancelada
+                         && i.Estado != Inscripcion.EstadosInscripcion.Rechazada)
+                .Select(i => new RegistrationTournamentsDTO.GetRegistrationDTO
+                {
+                    InscripcionId = i.InscripcionId,
+                    PreInscripcionId = i.PreInscripcionId,
+                    Codigo = i.PreInscripcion.Codigo ?? "No encontrado",
+                    EquipoId = i.EquipoId,
+                    NombreEquipo = i.Equipo.Nombre,
+                    Estado = i.Estado.ToString(),
+                    FechaInscripcion = i.FechaInscripcion,
                     subTorneoId = i.SubTorneoId,
                     Descripcion = "Prueba",
 

@@ -90,7 +90,7 @@ namespace Proyecto.Server.DTOs
             public int EquipoId { get; set; }
             public string NombreEquipo { get; set; } = null!;
             public string Estado { get; set; } = null!;
-            public string FechaInscripcion { get; set; } = null!;
+            public DateTime FechaInscripcion { get; set; }
             public int subTorneoId {get; set; }
             public string Descripcion { get; set; } = null!;
             public string NombreCapitan { get; set; } = null!;

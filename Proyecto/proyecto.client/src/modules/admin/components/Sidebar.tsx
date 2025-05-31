@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../auth/context/AuthContext';
 import {
   FaBars, FaTrophy, FaUsers, FaSignOutAlt,
-  FaHome, FaUser, FaAngleDown, FaAngleRight, FaToolbox, FaUserCog, FaNewspaper
+  FaHome, FaUser, FaAngleDown, FaAngleRight, FaToolbox, FaUserCog, FaNewspaper, FaClipboardList
 } from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
 import gsap from 'gsap';
@@ -48,9 +48,11 @@ const Sidebar = () => {
 
   const navItems = [
     { to: '/admin/dashboard', icon: <FaHome />, label: 'Dashboard' },
+    { to: '/admin/inscripciones', icon: <FaClipboardList />, label: 'Inscripciones' },
     { to: '/admin/torneos', icon: <FaTrophy />, label: 'Torneos' },
     { to: '/admin/equipos', icon: <FaUsers />, label: 'Equipos' },
     { to: '/admin/jugadores', icon: <FaUser />, label: 'Jugadores' },
+
   ];
 
   return (
