@@ -1,50 +1,55 @@
 import './Inicio.css';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 interface Noticia {
   newsId: number;
   title: string;
   content: string;
   imageUrl: string;
-  publishedAt: string;
-  createdByUserId: number;
+  published: boolean;
+  creationDate: string;
+  createByUserID: number;
   nameUsuario: string;
 }
 
 const Inicio = () => {
   const [noticias, setNoticias] = useState<Noticia[]>([]);
-  const [index, setIndex] = useState(0);
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const fetchNoticias = async () => {
       try {
-        const response = await axios.get<{ success: boolean; message: string; data: Noticia[] }>(
-          'http://localhost:5291/api/AdditionalFeaturesControllers/GetNews',
-          {
-            headers: {
-              Authorization: `hbkjlhlkjh`, 
-              Accept: '*/*',
-            },
-          }
-        );
-        if (response.data.success) {
-          setNoticias(response.data.data);
+        const res = await fetch('http://localhost:5291/api/AdditionalFeaturesControllers/GetNews', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+            Accept: '*/*',
+          },
+        });
+        const data = await res.json();
+        if (data.success) {
+          const visibles = data.data.filter((n: Noticia) => n.published);
+          setNoticias(visibles);
         }
       } catch (error) {
         console.error('Error al obtener noticias:', error);
       }
     };
-
     fetchNoticias();
   }, []);
 
-  const siguiente = () => {
-    setIndex((prevIndex) => (prevIndex + 1) % noticias.length);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % noticias.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [noticias]);
+
+  const avanzar = () => {
+    setCurrent((prev) => (prev + 1) % noticias.length);
   };
 
-  const anterior = () => {
-    setIndex((prevIndex) => (prevIndex - 1 + noticias.length) % noticias.length);
+  const retroceder = () => {
+    setCurrent((prev) => (prev - 1 + noticias.length) % noticias.length);
   };
 
   return (
@@ -63,29 +68,54 @@ const Inicio = () => {
         </div>
       </section>
 
-      {/* CARRUSEL DE NOTICIAS */}
+      {/* CARRUSEL PERSONALIZADO */}
       <section className="noticias">
         <h2 className="titulo-seccion">📰 Últimas Noticias</h2>
-        {noticias.length > 0 ? (
-          <div className="carrusel">
-            <button onClick={anterior} className="carrusel-btn">←</button>
-            <div className="carrusel-item">
-              <img src={noticias[index].imageUrl} alt={noticias[index].title} />
-              <h3>{noticias[index].title}</h3>
-              <p>{noticias[index].content}</p>
-            </div>
-            <button onClick={siguiente} className="carrusel-btn">→</button>
-          </div>
-        ) : (
-          <p>Cargando noticias...</p>
-        )}
+        <div className="carrusel-personalizado">
+          <button
+  className="flecha-carrusel izquierda"
+  onClick={() => setCurrent((prev) => (prev - 1 + noticias.length) % noticias.length)}
+>
+  ←
+</button>
+
+<button
+  className="flecha-carrusel derecha"
+  onClick={() => setCurrent((prev) => (prev + 1) % noticias.length)}
+>
+  →
+</button>
+
+
+          {noticias.map((noticia, i) => {
+            const offset = i - current;
+            let scale = offset === 0 ? 1 : 0.85;
+            let opacity = offset === 0 ? 1 : 0.4;
+
+            return (
+              <div
+                key={noticia.newsId}
+                className="tarjeta-noticia"
+                style={{
+                  transform: `translateX(${offset * 100}%) scale(${scale})`,
+                  opacity,
+                  zIndex: offset === 0 ? 2 : 1,
+                }}
+              >
+                <img src={`${noticia.imageUrl}?t=${Date.now()}`} alt={noticia.title} />
+                <h4>{noticia.title}</h4>
+                <p>{noticia.content}</p>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       {/* MISIÓN Y VISIÓN */}
       <section className="mv-umes">
         <h2 className="titulo-seccion">MISIÓN Y VISIÓN</h2>
 
-        <div className="tarjeta-mv" data-aos="fade-right">
+        <div className="tarjeta-mv">
           <img className="mv-img" src="https://i.ytimg.com/vi/sMW9HdCYsBs/hq720.jpg" alt="Imagen misión" />
           <div className="mv-info">
             <h3>Misión</h3>
@@ -96,7 +126,7 @@ const Inicio = () => {
           </div>
         </div>
 
-        <div className="tarjeta-mv" data-aos="fade-left">
+        <div className="tarjeta-mv">
           <img className="mv-img" src="https://live.staticflickr.com/5304/5791802695_5289a4ed7a_b.jpg" alt="Imagen visión" />
           <div className="mv-info">
             <h3>Visión</h3>
@@ -112,5 +142,3 @@ const Inicio = () => {
 };
 
 export default Inicio;
-
-

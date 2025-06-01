@@ -175,14 +175,15 @@ const handleActualizarNoticia = async (e: React.FormEvent) => {
   form.append('Published', String(formData.published));
   form.append('CreationDate', noticiaEditando.creationDate);
   form.append('CreateByUserID', String(noticiaEditando.createByUserID));
-  form.append('ImageUrl', noticiaEditando.imageUrl);
 
   if (formData.file) {
     form.append('file', formData.file);
+  } else {
+    form.append('ImageUrl', noticiaEditando.imageUrl); // solo si el backend lo necesita
   }
 
   try {
-    const res = await fetch('http://localhost:5291/api/AdditionalFeaturesControllers/UpdateNews', {
+    const response = await fetch('http://localhost:5291/api/AdditionalFeaturesControllers/UpdateNews', {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`
@@ -190,22 +191,29 @@ const handleActualizarNoticia = async (e: React.FormEvent) => {
       body: form
     });
 
-    if (res.ok) {
-      Swal.fire('✅ Éxito', 'Noticia actualizada correctamente.', 'success');
-      setModoEditar(false);
-      setNoticiaEditando(null);
-      setFormData({ title: '', content: '', file: null, published: true });
-      setPreviewImage(null);
-      fetchNoticias();
-    } else {
-      const text = await res.text();
-      Swal.fire('❌ Error', text || 'Error al actualizar la noticia.', 'error');
-    }
-  } catch (err) {
-    console.error(err);
-    Swal.fire('❌ Error', 'Error de red al actualizar.', 'error');
+    if (!response.ok) {
+  try {
+    const errorJson = await response.json();
+    throw new Error(errorJson.message || 'Fallo inesperado');
+  } catch {
+    throw new Error('El archivo supera el límite de 5 MB.');
+  }
+}
+
+
+    Swal.fire('✅ Éxito', 'Noticia actualizada correctamente.', 'success');
+    setModoEditar(false);
+    setNoticiaEditando(null);
+    setFormData({ title: '', content: '', file: null, published: true });
+    setPreviewImage(null);
+    fetchNoticias();
+
+  } catch (err: any) {
+    console.error('Error actualizando noticia:', err);
+    Swal.fire('❌ Error', err.message || 'Error de red al actualizar.', 'error');
   }
 };
+
 
   return (
     <div className="noticias-admin">
@@ -234,7 +242,7 @@ const handleActualizarNoticia = async (e: React.FormEvent) => {
       <label className="form-label">Imagen (opcional)</label>
       <input
         type="file"
-        accept="image/*"
+        accept="image/png, image/jpeg, image/jpg, image/gif"
         className="form-control"
         onChange={e => {
           const file = e.target.files?.[0] || null;
@@ -278,7 +286,12 @@ const handleActualizarNoticia = async (e: React.FormEvent) => {
   <div className={styles['cards-container']}>
     {noticias.map(noticia => (
       <div className={styles['card']} key={noticia.newsId}>
-        <img src={noticia.imageUrl} alt={noticia.title} className={styles['card-img']} />
+        <img
+  src={`${noticia.imageUrl}?v=${new Date(noticia.creationDate).getTime()}`}
+  alt={noticia.title}
+  className={styles['card-img']} // o className="card-img"
+/>
+
         <div className={styles['card-body']}>
           <h4>{noticia.title}</h4>
           <p>{noticia.content}</p>

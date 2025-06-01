@@ -174,7 +174,7 @@ namespace Proyecto.Server
             });
             builder.WebHost.ConfigureKestrel(options =>
             {
-                options.Limits.MaxRequestBodySize = 5 * 1024 * 1024; // 5 MB
+                options.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB
             });
 
 
