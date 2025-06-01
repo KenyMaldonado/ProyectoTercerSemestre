@@ -6,6 +6,7 @@ import Jugadores from '../modules/jugadores/components/Jugadores';
 import Partidos from '../modules/partidos/components/Partidos';
 import Login from '../modules/auth/components/Login';
 import ForgotPassword from '../modules/auth/components/ForgotPassword';
+import ActivarCuenta from '../modules/auth/components/ActivarCuenta';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -21,6 +22,7 @@ const AppRoutes = () => {
         <Route path="/partidos" element={<Partidos />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/activar-cuenta/:token" element={<ActivarCuenta />} />
 
       </Routes>
 

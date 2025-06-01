@@ -11,6 +11,7 @@ import ResetPassword from './modules/auth/components/ResetPassword';
 import AdminPanel from './modules/admin/components/AdminPanel';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Inscripcion from './modules/inscripcion/components/Inscripcion';
+import ActivarCuenta from './modules/auth/components/ActivarCuenta';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -67,6 +68,7 @@ function App() {
           <Route path="/equipos" element={<Equipos />} />
           <Route path="/jugadores" element={<Jugadores />} />
           <Route path="/partidos" element={<Partidos />} />
+          <Route path="/activar-cuenta" element={<ActivarCuenta />} />
           <Route
             path="/admin/*"
             element={
