@@ -57,15 +57,40 @@ namespace Proyecto.Server.BLL.Service
 
         }
 
-        public void CreateUser (UserRegistrationDTO.UserRegistrationParameter userRegistrationDTO, int UserId)
+        public async Task CreateUser (UserRegistrationDTO.UserRegistrationParameter userRegistrationDTO, int UserId)
         {
-            string PasswordHash = _userHelps.CreateHash(userRegistrationDTO.Contrasenia);
-            userRegistrationDTO.Contrasenia = PasswordHash;
-            UserRegistrationDTO newUser = new UserRegistrationDTO();
-            newUser.Datos = userRegistrationDTO;
-            newUser.UsuarioCreo = UserId;
+            bool exitoso = false;
+            try
+            {
+                // creamos el token
+                var token = Guid.NewGuid().ToString();
+                var tokenHash = _userHelps.CreateHash(token);
+
+                userRegistrationDTO.TokenActivacion = tokenHash;
+                userRegistrationDTO.Contrasenia = tokenHash;
+
+                var expiration = DateTime.UtcNow.AddHours(24);
+                userRegistrationDTO.TokenExpiracion = expiration;
+
+
+                UserRegistrationDTO newUser = new UserRegistrationDTO();
+                newUser.Datos = userRegistrationDTO;
+                newUser.UsuarioCreo = UserId;
+
+                _usuarioRepositorio.CreateNewUser(newUser);
+                exitoso = await _correoServices.EnviarLinkActivarCuentaAsync(newUser.Datos.CorreoElectronico, token);
+                if (exitoso == false)
+                {
+                    throw new CustomException("No se envio el correo, intentelo más tarde", 400);
+                }
+
+            }
+            catch
+            {
+
+            }
             
-            _usuarioRepositorio.CreateNewUser(newUser);
+            
         }
 
         public async Task<bool> IsEmailRegisteredAsync(string email)
@@ -165,8 +190,31 @@ namespace Proyecto.Server.BLL.Service
                 throw new CustomException("Error al actualizar su contraseña", 500);
             }
         }
-        
- 
+
+        public async Task ActiveAccount(string token, string newPassword)
+        {
+            try
+            {
+                bool? estado = await _usuarioRepositorio.ActiveAccount(token, newPassword);
+
+                if (estado != true) // null o false
+                {
+                    throw new CustomException("Token inválido o ya utilizado. Comuníquese con el administrador.", 401);
+                }
+            }
+            catch (CustomException)
+            {
+                // Deja pasar las CustomException personalizadas del repositorio
+                throw;
+            }
+            catch (Exception)
+            {
+                // Captura errores no controlados
+                throw new CustomException("Ocurrió un error al activar la cuenta.", 500);
+            }
+        }
+
+
 
     }
 

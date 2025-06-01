@@ -13,5 +13,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         bool InsertCode(CodigoDTO codigo);
         CodigoDTO? GetCodeVerification(string correo);
         void ChangePassword(int idUsuario, string passwordHash);
+        Task<bool?> ActiveAccount(string token, string NewPassword);
     }
 }

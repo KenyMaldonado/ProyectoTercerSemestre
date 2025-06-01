@@ -21,6 +21,8 @@ namespace Proyecto.Server.DTOs
             public string Contrasenia { get; set; }
             public int RolId { get; set; }
             public string CorreoElectronico { get; set; }
+            public string TokenActivacion { get; set; }
+            public DateTime TokenExpiracion { get; set; }
         }
         
         public class UserGetCredenciales

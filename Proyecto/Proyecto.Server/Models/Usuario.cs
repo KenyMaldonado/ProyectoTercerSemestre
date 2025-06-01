@@ -21,6 +21,8 @@ namespace Proyecto.Server.Models
         public string CorreoElectronico { get; set; } = null!;
         public int RolId { get; set; }
         public int UsuarioCreo { get; set; }
+        public string? TokenActivacion { get; set; }
+        public DateTime? TokenExpiracion { get; set; }
         public virtual ICollection<CodigosVerificacion> Codigosverificacions { get; set; } = new List<CodigosVerificacion>();
         public virtual ICollection<Noticia> Noticia { get; set; } = new List<Noticia>();
         public virtual ICollection<Partido> Partidos { get; set; } = new List<Partido>();

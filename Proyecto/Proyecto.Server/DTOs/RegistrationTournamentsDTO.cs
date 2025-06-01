@@ -100,13 +100,15 @@ namespace Proyecto.Server.DTOs
         public class GetInformationRegistration()
         {
             public int InscripcionID { get; set; }
+            public string Estado { get; set; } = null!;
+            public DateTime FechaInscripcion { get; set; }
             public int IdSubtorneo { get; set; }
             public string NombreSubtorneo { get; set; } = null!;
             public string NombreTorneo { get; set; } = null!;
             public int? PreInscripcionId { get; set; }
-            public CapitanDTO capitan { get; set; }
-            public EquipoDTO NewTeam { get; set; }
-            public List<JugadorDTO> ListaJugadores { get; set; }
+            public string Descripcion { get; set; } = null!;
+            public EquipoDTO.GetTeam Equipo { get; set; }
+            public List<JugadorDTO> Jugadores { get; set; }
 
         }
     }

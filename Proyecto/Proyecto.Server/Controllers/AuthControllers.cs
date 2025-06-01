@@ -89,12 +89,32 @@ namespace Proyecto.Server.Controllers
                     return ResponseHelper.HandleCustomException(new CustomException("El usuario ya existe.", 409));
                 }
                 
-                    _usuarioBLL.CreateUser(parametrosPeticion,userId.Value);
+                    await _usuarioBLL.CreateUser(parametrosPeticion,userId.Value);
                 return ResponseHelper.Created("Usuario creado exitosamente");
 
 
             }
             catch (CustomException ex) 
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+
+        [HttpPatch("ActiveAccount")]
+        public async Task<IActionResult> ActiveAccount(string Token, string NewPassword)
+        {
+            try
+            {
+                await _usuarioBLL.ActiveAccount(Token, NewPassword);
+                return ResponseHelper.Success("La cuenta fue activada exitosamente");
+
+            }
+            catch (CustomException ex)
             {
                 return ResponseHelper.HandleCustomException(ex);
             }

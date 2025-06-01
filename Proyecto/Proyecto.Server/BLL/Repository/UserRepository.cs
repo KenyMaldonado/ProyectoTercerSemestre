@@ -6,6 +6,7 @@ using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
+using Proyecto.Server.Utils;
 
 namespace Proyecto.Server.BLL.Repository
 {
@@ -13,10 +14,12 @@ namespace Proyecto.Server.BLL.Repository
     {
         private readonly StoreProcedure _storeProcedure;
         private readonly AppDbContext _dbContext;
+        private readonly UserHelps _userHelps;
         public UserRepository(StoreProcedure storeProcedure, AppDbContext dbContext)
         {
             _storeProcedure = storeProcedure;
             _dbContext = dbContext;
+            _userHelps = new UserHelps();
         }
 
         public UserRegistrationDTO.UserGetCredenciales? GetCredenciales(string email)
@@ -46,7 +49,9 @@ namespace Proyecto.Server.BLL.Repository
                     {"@passwordUser",newUser.Datos.Contrasenia},
                     {"@rol",newUser.Datos.RolId},
                     {"@correo",newUser.Datos.CorreoElectronico.ToLower()},
-                    {"@usuarioCreo", newUser.UsuarioCreo}
+                    {"@usuarioCreo", newUser.UsuarioCreo},
+                    {"@token", newUser.Datos.TokenActivacion},
+                    {"@tokenExpiracion", newUser.Datos.TokenExpiracion},
                 };
 
                 _storeProcedure.EjecutarProcedimientoAlmacenado("sp_createUser", CommandType.StoredProcedure, parametrosEntrada);
@@ -62,6 +67,37 @@ namespace Proyecto.Server.BLL.Repository
         {
             return await _dbContext.Usuarios.AnyAsync(u => u.CorreoElectronico == email);
         }
+
+
+        public async Task<bool?> ActiveAccount(string token, string newPassword)
+        {
+            var newPasswordHash = _userHelps.CreateHash(newPassword);
+            var usuariosConToken = await _dbContext.Usuarios
+                .Where(u => u.TokenActivacion != null && u.Estado == Usuario.EstadoUsuario.Inactivo)
+                .ToListAsync();
+
+            foreach (var usuario in usuariosConToken)
+            {
+                if (_userHelps.VeryfyPassword(usuario.TokenActivacion, token))
+                {
+                    if (usuario.TokenExpiracion > DateTime.UtcNow)
+                    {
+                        usuario.Estado = Usuario.EstadoUsuario.Activo;
+                        usuario.PasswordUser = newPasswordHash;
+                        await _dbContext.SaveChangesAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        throw new CustomException("El token ha expirado", 401);
+                    }
+                }
+            }
+
+            // Si ningún token coincidió
+            throw new CustomException("El token es inválido, inténtelo más tarde", 401);
+        }
+
 
         public string GetRolByEmail(string email)
         {

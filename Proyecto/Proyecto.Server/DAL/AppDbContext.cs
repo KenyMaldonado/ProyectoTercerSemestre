@@ -811,6 +811,8 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(300)
                 .HasColumnName("Password_User");
             entity.Property(e => e.RolId).HasColumnName("Rol_ID");
+            entity.Property(e => e.TokenActivacion).HasColumnType("text");
+            entity.Property(e => e.TokenExpiracion).HasColumnType("datetime");
             entity.Property(e => e.UsuarioCreo).HasColumnName("Usuario_Creo");
 
             entity.HasOne(d => d.Rol).WithMany(p => p.Usuarios)
