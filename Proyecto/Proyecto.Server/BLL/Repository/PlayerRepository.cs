@@ -17,9 +17,12 @@ namespace Proyecto.Server.BLL.Repository
 
         public List<JugadorDTO.VerifyPlayers> VerifyPlayers(List<int> carnets)
         {
-            // Obtener jugadores existentes con esos carnés
+            // Obtener jugadores existentes con los carnets especificados, incluyendo las relaciones necesarias
             var jugadoresExistentes = _appDbContext.Jugadors
                 .Where(j => carnets.Contains(j.Carne))
+                .Include(j => j.Municipio)
+                    .ThenInclude(m => m.Departamento)
+                .Include(j => j.CarreraSemestre)
                 .AsEnumerable()
                 .Select(j => new JugadorDTO
                 {
@@ -29,41 +32,48 @@ namespace Proyecto.Server.BLL.Repository
                     Carne = j.Carne,
                     Fotografia = j.Fotografia,
                     MunicipioId = j.MunicipioId,
+                    MunicipioName = j.Municipio?.Nombre ?? "Sin municipio",
+                    DepartamentoId = j.Municipio?.DepartamentoId ?? 0,
+                    DepartamentoName = j.Municipio?.Departamento?.Nombre ?? "Sin departamento",
+                    CarreraId = j.CarreraSemestre?.CarreraId1 ?? 0,
+                    Semestre = j.CarreraSemestre?.Semestre ?? 0,
+                    Seccion = j.CarreraSemestre?.Seccion ?? "Sin sección",
+                    CodigoCarrera = j.CarreraSemestre?.CodigoCarrera ?? "N/A",
                     CarreraSemestreId = j.CarreraSemestreId,
                     FechaNacimiento = j.FechaNacimiento,
                     Edad = j.Edad,
                     Telefono = j.Telefono,
                     EstadoTexto = Enum.GetName(typeof(JugadorDTO.EstadoJugador), j.Estado),
-                    Estado = (JugadorDTO.EstadoJugador)j.Estado // Convertimos el valor numérico al enum
+                    Estado = (JugadorDTO.EstadoJugador)j.Estado
                 })
                 .ToList();
 
-            // Construir la lista con resultados combinados
+            // Generar la lista de resultados de verificación
             var resultado = carnets.Select(c =>
             {
                 var jugador = jugadoresExistentes.FirstOrDefault(j => j.Carne == c);
 
-                // Si el jugador no existe
+                // No existe jugador con ese carné
                 if (jugador == null)
                 {
                     return new JugadorDTO.VerifyPlayers
                     {
-                        datosJugador = new JugadorDTO(), // Objeto vacío
+                        datosJugador = new JugadorDTO(), // Se devuelve objeto vacío
                         aprobado = true
                     };
                 }
 
-                // Si el jugador existe pero no está en estado "Libre"
+                // El jugador existe, pero no está en estado "Libre"
                 if (jugador.Estado != JugadorDTO.EstadoJugador.Libre)
                 {
                     return new JugadorDTO.VerifyPlayers
                     {
-                        datosJugador = null, // No se devuelven datos
+                        datosJugador = null,
                         aprobado = false
                     };
                 }
 
-                // Si el jugador existe y está en estado "Libre"
+                // Jugador existe y está disponible
                 return new JugadorDTO.VerifyPlayers
                 {
                     datosJugador = jugador,
@@ -73,6 +83,7 @@ namespace Proyecto.Server.BLL.Repository
 
             return resultado;
         }
+
 
         public List<JugadorDTO> GetJugadoresByTeam(int TeamId)
         {
