@@ -314,6 +314,7 @@ namespace Proyecto.Server.BLL.Repository
             return listado;
         }
 
+       // public async Task<RegistrationTournamentsDTO.NewTeamRegistration>
     }
 
 }

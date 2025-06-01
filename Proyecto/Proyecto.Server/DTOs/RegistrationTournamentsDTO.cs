@@ -96,6 +96,19 @@ namespace Proyecto.Server.DTOs
             public string NombreCapitan { get; set; } = null!;
             public string CorreoCapitan { get; set; } = null!;  
         }
+
+        public class GetInformationRegistration()
+        {
+            public int InscripcionID { get; set; }
+            public int IdSubtorneo { get; set; }
+            public string NombreSubtorneo { get; set; } = null!;
+            public string NombreTorneo { get; set; } = null!;
+            public int? PreInscripcionId { get; set; }
+            public CapitanDTO capitan { get; set; }
+            public EquipoDTO NewTeam { get; set; }
+            public List<JugadorDTO> ListaJugadores { get; set; }
+
+        }
     }
 
 }

@@ -20,7 +20,6 @@ namespace Proyecto.Server.Controllers
             _blobService = blobService;
         }
 
-
         [Authorize(Roles = "Admin")]
         [HttpPost("CreateNews")]
         public async Task<IActionResult> CreateNews(IFormFile file, [FromForm] AdditionalFeaturesDTO.NewsDTO newNews)
@@ -196,7 +195,6 @@ namespace Proyecto.Server.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet("GetNews")]
         public async Task<IActionResult> GetNews()
         {
