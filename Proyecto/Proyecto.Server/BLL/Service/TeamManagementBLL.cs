@@ -231,5 +231,10 @@ namespace Proyecto.Server.BLL.Service
             }
 
         }
+
+        public async Task<RegistrationTournamentsDTO.GetInformationRegistration> GetInformationRegistration(int inscripcionId)
+        {
+            return await _teamManagementRepository.GetDatosInscripcion(inscripcionId);
+        }
     }
 }

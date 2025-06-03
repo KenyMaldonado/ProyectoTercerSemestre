@@ -94,6 +94,7 @@ namespace Proyecto.Server.DTOs
             public int subTorneoId {get; set; }
             public string Descripcion { get; set; } = null!;
             public string NombreCapitan { get; set; } = null!;
+            public string ApellidoCapitan { get; set; } = null!;
             public string CorreoCapitan { get; set; } = null!;  
         }
 
@@ -107,7 +108,7 @@ namespace Proyecto.Server.DTOs
             public string NombreTorneo { get; set; } = null!;
             public int? PreInscripcionId { get; set; }
             public string Descripcion { get; set; } = null!;
-            public EquipoDTO.GetTeam Equipo { get; set; }
+            public EquipoDTO.GetTeam InfoEquipo { get; set; }
             public List<JugadorDTO> Jugadores { get; set; }
 
         }

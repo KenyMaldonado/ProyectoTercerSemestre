@@ -195,5 +195,23 @@ namespace Proyecto.Server.Controllers
             }
 
         }
+
+        [HttpGet("GetInformationRegistration")]
+        public async Task<IActionResult> GetInformationRegistration(int InscripcionId)
+        {
+            try
+            {
+                var datos = await _teamManagementBLL.GetInformationRegistration(InscripcionId);
+                return ResponseHelper.Success("Datos de la inscripcion", datos);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
     }
 }

@@ -266,8 +266,12 @@ namespace Proyecto.Server.BLL.Repository
                                      join j in _appDbContext.Jugadors on c.JugadorId equals j.JugadorId
                                      join je in _appDbContext.JugadorEquipos on j.JugadorId equals je.JugadorId
                                      where je.EquipoId == i.EquipoId
-                                     select j.Nombre + " " + j.Apellido).FirstOrDefault() ?? "No encontrado",
-
+                                     select j.Nombre).FirstOrDefault() ?? "No encontrado",
+                    ApellidoCapitan = (from c in _appDbContext.Capitans
+                                       join j in _appDbContext.Jugadors on c.JugadorId equals j.JugadorId
+                                       join je in _appDbContext.JugadorEquipos on j.JugadorId equals je.JugadorId
+                                       where je.EquipoId == i.EquipoId
+                                       select j.Apellido).FirstOrDefault() ?? "No encontrado",
                     CorreoCapitan = (from c in _appDbContext.Capitans
                                      join j in _appDbContext.Jugadors on c.JugadorId equals j.JugadorId
                                      join je in _appDbContext.JugadorEquipos on j.JugadorId equals je.JugadorId
@@ -278,6 +282,72 @@ namespace Proyecto.Server.BLL.Repository
 
             return listado;
         }
+
+
+        public async Task<RegistrationTournamentsDTO.GetInformationRegistration> GetDatosInscripcion(int inscripcionId)
+        {
+            var resultado = await _appDbContext.Inscripcions
+                .Where(i => i.InscripcionId == inscripcionId)
+                .Select(i => new RegistrationTournamentsDTO.GetInformationRegistration
+                {
+                    InscripcionID = i.InscripcionId,
+                    Estado = i.Estado.ToString(),
+                    FechaInscripcion = i.FechaInscripcion,
+                    IdSubtorneo = i.SubTorneoId,
+                    NombreSubtorneo = i.SubTorneo.Categoria,
+                    NombreTorneo = i.SubTorneo.Torneo.Nombre,
+                    PreInscripcionId = i.PreInscripcionId,
+                    Descripcion = i.ComentarioInscripcion ?? "No se ha modificado",
+                    InfoEquipo = new EquipoDTO.GetTeam
+                    {
+                        EquipoId = i.EquipoId,
+                        Nombre = i.Equipo.Nombre,
+                        ColorUniforme = i.Equipo.ColorUniforme,
+                        ColorUniformeSecundario = i.Equipo.ColorUniformeSecundario,
+                        Estado = (EquipoDTO.EstadoEquipo)i.Equipo.Estado,
+                        ImagenEquipo = i.Equipo.ImagenEquipo,
+                        FacultadId = i.Equipo.FacultadId,
+                        NameFacultad = i.Equipo.Facultad.Nombre
+                    },
+                    Jugadores = i.Equipo.JugadorEquipos
+                    .Where(j => j.EquipoId == i.EquipoId && j.Estado == true)
+                    .Select(j => new JugadorDTO
+                    {
+                        JugadorId = j.JugadorId,
+                        Nombre = j.Jugador.Nombre,
+                        Apellido = j.Jugador.Apellido,
+                        Carne = j.Jugador.Carne,
+                        Fotografia = j.Jugador.Fotografia,
+                        Estado =(JugadorDTO.EstadoJugador)j.Jugador.Estado,
+                        MunicipioId = j.Jugador.MunicipioId,
+                        MunicipioName = j.Jugador.Municipio.Nombre,
+                        DepartamentoId = j.Jugador.Municipio.DepartamentoId,
+                        DepartamentoName = j.Jugador.Municipio.Departamento.Nombre,
+                        CarreraId = j.Jugador.CarreraSemestre.CarreraId,
+                        CarreraName = j.Jugador.CarreraSemestre.CarreraId1Navigation.Nombre,
+                        CarreraSemestreId = j.Jugador.CarreraSemestreId,
+                        Semestre = j.Jugador.CarreraSemestre.Semestre,
+                        Seccion = j.Jugador.CarreraSemestre.Seccion,
+                        CodigoCarrera = j.Jugador.CarreraSemestre.CodigoCarrera,
+                        FechaNacimiento = j.Jugador.FechaNacimiento,
+                        Edad = j.Jugador.Edad,
+                        Telefono = j.Jugador.Telefono,
+                        asignacion = new JugadorDTO.JugadorEquipoDTO
+                        {
+                            PosicionId = j.PosicionId,
+                            PosicionName = j.Posicion.Nombre,
+                            Dorsal = j.Dorsal,
+                            EquipoId = j.EquipoId,
+                            Estado = j.Estado
+                        }
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync(); // Cambiado de `ToListAsync()` si solo quieres un resultado
+
+            return resultado;
+        }
+
+
 
         public async Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripcionesBySubTorneo(int subTorneo)
         {
