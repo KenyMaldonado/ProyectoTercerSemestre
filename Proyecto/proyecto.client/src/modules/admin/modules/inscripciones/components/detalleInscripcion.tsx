@@ -6,6 +6,7 @@ interface Jugador {
   apellido: string;
   carne: number;
   edad: number;
+  fotoPerfil?: string | null;
   asignacion: {
     posicionName: string;
     dorsal: number;
@@ -15,6 +16,7 @@ interface Jugador {
 interface InfoEquipo {
   nombre: string;
   colorUniforme: string;
+  colorUniformeSecundario: string;
   imagenEquipo: string;
   nameFacultad: string;
 }
@@ -29,7 +31,7 @@ interface DatosInscripcion {
   codigo: string;
   nombreEquipo: string;
   nombreCapitan: string;
-  apellidoCapitan?: string; // Agregado para apellido si lo usas en el formulario
+  apellidoCapitan?: string;
   correoCapitan: string;
   infoEquipo: InfoEquipo;
   jugadores: Jugador[];
@@ -55,15 +57,12 @@ const DetalleInscripcion: React.FC = () => {
   const [datos, setDatos] = useState<DatosInscripcion | null>(null);
   const [cargando, setCargando] = useState(true);
 
-  // Función para obtener datos simples (string o number) con fallback entre datos y estado previo (ins)
   const mostrarDato = (campo: CamposSimples) => {
-    // Primero intentamos datos del API, si no existe fallback a ins (estado previo)
     if (datos && datos[campo] !== undefined && datos[campo] !== null) return datos[campo];
     if (ins && ins[campo] !== undefined && ins[campo] !== null) return ins[campo];
     return '';
   };
 
-  // Función para datos del objeto infoEquipo
   const mostrarDatoEquipo = (campo: keyof InfoEquipo) => {
     if (datos?.infoEquipo && datos.infoEquipo[campo]) return datos.infoEquipo[campo];
     return '';
@@ -96,6 +95,7 @@ const DetalleInscripcion: React.FC = () => {
     <div className="container mt-5 mb-5">
       <h2 className="mb-4 text-center">Formulario Detalle de Inscripción</h2>
 
+      {/* INFORMACIÓN GENERAL */}
       <div className="card shadow p-4 mb-4">
         <h4 className="mb-3">Información General</h4>
         <div className="row g-3">
@@ -112,11 +112,7 @@ const DetalleInscripcion: React.FC = () => {
             <input
               type="text"
               className="form-control"
-              value={
-                mostrarDato('fechaInscripcion')
-                  ? new Date(mostrarDato('fechaInscripcion') as string).toLocaleDateString()
-                  : ''
-              }
+              value={mostrarDato('fechaInscripcion') ? new Date(mostrarDato('fechaInscripcion') as string).toLocaleDateString() : ''}
               disabled
             />
           </div>
@@ -135,6 +131,7 @@ const DetalleInscripcion: React.FC = () => {
         </div>
       </div>
 
+      {/* INFORMACIÓN DEL CAPITÁN */}
       <div className="card shadow p-4 mb-4">
         <h4 className="mb-3">Información del Capitán</h4>
         <div className="row g-3">
@@ -153,6 +150,7 @@ const DetalleInscripcion: React.FC = () => {
         </div>
       </div>
 
+      {/* INFORMACIÓN DEL EQUIPO */}
       <div className="card shadow p-4 mb-4">
         <h4 className="mb-3">Equipo</h4>
         <div className="row g-3">
@@ -170,10 +168,13 @@ const DetalleInscripcion: React.FC = () => {
                 <label className="form-label">Color del Uniforme</label>
                 <input type="text" className="form-control" value={mostrarDatoEquipo('colorUniforme')} disabled />
               </div>
+              <div className="col-md-6">
+                <label className="form-label">Color Uniforme Secundario</label>
+                <input type="text" className="form-control" value={mostrarDatoEquipo('colorUniformeSecundario')} disabled />
+              </div>
             </div>
           </div>
           <div className="col-md-4 text-center">
-            <label className="form-label">Imagen del Equipo</label>
             {datos?.infoEquipo?.imagenEquipo ? (
               <img
                 src={datos.infoEquipo.imagenEquipo}
@@ -188,33 +189,92 @@ const DetalleInscripcion: React.FC = () => {
         </div>
       </div>
 
+      {/* JUGADORES */}
       <div className="card shadow p-4">
         <h4 className="mb-3">Jugadores</h4>
-        <div className="table-responsive">
-          <table className="table table-bordered table-hover">
-            <thead className="table-light">
-              <tr>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Carné</th>
-                <th>Edad</th>
-                <th>Posición</th>
-                <th>Dorsal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(datos?.jugadores ?? []).map((jugador, index) => (
-                <tr key={index}>
-                  <td>{jugador.nombre}</td>
-                  <td>{jugador.apellido}</td>
-                  <td>{jugador.carne}</td>
-                  <td>{jugador.edad}</td>
-                  <td>{jugador.asignacion?.posicionName}</td>
-                  <td>{jugador.asignacion?.dorsal}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+          {(datos?.jugadores ?? []).map((jugador, index) => (
+            <div key={index} className="col">
+              <div className="card h-100 border rounded shadow-sm">
+                <div className="card-body text-center">
+                  <img
+                    src={jugador.fotoPerfil ?? 'https://documentstorneoumes.blob.core.windows.net/asset/ImagenJugadorNull.png'}
+                    alt={`${jugador.nombre} ${jugador.apellido}`}
+                    className="rounded-circle mb-2"
+                    style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                  />
+                  <h6 className="mb-1">{jugador.nombre} {jugador.apellido}</h6>
+                  <p className="mb-1 text-muted" style={{ fontSize: '0.85rem' }}>Carné: {jugador.carne}</p>
+                  <p className="mb-1" style={{ fontSize: '0.85rem' }}>Edad: {jugador.edad}</p>
+                  <p className="mb-0" style={{ fontSize: '0.85rem' }}>
+                    Posición: <strong>{jugador.asignacion?.posicionName}</strong><br />
+                    Dorsal: <strong>{jugador.asignacion?.dorsal}</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* BOTONES */}
+      <div className="mt-4 d-flex justify-content-center gap-3">
+        <button className="btn btn-success" onClick={() => alert('✅ Inscripción confirmada')}>
+          Confirmar inscripción
+        </button>
+        <button className="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCorrecciones">
+          Requiere correcciones
+        </button>
+        <button
+          className="btn btn-danger"
+          onClick={() => {
+            if (window.confirm('¿Estás seguro de que deseas rechazar esta inscripción definitivamente?')) {
+              alert('❌ Inscripción rechazada definitivamente');
+            }
+          }}
+        >
+          Rechazar inscripción
+        </button>
+      </div>
+
+      {/* MODAL PARA CORRECCIONES */}
+      <div
+        className="modal fade"
+        id="modalCorrecciones"
+        tabIndex={-1}
+        aria-labelledby="modalCorreccionesLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="modalCorreccionesLabel">Observaciones del administrador</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div className="modal-body">
+              <label htmlFor="motivo" className="form-label">Motivo de corrección:</label>
+              <textarea id="motivo" className="form-control" rows={4}></textarea>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button
+                type="button"
+                className="btn btn-warning"
+                onClick={() => {
+                  const motivo = (document.getElementById('motivo') as HTMLTextAreaElement)?.value;
+                  if (!motivo.trim()) {
+                    alert('Debes ingresar una observación.');
+                    return;
+                  }
+                  alert(`⚠️ Inscripción enviada a corrección: ${motivo}`);
+                  (document.getElementById('motivo') as HTMLTextAreaElement).value = '';
+                  (document.getElementById('modalCorrecciones') as any)?.classList?.remove('show');
+                }}
+              >
+                Enviar observación
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

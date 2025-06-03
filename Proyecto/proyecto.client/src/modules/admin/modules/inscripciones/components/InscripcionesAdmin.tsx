@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaRegIdCard } from 'react-icons/fa';
-import { obtenerInscripciones, Inscripcion } from '../../../services/api';
+import { obtenerInscripciones, Inscripcion as InscripcionBase } from '../../../services/api';
+
+interface Inscripcion extends InscripcionBase {}
 
 const nombresEstados: Record<string, string> = {
   EnRevision: 'En Revisión',
@@ -59,7 +61,7 @@ const InscripcionesAdmin: React.FC = () => {
 
   const formatearFecha = (fechaISO: string): string => {
     const fecha = new Date(fechaISO);
-    return fecha.toLocaleDateString('es-ES'); // dd/mm/yyyy
+    return fecha.toLocaleDateString('es-ES');
   };
 
   const formatearHora = (fechaISO: string): string => {
@@ -131,9 +133,11 @@ const InscripcionesAdmin: React.FC = () => {
                       <td className="p-2 whitespace-nowrap">{ins.descripcion}</td>
                       <td className="p-2 whitespace-nowrap">
                         <button
-                          onClick={() => navigate(`/admin/inscripciones/${ins.inscripcionId}`, {
-                            state: { ...ins }
-                          })}
+                          onClick={() =>
+                            navigate(`/admin/inscripciones/${ins.inscripcionId}`, {
+                              state: { ...ins },
+                            })
+                          }
                           className="text-blue-600 hover:underline"
                         >
                           Ver detalles
@@ -158,3 +162,4 @@ const InscripcionesAdmin: React.FC = () => {
 };
 
 export default InscripcionesAdmin;
+
