@@ -88,19 +88,37 @@ const Torneos: React.FC = () => {
     }
 
     const hoy = new Date();
-  const inicioTorneo = new Date(nuevoTorneo.fechaInicio);
-  const finTorneo = new Date(nuevoTorneo.fechaFin);
-  const finInscripcion = new Date(nuevoTorneo.fechaFinInscripcion);
+const inicioTorneo = new Date(nuevoTorneo.fechaInicio);
+const finTorneo = new Date(nuevoTorneo.fechaFin);
+const inicioInscripcion = new Date(nuevoTorneo.fechaInicioInscripcion);
+const finInscripcion = new Date(nuevoTorneo.fechaFinInscripcion);
 
-  if (inicioTorneo < hoy) {
-    toast.warning("📅 La fecha de inicio del torneo no puede ser menor a la fecha actual.");
-    return;
-  }
+// Validación 1: inicio del torneo después de hoy
+if (inicioTorneo < hoy) {
+  toast.warning("📅 La fecha de inicio del torneo no puede ser menor a la fecha actual.");
+  return;
+}
 
-  if (finTorneo < finInscripcion) {
-    toast.warning("📅 La fecha de finalización del torneo no puede ser menor a la fecha fin de inscripción.");
-    return;
-  }
+if (inicioInscripcion >= inicioTorneo) {
+  toast.warning("🚫 La fecha de inicio de inscripción debe ser antes del inicio del torneo.");
+  return;
+}
+
+if (finInscripcion >= inicioTorneo) {
+  toast.warning("🚫 La fecha fin de inscripción debe ser antes del inicio del torneo.");
+  return;
+}
+
+if (nuevoTorneo.fechaInicio === nuevoTorneo.fechaFin) {
+  toast.warning("🚫 La fecha de inicio y fin del torneo no pueden ser iguales.");
+  return;
+}
+
+if (finTorneo < finInscripcion) {
+  toast.warning("📅 La fecha de finalización del torneo no puede ser menor a la fecha fin de inscripción.");
+  return;
+}
+
 
     const torneoData = {
       ...nuevoTorneo,
