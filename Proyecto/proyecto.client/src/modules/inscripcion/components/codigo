@@ -1,60 +1,69 @@
-const payload = {
-        idSubtorneo: parseInt(selectedSubTournament),
-        preInscripcionId: parseInt(codigo),
-        capitan: {
-          jugadorCapitan: {
-            nombre: captain.nombre,
-            apellido: captain.apellido,
-            jugadorId: 0,
-            carne: parseInt(captain.carne),
-            fotografia: "",
-            municipioId: captain.municipioId,
-            carreraSemestreId: parseInt(captain.carreraSemestreId),
-            fechaNacimiento: captain.fechaNacimiento,
-            edad: captain.edad,
-            telefono: captain.telefono,
-            estado: 1,
-            estadoTexto: "Activo",
-            asignacion: {
-              posicionId: parseInt(captain.posicionId),
-              dorsal: parseInt(captain.dorsal),
-              equipoId: 0,
-              jugadorId: 0,
-              estado: true,
-            },
-          },
-          correoElectronico: email,
-          jugadorId: 0,
-        },
-        newTeam: {
-          equipoId: 0,
-          nombre: teamName,
-          colorUniforme: uniformColor,
-          colorUniformeSecundario: secondaryColor,
-          torneoId: parseInt(selectedTournament),
-          grupoId: 0,
-          facultadId: parseInt(captain.facultadId),
-          logoEquipo: imagenEquipo || "",
-        },
-        listaJugadores: players.map((p) => ({
-          nombre: p.nombre,
-          apellido: p.apellido,
-          jugadorId: 0,
-          carne: parseInt(p.carne),
-          fotografia: "",
-          municipioId: p.municipioId,
-          carreraSemestreId: parseInt(p.carreraSemestreId),
-          fechaNacimiento: p.fechaNacimiento,
-          edad: p.edad,
-          telefono: p.telefono,
-          estado: 1,
-          estadoTexto: "Activo",
-          asignacion: {
-            posicionId: parseInt(p.posicionId),
-            dorsal: parseInt(p.dorsal),
-            equipoId: 0,
-            jugadorId: 0,
-            estado: true,
-          },
-        })),
-      };
+// ... existing code ...
+<Form.Group className="mb-3">
+  <Form.Label>Departamento</Form.Label>
+  <Form.Select
+    value={player.departamentoId}
+    onChange={(e) => {
+      updatePlayer(
+        index,
+        "departamentoId",
+        e.target.value
+      );
+      updatePlayerDependentFields(
+        index,
+        "departamentoId",
+        e.target.value
+      );
+    }}
+    disabled={player.jugadorVerificado} // Cambiar esto
+  >
+    <option value="">Selecciona un departamento</option>
+    {departamentos.map((dep) => (
+      <option
+        key={dep.departamentoId}
+        value={dep.departamentoId}
+      >
+        {dep.nombre}
+      </option>
+    ))}
+  </Form.Select>
+</Form.Group>
+// ... existing code ...
+<Form.Group className="mb-3">
+  <Form.Label>Municipio</Form.Label>
+  <Form.Select
+    value={player.municipioId}
+    onChange={(e) =>
+      updatePlayer(index, "municipioId", e.target.value)
+    }
+    required
+    disabled={player.jugadorVerificado} // Agregar esto
+  >
+    <option value="">Selecciona un municipio</option>
+    {player.municipiosFiltrados &&
+    player.municipiosFiltrados.length > 0
+      ? player.municipiosFiltrados.map((mun) => (
+          <option
+            key={mun.municipioId}
+            value={mun.municipioId}
+          >
+            {mun.nombre}
+          </option>
+        ))
+      : municipios
+          .filter(
+            (m) =>
+              m.departamentoId ===
+              parseInt(player.departamentoId || "0")
+          )
+          .map((mun) => (
+            <option
+              key={mun.municipioId}
+              value={mun.municipioId}
+            >
+              {mun.nombre}
+            </option>
+          ))}
+  </Form.Select>
+</Form.Group>
+// ... existing code ...

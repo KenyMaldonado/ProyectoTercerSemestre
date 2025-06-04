@@ -76,7 +76,8 @@ const StepperHeader = ({ handleNext }: { handleNext: () => void }) => {
 const StepContent = () => {
   const stepper = useStepper();
   const [email, setEmail] = useState("");
-  const [codigo, setCodigo] = useState("");
+  const [preInscripcionId, setPreInscripcionId] = useState<number | null>(null);
+
   const [isCorreoValidado, setIsCorreoValidado] = useState(false);
   const [imagenEquipo, setImagenEquipo] = useState<string | null>(null);
   const correoRegex =
@@ -201,6 +202,7 @@ const StepContent = () => {
     apellido: "",
     carne: "",
     telefono: "",
+    departamentoId: 0,
     municipioId: 0,
     carreraSemestreId: 0,
     fechaNacimiento: "",
@@ -233,6 +235,7 @@ const StepContent = () => {
       jugadorVerificado: false,
       carrerasFiltradas: carrerasFiltradas,
       semestresFiltrados: [],
+      municipiosFiltrados: municipiosFiltrados,
       asignacion: {
         posicionId: "",
         posicionName: "",
@@ -244,6 +247,7 @@ const StepContent = () => {
     };
     setPlayers((prev) => [...prev, newPlayer]);
   };
+
   const handleNext = async () => {
     if (stepper.current.id === "capitan") {
       if (isCarneValido) {
@@ -283,6 +287,15 @@ const StepContent = () => {
       setMunicipiosFiltrados(filtrados);
     }
   }, [selectedDepartamentoId, municipios]);
+
+  useEffect(() => {
+    if (captain.departamentoId) {
+      const filtrados = municipios.filter(
+        (m) => m.departamentoId === parseInt(captain.departamentoId.toString())
+      );
+      setMunicipiosFiltrados(filtrados);
+    }
+  }, [captain.departamentoId, municipios]);
 
   useEffect(() => {
     if (captain.facultadId) {
@@ -349,6 +362,19 @@ const StepContent = () => {
         carreraId: "",
         carreraSemestreId: "",
         semestresFiltrados: [],
+      };
+    }
+
+    if (field === "departamentoId") {
+      // Filtrar municipios para el departamento seleccionado
+      const municipiosFiltrados = municipios.filter(
+        (m) => m.departamentoId === parseInt(value)
+      );
+      updated[index] = {
+        ...updated[index],
+        departamentoId: value,
+        municipioId: "", // Resetear el municipio
+        municipiosFiltrados: municipiosFiltrados,
       };
     }
 
@@ -450,16 +476,36 @@ const StepContent = () => {
 
       const payload = {
         idSubtorneo: parseInt(selectedSubTournament),
-        preInscripcionId: parseInt(codigo),
+        preInscripcionId: preInscripcionId,
         capitan: {
           jugadorCapitan: {
             nombre: captain.nombre,
             apellido: captain.apellido,
             jugadorId: 0,
-            carne: parseInt(captain.carne),
+            carne: Number.isInteger(parseInt(captain.carne))
+              ? parseInt(captain.carne)
+              : 0,
             fotografia: "",
             municipioId: captain.municipioId,
+            municipioName:
+              municipios.find((m) => m.municipioId === captain.municipioId)
+                ?.nombre || "",
+            departamentoId: captain.departamentoId,
+            departamentoName:
+              departamentos.find(
+                (d) => d.departamentoId === captain.departamentoId
+              )?.nombre || "",
+            carreraId: captain.carreraId,
+            carreraName:
+              carreras.find((c) => c.carreraId === captain.carreraId)?.nombre ||
+              "",
             carreraSemestreId: parseInt(captain.carreraSemestreId),
+            semestre: 0, // si no tienes este dato, déjalo en 0
+            seccion: "", // opcional si no usas
+            codigoCarrera:
+              semestresFiltrados.find(
+                (s) => s.carreraSemestreId === captain.carreraSemestreId
+              )?.codigoCarrera || "",
             fechaNacimiento: captain.fechaNacimiento,
             edad: captain.edad,
             telefono: captain.telefono,
@@ -467,10 +513,14 @@ const StepContent = () => {
             estadoTexto: "Activo",
             asignacion: {
               posicionId: parseInt(captain.posicionId),
+              posicionName:
+                posiciones.find((p) => p.posicionId === captain.posicionId)
+                  ?.nombrePosicion || "",
               dorsal: parseInt(captain.dorsal),
               equipoId: 0,
               jugadorId: 0,
               estado: true,
+              facultadID: parseInt(captain.facultadId),
             },
           },
           correoElectronico: email,
@@ -481,10 +531,22 @@ const StepContent = () => {
           nombre: teamName,
           colorUniforme: uniformColor,
           colorUniformeSecundario: secondaryColor,
-          torneoId: parseInt(selectedTournament),
+          subTorneoId: parseInt(selectedSubTournament),
           grupoId: 0,
           facultadId: parseInt(captain.facultadId),
-          logoEquipo: imagenEquipo || "",
+          nameFacultad:
+            facultades.find(
+              (f) => f.facultadId === parseInt(captain.facultadId)
+            )?.nombre || "",
+          imagenEquipo: imagenEquipo || "",
+          nameSubTournament:
+            subTournaments.find(
+              (s) => s.subTorneoId === parseInt(selectedSubTournament)
+            )?.categoria || "",
+          nameTournament:
+            tournaments.find((t) => t.torneoId === parseInt(selectedTournament))
+              ?.nombre || "",
+          estado: 1,
         },
         listaJugadores: players.map((p) => ({
           nombre: p.nombre,
@@ -492,8 +554,26 @@ const StepContent = () => {
           jugadorId: 0,
           carne: parseInt(p.carne),
           fotografia: "",
-          municipioId: p.municipioId,
+          municipioId: p.municipioId, // Podría ser string o número
+          municipioName:
+            municipios.find((m) => m.municipioId === parseInt(p.municipioId))
+              ?.nombre || "",
+          departamentoId: parseInt(p.departamentoId || 0),
+          departamentoName:
+            departamentos.find(
+              (d) => d.departamentoId === parseInt(p.departamentoId)
+            )?.nombre || "",
+          carreraId: parseInt(p.carreraId),
+          carreraName:
+            carreras.find((c) => c.carreraId === parseInt(p.carreraId))
+              ?.nombre || "",
           carreraSemestreId: parseInt(p.carreraSemestreId),
+          semestre: 0,
+          seccion: "",
+          codigoCarrera:
+            p.semestresFiltrados?.find(
+              (s) => s.carreraSemestreId === parseInt(p.carreraSemestreId)
+            )?.codigoCarrera || "",
           fechaNacimiento: p.fechaNacimiento,
           edad: p.edad,
           telefono: p.telefono,
@@ -501,13 +581,41 @@ const StepContent = () => {
           estadoTexto: "Activo",
           asignacion: {
             posicionId: parseInt(p.posicionId),
+            posicionName:
+              posiciones.find(
+                (pos) => pos.posicionId === parseInt(p.posicionId)
+              )?.nombrePosicion || "",
             dorsal: parseInt(p.dorsal),
             equipoId: 0,
             jugadorId: 0,
             estado: true,
+            facultadID: parseInt(p.facultadId),
           },
         })),
       };
+
+      // Antes de enviar el payload
+      console.log("PAYLOAD antes de conversión:", JSON.stringify(payload, null, 2));
+
+      // Asegurarse que todos los IDs sean números
+      payload.listaJugadores = payload.listaJugadores.map(jugador => ({
+        ...jugador,
+        municipioId: typeof jugador.municipioId === 'string' ? parseInt(jugador.municipioId) || 0 : jugador.municipioId,
+        departamentoId: typeof jugador.departamentoId === 'string' ? parseInt(jugador.departamentoId) || 0 : jugador.departamentoId,
+        carreraId: typeof jugador.carreraId === 'string' ? parseInt(jugador.carreraId) || 0 : jugador.carreraId,
+        carreraSemestreId: typeof jugador.carreraSemestreId === 'string' ? parseInt(jugador.carreraSemestreId) || 0 : jugador.carreraSemestreId,
+      }));
+
+      // Lo mismo para el capitán
+      payload.capitan.jugadorCapitan = {
+        ...payload.capitan.jugadorCapitan,
+        municipioId: typeof payload.capitan.jugadorCapitan.municipioId === 'string' ? 
+          parseInt(payload.capitan.jugadorCapitan.municipioId) || 0 : payload.capitan.jugadorCapitan.municipioId,
+        departamentoId: typeof payload.capitan.jugadorCapitan.departamentoId === 'string' ? 
+          parseInt(payload.capitan.jugadorCapitan.departamentoId) || 0 : payload.capitan.jugadorCapitan.departamentoId,
+      };
+
+      console.log("PAYLOAD después de conversión:", JSON.stringify(payload, null, 2));
 
       // Mostrar indicador de carga
       Swal.fire({
@@ -523,6 +631,7 @@ const StepContent = () => {
         "/TeamManagementControllers/CreateRegistrationTeam",
         payload
       );
+      console.log("PAYLOAD:", JSON.stringify(payload, null, 2));
 
       if (response.data.success) {
         Swal.fire(
@@ -555,13 +664,14 @@ const StepContent = () => {
 
       if (result.success && result.data && result.data.length > 0) {
         const jugador = result.data[0];
+        const estado = jugador.datosJugador.estadoTexto;
 
-        if (jugador.datosJugador.estadoTexto === "Libre") {
+        if (estado === "Libre") {
           setIsCarneValido(true);
           setShowCapitanForm(true);
           setJugadorVerificado(true);
 
-          // Llenar los campos con los datos del jugador
+          // Llenar los datos del capitán con campos bloqueados, excepto facultad
           setCaptain((prev) => ({
             ...prev,
             nombre: jugador.datosJugador.nombre,
@@ -570,69 +680,60 @@ const StepContent = () => {
             fechaNacimiento: jugador.datosJugador.fechaNacimiento.split("T")[0],
             edad: jugador.datosJugador.edad,
             municipioId: jugador.datosJugador.municipioId,
+            departamentoId: jugador.datosJugador.departamentoId,
             carreraSemestreId: jugador.datosJugador.carreraSemestreId,
             facultadId: jugador.datosJugador.facultadId || 0,
             posicionId: jugador.datosJugador.asignacion?.posicionId || 0,
             dorsal: jugador.datosJugador.asignacion?.dorsal || 0,
           }));
 
-          // Solo mostrar mensaje de confirmación sin pedir llenar formulario
           Swal.fire(
             "Jugador Encontrado",
-            "Los datos del jugador han sido cargados correctamente.",
+            "Los datos del jugador han sido cargados correctamente. Solo debes seleccionar la facultad.",
             "success"
           );
           return true;
-        } else if (jugador.datosJugador.estadoTexto === null) {
-          // Si estadoTexto es null, mostrar formulario completo
-          setIsCarneValido(false);
-          setShowCapitanForm(true);
-          setJugadorVerificado(false);
-
-          // Limpiar los campos del formulario excepto el carné
-          setCaptain((prev) => ({
-            ...prev,
-            nombre: "",
-            apellido: "",
-            telefono: "",
-            fechaNacimiento: "",
-            edad: 0,
-            facultadId: 0,
-            carreraSemestreId: 0,
-            municipioId: 0,
-            posicionId: 0,
-            dorsal: 0,
-          }));
-
-          // Aquí sí mostramos el mensaje de jugador no registrado
-          Swal.fire({
-            icon: "info",
-            title: "Jugador no registrado",
-            text: "Llena el formulario para crear un nuevo capitán.",
-            showConfirmButton: true,
-          });
-          return false;
         } else {
-          // Si tiene otro estado, no está disponible
+          // Cualquier estado distinto a "Libre"
           setIsCarneValido(false);
           setShowCapitanForm(false);
           setJugadorVerificado(false);
+
           Swal.fire(
             "Jugador No Disponible",
-            "El jugador no está disponible para inscripción.",
+            "Este jugador ya se encuentra inscrito en otro torneo o tiene una restricción.",
             "warning"
           );
           return false;
         }
       } else {
+        // Jugador no encontrado en la base
         setIsCarneValido(false);
-        setShowCapitanForm(false);
+        setShowCapitanForm(true);
         setJugadorVerificado(false);
-        Swal.fire(
-          "Error de Validación",
-          "No se pudo verificar el estado del jugador.",
-          "error"
-        );
+
+        // Resetear campos para permitir llenado manual
+        setCaptain((prev) => ({
+          ...prev,
+          nombre: "",
+          apellido: "",
+          telefono: "",
+          fechaNacimiento: "",
+          edad: 0,
+          facultadId: 0,
+          municipioId: 0,
+          departamentoId: 0,
+          carreraSemestreId: 0,
+          posicionId: 0,
+          dorsal: 0,
+        }));
+
+        Swal.fire({
+          icon: "info",
+          title: "Jugador no registrado",
+          text: "Llena el formulario para registrar un nuevo capitán.",
+          showConfirmButton: true,
+        });
         return false;
       }
     } catch (error) {
@@ -640,6 +741,7 @@ const StepContent = () => {
       setShowCapitanForm(false);
       setJugadorVerificado(false);
       console.error("Error al verificar el jugador", error);
+
       Swal.fire("Error", "No se pudo verificar el jugador", "error");
       return false;
     }
@@ -680,11 +782,11 @@ const StepContent = () => {
           telefono: "",
           fechaNacimiento: "",
           edad: 0,
+          departamentoId: jugador.datosJugador.departamentoId || 0,
           municipioId: 0,
           carreraSemestreId: 0,
           facultadId: "",
           carreraId: "",
-          departamentoId: "",
           posicionId: "",
           jugadorVerificado: false,
         };
@@ -710,6 +812,15 @@ const StepContent = () => {
             (c) => c.facultadId === parseInt(facultadId)
           );
 
+          // Filtrar municipios para este jugador
+          const municipiosFiltrados = captain.departamentoId
+            ? municipios.filter(
+                (m) =>
+                  m.departamentoId ===
+                  parseInt(captain.departamentoId.toString())
+              )
+            : [];
+
           updatedPlayers[index] = {
             ...updatedPlayers[index],
             carne: carne,
@@ -720,6 +831,7 @@ const StepContent = () => {
               ? jugador.datosJugador.fechaNacimiento.split("T")[0]
               : "",
             edad: jugador.datosJugador.edad || 0,
+            departamentoId: jugador.datosJugador.departamentoId || 0,
             municipioId: jugador.datosJugador.municipioId || 0,
             facultadId: facultadId,
             carreraId: "",
@@ -727,6 +839,7 @@ const StepContent = () => {
             jugadorVerificado: true,
             carrerasFiltradas: carrerasFiltradas,
             semestresFiltrados: [],
+            municipiosFiltrados: municipiosFiltrados,
           };
 
           setPlayers(updatedPlayers);
@@ -795,7 +908,14 @@ const StepContent = () => {
                         }
                       );
                       if (response.data.success) {
-                        setCodigo(response.data.data.codigo);
+                        setPreInscripcionId(
+                          response.data.data.preInscripcionId
+                        );
+
+                        console.log(
+                          "Código recibido:",
+                          response.data.data.codigo
+                        );
                         setIsCorreoValidado(true);
                         Swal.fire(
                           "Código asignado",
@@ -923,6 +1043,54 @@ const StepContent = () => {
                       }
                       disabled={isCarneValido}
                     />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Departamento</Form.Label>
+                    <Form.Select
+                      value={captain.departamentoId}
+                      onChange={(e) => {
+                        const depId = e.target.value;
+                        setCaptain({
+                          ...captain,
+                          departamentoId: parseInt(depId),
+                          // municipioId: 0, // reset municipio
+                        });
+                        setSelectedDepartamentoId(depId); // para cargar municipios
+                      }}
+                      disabled={isCarneValido}
+                    >
+                      <option value="">Selecciona un departamento</option>
+                      {departamentos.map((dep) => (
+                        <option
+                          key={dep.departamentoId}
+                          value={dep.departamentoId}
+                        >
+                          {dep.nombre}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Municipio</Form.Label>
+                    <Form.Select
+                      value={captain.municipioId}
+                      onChange={(e) =>
+                        setCaptain({
+                          ...captain,
+                          municipioId: parseInt(e.target.value),
+                        })
+                      }
+                      disabled={isCarneValido}
+                    >
+                      <option value="">Selecciona un municipio</option>
+                      {municipiosFiltrados.map((mun) => (
+                        <option key={mun.municipioId} value={mun.municipioId}>
+                          {mun.nombre}
+                        </option>
+                      ))}
+                    </Form.Select>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
@@ -1126,7 +1294,13 @@ const StepContent = () => {
                       <Form.Label>Carrera</Form.Label>
                       <Form.Select
                         value={selectedCarreraId}
-                        onChange={(e) => setSelectedCarreraId(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedCarreraId(e.target.value);
+                          setCaptain({
+                            ...captain,
+                            carreraId: parseInt(e.target.value),
+                          });
+                        }}
                         required
                       >
                         <option value="">Selecciona una carrera</option>
@@ -1145,11 +1319,11 @@ const StepContent = () => {
                     <Form.Group className="mb-3">
                       <Form.Label>Semestre</Form.Label>
                       <Form.Select
-                        value={captain.carreraId}
+                        value={captain.carreraSemestreId}
                         onChange={(e) => {
                           setCaptain({
                             ...captain,
-                            carreraId: parseInt(e.target.value),
+                            carreraSemestreId: parseInt(e.target.value),
                           });
                         }}
                         required
@@ -1157,8 +1331,8 @@ const StepContent = () => {
                         <option value="">Selecciona un semestre</option>
                         {semestresFiltrados.map((semestre) => (
                           <option
-                            key={semestre.carreraId}
-                            value={semestre.carreraId}
+                            key={semestre.carreraSemestreId}
+                            value={semestre.carreraSemestreId}
                           >
                             {semestre.codigoCarrera}
                           </option>
@@ -1293,7 +1467,80 @@ const StepContent = () => {
                       </div>
                     </div>
 
-                    {/* Fecha de Nacimiento */}
+                    {/* Departamento y Municipio */}
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Departamento</Form.Label>
+                          <Form.Select
+                            value={player.departamentoId}
+                            onChange={(e) => {
+                              updatePlayer(
+                                index,
+                                "departamentoId",
+                                e.target.value
+                              );
+                              updatePlayerDependentFields(
+                                index,
+                                "departamentoId",
+                                e.target.value
+                              );
+                            }}
+                            disabled={player.jugadorVerificado} // Cambiar esto
+                          >
+                            <option value="">Selecciona un departamento</option>
+                            {departamentos.map((dep) => (
+                              <option
+                                key={dep.departamentoId}
+                                value={dep.departamentoId}
+                              >
+                                {dep.nombre}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Group className="mb-3">
+                          <Form.Label>Municipio</Form.Label>
+                          <Form.Select
+                            value={player.municipioId}
+                            onChange={(e) =>
+                              updatePlayer(index, "municipioId", e.target.value)
+                            }
+                            required
+                            disabled={player.jugadorVerificado} // Agregar esto
+                          >
+                            <option value="">Selecciona un municipio</option>
+                            {player.municipiosFiltrados &&
+                            player.municipiosFiltrados.length > 0
+                              ? player.municipiosFiltrados.map((mun) => (
+                                  <option
+                                    key={mun.municipioId}
+                                    value={mun.municipioId}
+                                  >
+                                    {mun.nombre}
+                                  </option>
+                                ))
+                              : municipios
+                                  .filter(
+                                    (m) =>
+                                      m.departamentoId ===
+                                      parseInt(player.departamentoId || "0")
+                                  )
+                                  .map((mun) => (
+                                    <option
+                                      key={mun.municipioId}
+                                      value={mun.municipioId}
+                                    >
+                                      {mun.nombre}
+                                    </option>
+                                  ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </div>
+                    </div>
+
                     <div className="row">
                       <div className="col-md-6">
                         <Form.Group className="mb-3">
@@ -1392,8 +1639,8 @@ const StepContent = () => {
                             player.semestresFiltrados.length > 0 ? (
                               player.semestresFiltrados.map((semestre) => (
                                 <option
-                                  key={semestre.carreraId}
-                                  value={semestre.carreraId}
+                                  key={semestre.carreraSemestreId}
+                                  value={semestre.carreraSemestreId}
                                 >
                                   {semestre.codigoCarrera}
                                 </option>
@@ -1495,8 +1742,8 @@ const StepContent = () => {
                         <strong>Subtorneo:</strong>{" "}
                         {subTournaments.find(
                           (s) =>
-                            s.subtorneoId === parseInt(selectedSubTournament)
-                        )?.nombre || "No seleccionado"}
+                            s.subTorneoId === parseInt(selectedSubTournament)
+                        )?.categoria || "No seleccionado"}
                       </p>
                     </div>
                   </div>
@@ -1624,7 +1871,7 @@ const StepContent = () => {
                         <strong>Semestre:</strong>{" "}
                         {semestresFiltrados.find(
                           (s) =>
-                            s.carreraSemestreId ===
+                            parseInt(s.carreraSemestreId) ===
                             parseInt(captain.carreraSemestreId)
                         )?.codigoCarrera || "No seleccionado"}
                       </p>
@@ -1632,7 +1879,7 @@ const StepContent = () => {
                         <strong>Posición:</strong>{" "}
                         {posiciones.find(
                           (p) => p.posicionId === parseInt(captain.posicionId)
-                        )?.nombre || "No seleccionada"}
+                        )?.nombrePosicion || "No seleccionada"}
                       </p>
                       <p>
                         <strong>Dorsal:</strong> {captain.dorsal}
@@ -1698,7 +1945,28 @@ const StepContent = () => {
                                     ).toLocaleDateString()}
                                   </p>
                                   <p>
-                                    <strong>Edad:</strong> {player.edad}
+                                    <strong>Edad:</strong>{" "}
+                                    {player.edad && player.edad > 0
+                                      ? player.edad
+                                      : (() => {
+                                          const birth = new Date(
+                                            player.fechaNacimiento
+                                          );
+                                          const today = new Date();
+                                          let age =
+                                            today.getFullYear() -
+                                            birth.getFullYear();
+                                          const m =
+                                            today.getMonth() - birth.getMonth();
+                                          if (
+                                            m < 0 ||
+                                            (m === 0 &&
+                                              today.getDate() < birth.getDate())
+                                          ) {
+                                            age--;
+                                          }
+                                          return age;
+                                        })()}
                                   </p>
                                 </div>
                                 <div className="col-md-4">
@@ -1740,17 +2008,17 @@ const StepContent = () => {
                                     <strong>Semestre:</strong>{" "}
                                     {player.semestresFiltrados?.find(
                                       (s) =>
-                                        s.semestreId ===
+                                        parseInt(s.carreraSemestreId) ===
                                         parseInt(player.carreraSemestreId)
-                                    )?.nombre || "No seleccionado"}
+                                    )?.codigoCarrera || "No seleccionado"}
                                   </p>
                                   <p>
                                     <strong>Posición:</strong>{" "}
                                     {posiciones.find(
                                       (p) =>
                                         p.posicionId ===
-                                        parseInt(player.posicionId)
-                                    )?.nombre || "No seleccionada"}
+                                        parseInt(captain.posicionId)
+                                    )?.nombrePosicion || "No seleccionada"}
                                   </p>
                                   <p>
                                     <strong>Dorsal:</strong> {player.dorsal}
