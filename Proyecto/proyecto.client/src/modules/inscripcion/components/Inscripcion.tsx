@@ -209,6 +209,7 @@ const StepContent = () => {
     edad: 0,
     posicionId: 0,
     dorsal: 0,
+    facultadId: "",
   });
 
   const addPlayer = () => {
@@ -595,27 +596,49 @@ const StepContent = () => {
       };
 
       // Antes de enviar el payload
-      console.log("PAYLOAD antes de conversión:", JSON.stringify(payload, null, 2));
+      console.log(
+        "PAYLOAD antes de conversión:",
+        JSON.stringify(payload, null, 2)
+      );
 
       // Asegurarse que todos los IDs sean números
-      payload.listaJugadores = payload.listaJugadores.map(jugador => ({
+      payload.listaJugadores = payload.listaJugadores.map((jugador) => ({
         ...jugador,
-        municipioId: typeof jugador.municipioId === 'string' ? parseInt(jugador.municipioId) || 0 : jugador.municipioId,
-        departamentoId: typeof jugador.departamentoId === 'string' ? parseInt(jugador.departamentoId) || 0 : jugador.departamentoId,
-        carreraId: typeof jugador.carreraId === 'string' ? parseInt(jugador.carreraId) || 0 : jugador.carreraId,
-        carreraSemestreId: typeof jugador.carreraSemestreId === 'string' ? parseInt(jugador.carreraSemestreId) || 0 : jugador.carreraSemestreId,
+        municipioId:
+          typeof jugador.municipioId === "string"
+            ? parseInt(jugador.municipioId) || 0
+            : jugador.municipioId,
+        departamentoId:
+          typeof jugador.departamentoId === "string"
+            ? parseInt(jugador.departamentoId) || 0
+            : jugador.departamentoId,
+        carreraId:
+          typeof jugador.carreraId === "string"
+            ? parseInt(jugador.carreraId) || 0
+            : jugador.carreraId,
+        carreraSemestreId:
+          typeof jugador.carreraSemestreId === "string"
+            ? parseInt(jugador.carreraSemestreId) || 0
+            : jugador.carreraSemestreId,
       }));
 
       // Lo mismo para el capitán
       payload.capitan.jugadorCapitan = {
         ...payload.capitan.jugadorCapitan,
-        municipioId: typeof payload.capitan.jugadorCapitan.municipioId === 'string' ? 
-          parseInt(payload.capitan.jugadorCapitan.municipioId) || 0 : payload.capitan.jugadorCapitan.municipioId,
-        departamentoId: typeof payload.capitan.jugadorCapitan.departamentoId === 'string' ? 
-          parseInt(payload.capitan.jugadorCapitan.departamentoId) || 0 : payload.capitan.jugadorCapitan.departamentoId,
+        municipioId:
+          typeof payload.capitan.jugadorCapitan.municipioId === "string"
+            ? parseInt(payload.capitan.jugadorCapitan.municipioId) || 0
+            : payload.capitan.jugadorCapitan.municipioId,
+        departamentoId:
+          typeof payload.capitan.jugadorCapitan.departamentoId === "string"
+            ? parseInt(payload.capitan.jugadorCapitan.departamentoId) || 0
+            : payload.capitan.jugadorCapitan.departamentoId,
       };
 
-      console.log("PAYLOAD después de conversión:", JSON.stringify(payload, null, 2));
+      console.log(
+        "PAYLOAD después de conversión:",
+        JSON.stringify(payload, null, 2)
+      );
 
       // Mostrar indicador de carga
       Swal.fire({
@@ -664,9 +687,63 @@ const StepContent = () => {
 
       if (result.success && result.data && result.data.length > 0) {
         const jugador = result.data[0];
-        const estado = jugador.datosJugador.estadoTexto;
+        const estado = jugador.aprobado;
 
-        if (estado === "Libre") {
+        // CASO 1: Jugador no elegible (aprobado: false)
+        if (!estado) {
+          setIsCarneValido(false);
+          setShowCapitanForm(false);
+          setJugadorVerificado(false);
+
+          Swal.fire(
+            "Jugador No Disponible",
+            "Este jugador ya se encuentra inscrito en otro torneo o tiene una restricción.",
+            "warning"
+          );
+          return false;
+        }
+
+        // CASO 2: Jugador nuevo o sin registrar (aprobado: true, datosJugador con valores null)
+        if (
+          estado &&
+          jugador.datosJugador &&
+          jugador.datosJugador.nombre === null
+        ) {
+          setIsCarneValido(true);
+          setShowCapitanForm(true);
+          setJugadorVerificado(false);
+
+          // Resetear campos para permitir llenado manual
+          setCaptain((prev) => ({
+            ...prev,
+            nombre: "",
+            apellido: "",
+            telefono: "",
+            fechaNacimiento: "",
+            edad: 0,
+            facultadId: 0,
+            municipioId: 0,
+            departamentoId: 0,
+            carreraSemestreId: 0,
+            posicionId: 0,
+            dorsal: 0,
+          }));
+
+          Swal.fire({
+            icon: "info",
+            title: "Jugador no registrado",
+            text: "Llena el formulario para registrar un nuevo capitán.",
+            showConfirmButton: true,
+          });
+          return true;
+        }
+
+        // CASO 3: Jugador existente con datos (aprobado: true, datosJugador con valores)
+        if (
+          estado &&
+          jugador.datosJugador &&
+          jugador.datosJugador.nombre !== null
+        ) {
           setIsCarneValido(true);
           setShowCapitanForm(true);
           setJugadorVerificado(true);
@@ -693,18 +770,6 @@ const StepContent = () => {
             "success"
           );
           return true;
-        } else {
-          // Cualquier estado distinto a "Libre"
-          setIsCarneValido(false);
-          setShowCapitanForm(false);
-          setJugadorVerificado(false);
-
-          Swal.fire(
-            "Jugador No Disponible",
-            "Este jugador ya se encuentra inscrito en otro torneo o tiene una restricción.",
-            "warning"
-          );
-          return false;
         }
       } else {
         // Jugador no encontrado en la base
@@ -782,7 +847,7 @@ const StepContent = () => {
           telefono: "",
           fechaNacimiento: "",
           edad: 0,
-          departamentoId: jugador.datosJugador.departamentoId || 0,
+          departamentoId: 0,
           municipioId: 0,
           carreraSemestreId: 0,
           facultadId: "",
@@ -802,17 +867,71 @@ const StepContent = () => {
       if (result.success && result.data && result.data.length > 0) {
         const jugador = result.data[0];
 
-        if (jugador.datosJugador.estadoTexto === "Libre") {
+        // CASO 1: Jugador no elegible (aprobado: false, datosJugador: null)
+        if (!jugador.aprobado && jugador.datosJugador === null) {
+          Swal.fire(
+            "Jugador No Disponible",
+            "Este jugador ya se encuentra inscrito en otro torneo o tiene una restricción.",
+            "error"
+          );
+          return;
+        }
+
+        // CASO 2: Jugador nuevo o sin registrar (aprobado: true, datosJugador con valores null)
+        if (
+          jugador.aprobado &&
+          jugador.datosJugador &&
+          (jugador.datosJugador.nombre === null ||
+            jugador.datosJugador.nombre === undefined)
+        ) {
+          // Permitir entrada manual - Desplegar formulario
           const updatedPlayers = [...players];
-          // Usar la facultad del capitán en lugar de la del jugador
           const facultadId = captain.facultadId || "";
 
-          // Filtrar carreras para este jugador específico basado en la facultad del capitán
           const carrerasFiltradas = carreras.filter(
             (c) => c.facultadId === parseInt(facultadId)
           );
 
-          // Filtrar municipios para este jugador
+          const municipiosFiltrados = captain.departamentoId
+            ? municipios.filter(
+                (m) =>
+                  m.departamentoId ===
+                  parseInt(captain.departamentoId.toString())
+              )
+            : [];
+
+          updatedPlayers[index] = {
+            ...updatedPlayers[index],
+            carne: carne,
+            jugadorVerificado: false,
+            carrerasFiltradas: carrerasFiltradas,
+            municipiosFiltrados: municipiosFiltrados,
+            facultadId: facultadId,
+          };
+          setPlayers(updatedPlayers);
+
+          Swal.fire(
+            "Jugador no registrado",
+            "Llena el formulario para registrar un nuevo jugador.",
+            "info"
+          );
+          return;
+        }
+
+        // CASO 3: Jugador existente con datos (aprobado: true, datosJugador con valores)
+        if (
+          jugador.aprobado &&
+          jugador.datosJugador &&
+          jugador.datosJugador.nombre !== null &&
+          jugador.datosJugador.nombre !== undefined
+        ) {
+          const updatedPlayers = [...players];
+          const facultadId = captain.facultadId || "";
+
+          const carrerasFiltradas = carreras.filter(
+            (c) => c.facultadId === parseInt(facultadId)
+          );
+
           const municipiosFiltrados = captain.departamentoId
             ? municipios.filter(
                 (m) =>
@@ -849,14 +968,31 @@ const StepContent = () => {
             "Los datos del jugador han sido cargados correctamente. Selecciona la carrera y el semestre.",
             "success"
           );
+          return;
         }
       } else {
-        // Jugador no encontrado
+        // Carné no existe en la base de datos, permitir entrada manual
         const updatedPlayers = [...players];
+        const facultadId = captain.facultadId || "";
+
+        const carrerasFiltradas = carreras.filter(
+          (c) => c.facultadId === parseInt(facultadId)
+        );
+
+        const municipiosFiltrados = captain.departamentoId
+          ? municipios.filter(
+              (m) =>
+                m.departamentoId === parseInt(captain.departamentoId.toString())
+            )
+          : [];
+
         updatedPlayers[index] = {
           ...updatedPlayers[index],
           carne: carne,
           jugadorVerificado: false,
+          carrerasFiltradas: carrerasFiltradas,
+          municipiosFiltrados: municipiosFiltrados,
+          facultadId: facultadId,
         };
         setPlayers(updatedPlayers);
 
@@ -1030,7 +1166,7 @@ const StepContent = () => {
                         setCaptain({ ...captain, nombre: e.target.value })
                       }
                       required
-                      disabled={isCarneValido}
+                      disabled={isCarneValido && jugadorVerificado} // Only disable if both are true
                     />
                   </Form.Group>
 
@@ -1041,66 +1177,73 @@ const StepContent = () => {
                       onChange={(e) =>
                         setCaptain({ ...captain, apellido: e.target.value })
                       }
-                      disabled={isCarneValido}
+                      disabled={isCarneValido && jugadorVerificado} // Only disable if both are true
                     />
                   </Form.Group>
 
                   <Form.Group className="mb-3">
                     <Form.Label>Departamento</Form.Label>
-                    <Form.Select
+                    <Form.Control
+                      as="select"
                       value={captain.departamentoId}
-                      onChange={(e) => {
-                        const depId = e.target.value;
+                      onChange={(e) =>
                         setCaptain({
                           ...captain,
-                          departamentoId: parseInt(depId),
-                          // municipioId: 0, // reset municipio
-                        });
-                        setSelectedDepartamentoId(depId); // para cargar municipios
-                      }}
-                      disabled={isCarneValido}
+                          departamentoId: e.target.value,
+                        })
+                      }
+                      required
+                      disabled={isCarneValido && jugadorVerificado} // Solo deshabilitar si ambos son verdaderos
                     >
                       <option value="">Selecciona un departamento</option>
-                      {departamentos.map((dep) => (
+                      {departamentos.map((departamento) => (
                         <option
-                          key={dep.departamentoId}
-                          value={dep.departamentoId}
+                          key={departamento.departamentoId}
+                          value={departamento.departamentoId}
                         >
-                          {dep.nombre}
+                          {departamento.nombre}
                         </option>
                       ))}
-                    </Form.Select>
+                    </Form.Control>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
                     <Form.Label>Municipio</Form.Label>
-                    <Form.Select
+                    <Form.Control
+                      as="select"
                       value={captain.municipioId}
                       onChange={(e) =>
-                        setCaptain({
-                          ...captain,
-                          municipioId: parseInt(e.target.value),
-                        })
+                        setCaptain({ ...captain, municipioId: e.target.value })
                       }
-                      disabled={isCarneValido}
+                      required
+                      disabled={isCarneValido && jugadorVerificado} // Solo deshabilitar si ambos son verdaderos
                     >
                       <option value="">Selecciona un municipio</option>
-                      {municipiosFiltrados.map((mun) => (
-                        <option key={mun.municipioId} value={mun.municipioId}>
-                          {mun.nombre}
-                        </option>
-                      ))}
-                    </Form.Select>
+                      {municipios
+                        .filter(
+                          (municipio) =>
+                            municipio.departamentoId === captain.departamentoId
+                        )
+                        .map((municipio) => (
+                          <option
+                            key={municipio.municipioId}
+                            value={municipio.municipioId}
+                          >
+                            {municipio.nombre}
+                          </option>
+                        ))}
+                    </Form.Control>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
                     <Form.Label>Teléfono</Form.Label>
                     <Form.Control
+                      type="text"
                       value={captain.telefono}
                       onChange={(e) =>
                         setCaptain({ ...captain, telefono: e.target.value })
                       }
-                      disabled={isCarneValido}
+                      disabled={isCarneValido && jugadorVerificado} // Only disable if both are true
                     />
                   </Form.Group>
 
@@ -1109,27 +1252,13 @@ const StepContent = () => {
                     <Form.Control
                       type="date"
                       value={captain.fechaNacimiento}
-                      onChange={(e) => {
-                        const fecha = e.target.value;
-                        const hoy = new Date();
-                        const nacimiento = new Date(fecha);
-                        let edadCalculada =
-                          hoy.getFullYear() - nacimiento.getFullYear();
-                        const m = hoy.getMonth() - nacimiento.getMonth();
-                        if (
-                          m < 0 ||
-                          (m === 0 && hoy.getDate() < nacimiento.getDate())
-                        ) {
-                          edadCalculada--;
-                        }
-
-                        setCaptain((prev) => ({
-                          ...prev,
-                          fechaNacimiento: fecha,
-                          edad: edadCalculada,
-                        }));
-                      }}
-                      disabled={isCarneValido}
+                      onChange={(e) =>
+                        setCaptain({
+                          ...captain,
+                          fechaNacimiento: e.target.value,
+                        })
+                      }
+                      disabled={isCarneValido && jugadorVerificado} // Only disable if both are true
                     />
                   </Form.Group>
                 </>
@@ -2059,7 +2188,20 @@ const StepContent = () => {
           </Button>
           <Button
             variant="primary"
-            onClick={handleNext}
+            onClick={() => {
+              if (
+                stepper.current.id === "tipoTorneo" &&
+                (!selectedTournament || !selectedSubTournament)
+              ) {
+                Swal.fire(
+                  "Selección incompleta",
+                  "Por favor selecciona un torneo y un subtorneo",
+                  "warning"
+                );
+                return;
+              }
+              handleNext();
+            }}
             disabled={stepper.isLast}
           >
             Siguiente
