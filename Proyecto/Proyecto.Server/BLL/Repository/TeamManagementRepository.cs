@@ -144,13 +144,11 @@ namespace Proyecto.Server.BLL.Repository
 
         public async Task CreateNewRegistration(RegistrationTournamentsDTO.NewTeamRegistration datos)
         {
-            int EquipoIdNew = 0;
-
             using var transaction = await _appDbContext.Database.BeginTransactionAsync();
             try
             {
                 // 1. Insertar equipo
-                Equipo equipo = new Equipo
+                var equipo = new Equipo
                 {
                     Nombre = datos.NewTeam.Nombre,
                     ColorUniforme = datos.NewTeam.ColorUniforme,
@@ -160,12 +158,22 @@ namespace Proyecto.Server.BLL.Repository
                 };
                 _appDbContext.Equipos.Add(equipo);
                 await _appDbContext.SaveChangesAsync();
-                EquipoIdNew = equipo.EquipoId;
+                int equipoIdNuevo = equipo.EquipoId;
 
-                // 2. Crear lista de jugadores (inicia con el capitán)
-                var ListaJugadores = new List<Jugador>
+                // 2. Obtener o insertar jugador (capitán y jugadores)
+                var jugadoresFinales = new List<Jugador>();
+                var carnes = datos.ListaJugadores.Select(j => j.Carne).ToList();
+                carnes.Add(datos.capitan.jugadorCapitan.Carne);
+
+                var jugadoresExistentes = await _appDbContext.Jugadors
+                    .Where(j => carnes.Contains(j.Carne))
+                    .ToDictionaryAsync(j => j.Carne, j => j);
+
+                // 2.1 Procesar capitán
+                Jugador jugadorCapitan;
+                if (jugadoresExistentes.TryGetValue(datos.capitan.jugadorCapitan.Carne, out jugadorCapitan) == false)
                 {
-                    new Jugador
+                    jugadorCapitan = new Jugador
                     {
                         Nombre = datos.capitan.jugadorCapitan.Nombre,
                         Apellido = datos.capitan.jugadorCapitan.Apellido,
@@ -176,70 +184,97 @@ namespace Proyecto.Server.BLL.Repository
                         FechaNacimiento = datos.capitan.jugadorCapitan.FechaNacimiento,
                         Edad = datos.capitan.jugadorCapitan.Edad,
                         Telefono = datos.capitan.jugadorCapitan.Telefono
+                    };
+                    _appDbContext.Jugadors.Add(jugadorCapitan);
+                    jugadoresFinales.Add(jugadorCapitan);
+                }
+
+                // 2.2 Procesar jugadores
+                foreach (var jugadorDTO in datos.ListaJugadores)
+                {
+                    if (!jugadoresExistentes.TryGetValue(jugadorDTO.Carne, out var jugador))
+                    {
+                        jugador = new Jugador
+                        {
+                            Nombre = jugadorDTO.Nombre,
+                            Apellido = jugadorDTO.Apellido,
+                            Carne = jugadorDTO.Carne,
+                            Fotografia = jugadorDTO.Fotografia,
+                            MunicipioId = jugadorDTO.MunicipioId,
+                            CarreraSemestreId = jugadorDTO.CarreraSemestreId,
+                            FechaNacimiento = jugadorDTO.FechaNacimiento,
+                            Edad = jugadorDTO.Edad,
+                            Telefono = jugadorDTO.Telefono
+                        };
+                        _appDbContext.Jugadors.Add(jugador);
+                        jugadoresFinales.Add(jugador);
                     }
-                };
+                }
 
-                // 3. Agregar jugadores del listado
-                ListaJugadores.AddRange(datos.ListaJugadores.Select(jugador => new Jugador
+                if (jugadoresFinales.Any())
                 {
-                    Nombre = jugador.Nombre,
-                    Apellido = jugador.Apellido,
-                    Carne = jugador.Carne,
-                    Fotografia = jugador.Fotografia,
-                    MunicipioId = jugador.MunicipioId,
-                    CarreraSemestreId = jugador.CarreraSemestreId,
-                    FechaNacimiento = jugador.FechaNacimiento,
-                    Edad = jugador.Edad,
-                    Telefono = jugador.Telefono
-                }));
+                    await _appDbContext.SaveChangesAsync(); // Guardar solo los nuevos jugadores
+                }
 
-                await _appDbContext.AddRangeAsync(ListaJugadores);
-                await _appDbContext.SaveChangesAsync();
+                // 3. Obtener todos los jugadores procesados (incluyendo los recién insertados)
+                jugadoresExistentes = await _appDbContext.Jugadors
+                    .Where(j => carnes.Contains(j.Carne))
+                    .ToDictionaryAsync(j => j.Carne, j => j);
 
-                // 4. Crear lista de asignaciones (incluye al capitan y demás jugadores)
-                var ListaAsignaciones = new List<JugadorEquipo>();
-                foreach (var jugador in ListaJugadores)
+                // 4. Asignar jugadores al equipo
+                var asignaciones = new List<JugadorEquipo>();
+
+                foreach (var carne in carnes.Distinct())
                 {
-                    var asignacion = jugador.Carne == datos.capitan.jugadorCapitan.Carne
-                    ? datos.capitan.jugadorCapitan.asignacion
-                    : datos.ListaJugadores.First(j => j.Carne == jugador.Carne).asignacion;
+                    var jugador = jugadoresExistentes[carne];
 
-                    ListaAsignaciones.Add(new JugadorEquipo
+                    var asignacionDTO = (carne == datos.capitan.jugadorCapitan.Carne)
+                        ? datos.capitan.jugadorCapitan.asignacion
+                        : datos.ListaJugadores.First(j => j.Carne == carne).asignacion;
+
+                    asignaciones.Add(new JugadorEquipo
                     {
                         JugadorId = jugador.JugadorId,
-                        EquipoId = EquipoIdNew,
-                        PosicionId = asignacion.PosicionId,
-                        Dorsal = asignacion.Dorsal
+                        EquipoId = equipoIdNuevo,
+                        PosicionId = asignacionDTO.PosicionId,
+                        Dorsal = asignacionDTO.Dorsal
                     });
-
                 }
-                await _appDbContext.AddRangeAsync(ListaAsignaciones);
 
-                // 5. Insertar capitán
-                Capitan capitan = new Capitan
+                await _appDbContext.JugadorEquipos.AddRangeAsync(asignaciones);
+
+                // 5. Insertar capitán solo si aún no lo es
+                var capitanJugadorId = jugadoresExistentes[datos.capitan.jugadorCapitan.Carne].JugadorId;
+                bool yaEsCapitan = await _appDbContext.Capitans.AnyAsync(c => c.JugadorId == capitanJugadorId);
+
+                if (!yaEsCapitan)
                 {
-                    JugadorId = ListaJugadores.First().JugadorId,
-                    CorreoElectronico = datos.capitan.CorreoElectronico,
-                };
-                await _appDbContext.Capitans.AddAsync(capitan);
+                    var capitan = new Capitan
+                    {
+                        JugadorId = capitanJugadorId,
+                        CorreoElectronico = datos.capitan.CorreoElectronico
+                    };
+                    await _appDbContext.Capitans.AddAsync(capitan);
+                }
 
                 // 6. Insertar inscripción
-                Inscripcion nuevaInscripcion = new Inscripcion
+                var inscripcion = new Inscripcion
                 {
-                    EquipoId = EquipoIdNew,
+                    EquipoId = equipoIdNuevo,
                     FechaInscripcion = DateTime.Now,
                     SubTorneoId = datos.IdSubtorneo,
                     PreInscripcionId = datos.PreInscripcionId
                 };
-                await _appDbContext.Inscripcions.AddAsync(nuevaInscripcion);
+                await _appDbContext.Inscripcions.AddAsync(inscripcion);
 
+                // 7. Guardar todo
                 await _appDbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                var mensaje = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                var mensaje = ex.InnerException?.Message ?? ex.Message;
                 throw new CustomException("Error al registrar el equipo: " + mensaje);
             }
         }
@@ -310,7 +345,7 @@ namespace Proyecto.Server.BLL.Repository
                         NameFacultad = i.Equipo.Facultad.Nombre
                     },
                     Jugadores = i.Equipo.JugadorEquipos
-                    .Where(j => j.EquipoId == i.EquipoId && j.Estado == true)
+                    .Where(j => j.EquipoId == i.EquipoId && j.Estado == false)
                     .Select(j => new JugadorDTO
                     {
                         JugadorId = j.JugadorId,

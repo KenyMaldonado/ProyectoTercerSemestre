@@ -69,5 +69,10 @@ namespace Proyecto.Server.BLL.Service
              var listado = await _playerRepository.SearchPlayer(query);
              return listado;
         }
+
+        public async Task<bool> VerifyCarne(int carne, int idJugador)
+        {
+            return await _playerRepository.VerifyCarne(carne, idJugador);
+        }
     }
 }

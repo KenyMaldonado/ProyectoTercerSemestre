@@ -94,6 +94,13 @@
             public string? Telefono { get; set; }
 
         }
+
+        public class VerifyCarneRequest
+        {
+            public int Carne { get; set; }
+            public int JugadorID { get; set; } // Asegúrate de que el nombre de la propiedad coincida (case-insensitive)
+        }
+
     }
 
 }

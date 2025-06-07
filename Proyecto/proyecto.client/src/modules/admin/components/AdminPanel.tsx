@@ -21,7 +21,7 @@ const AdminPanel = () => {
         <main className={styles.mainContent}>
             <Routes>
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="torneos" element={<TorneosAdmin />} />
+            <Route path="torneos/gestionar" element={<TorneosAdmin />} />
             <Route path="equipos" element={<EquiposPage/>} />
             <Route path="jugadores" element={<JugadorList/>} />
             <Route path="equipos/editar-equipo/:id" element={<EquipoForm />} />

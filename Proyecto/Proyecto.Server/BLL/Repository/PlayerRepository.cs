@@ -259,6 +259,15 @@ namespace Proyecto.Server.BLL.Repository
                             }).ToListAsync();
             return Jugadores;
         }
-        
+
+        public async Task<bool> VerifyCarne(int carne, int idJugador)
+        {
+            var jugador = await _appDbContext.Jugadors
+                .Where(j => j.Carne == carne && j.JugadorId != idJugador)
+                .FirstOrDefaultAsync();
+
+            return jugador != null;
+        }
+
     }
 }

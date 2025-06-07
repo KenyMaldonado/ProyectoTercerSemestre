@@ -24,11 +24,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
   </ItemGroup>
-
+  <!--
   <ItemGroup>
     <ProjectReference Include="..\proyecto.client\proyecto.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
-
+  -->
 </Project>

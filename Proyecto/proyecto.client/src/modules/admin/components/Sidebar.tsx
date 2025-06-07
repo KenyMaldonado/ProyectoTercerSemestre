@@ -3,7 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../auth/context/AuthContext';
 import {
   FaBars, FaTrophy, FaUsers, FaSignOutAlt,
-  FaHome, FaUser, FaAngleDown, FaAngleRight, FaToolbox, FaUserCog, FaNewspaper, FaClipboardList
+  FaHome, FaUser, FaAngleDown, FaAngleRight, FaToolbox,
+  FaUserCog, FaNewspaper, FaClipboardList, FaPlay
 } from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
 import gsap from 'gsap';
@@ -14,7 +15,11 @@ const Sidebar = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(true);
   const [hoveringSidebar, setHoveringSidebar] = useState(false);
-  const [showExtraFunctions, setShowExtraFunctions] = useState(false);
+
+  const [showExtraFunctions, setShowExtraFunctions] = useState({
+    funcionesExtra: false,
+    torneos: false,
+  });
 
   const handleLogout = () => {
     logout();
@@ -49,10 +54,8 @@ const Sidebar = () => {
   const navItems = [
     { to: '/admin/dashboard', icon: <FaHome />, label: 'Dashboard' },
     { to: '/admin/inscripciones', icon: <FaClipboardList />, label: 'Inscripciones' },
-    { to: '/admin/torneos', icon: <FaTrophy />, label: 'Torneos' },
     { to: '/admin/equipos', icon: <FaUsers />, label: 'Equipos' },
     { to: '/admin/jugadores', icon: <FaUser />, label: 'Jugadores' },
-
   ];
 
   return (
@@ -87,11 +90,62 @@ const Sidebar = () => {
             </li>
           ))}
 
+          {/* Menú Torneos con subitems */}
+          <li>
+            <button
+              className={`${styles.sidebarLink} ${styles.expandable}`}
+              onClick={() => setShowExtraFunctions(prev => ({ ...prev, torneos: !prev.torneos }))}
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Torneos"
+            >
+              <FaTrophy />
+              {(expanded || hoveringSidebar) && (
+                <>
+                  <span className={styles.linkLabel}>Torneos</span>
+                  <span className={styles.arrowIcon}>
+                    {showExtraFunctions.torneos ? <FaAngleDown /> : <FaAngleRight />}
+                  </span>
+                </>
+              )}
+            </button>
+
+            {(showExtraFunctions.torneos && (expanded || hoveringSidebar)) && (
+              <ul className={styles.submenu}>
+                <li>
+                  <NavLink
+                    to="/admin/torneos/gestionar"
+                    className={({ isActive }) =>
+                      `${styles.sidebarLink} ${styles.subItem} ${isActive ? styles.active : ''}`
+                    }
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="Gestionar Torneos"
+                  >
+                    <FaToolbox />
+                    <span className={styles.linkLabel}>Gestionar</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/admin/torneos/iniciar"
+                    className={({ isActive }) =>
+                      `${styles.sidebarLink} ${styles.subItem} ${isActive ? styles.active : ''}`
+                    }
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="Iniciar Torneo"
+                  >
+                    <FaPlay />
+                    <span className={styles.linkLabel}>Iniciar</span>
+                  </NavLink>
+                </li>
+              </ul>
+            )}
+          </li>
+
           {/* Funciones Extra */}
           <li>
             <button
               className={`${styles.sidebarLink} ${styles.expandable}`}
-              onClick={() => setShowExtraFunctions(!showExtraFunctions)}
+              onClick={() => setShowExtraFunctions(prev => ({ ...prev, funcionesExtra: !prev.funcionesExtra }))}
               data-tooltip-id="tooltip"
               data-tooltip-content="Funciones extra"
             >
@@ -100,13 +154,13 @@ const Sidebar = () => {
                 <>
                   <span className={styles.linkLabel}>Funciones extra</span>
                   <span className={styles.arrowIcon}>
-                    {showExtraFunctions ? <FaAngleDown /> : <FaAngleRight />}
+                    {showExtraFunctions.funcionesExtra ? <FaAngleDown /> : <FaAngleRight />}
                   </span>
                 </>
               )}
             </button>
 
-            {(showExtraFunctions && (expanded || hoveringSidebar)) && (
+            {(showExtraFunctions.funcionesExtra && (expanded || hoveringSidebar)) && (
               <ul className={styles.submenu}>
                 <li>
                   <NavLink

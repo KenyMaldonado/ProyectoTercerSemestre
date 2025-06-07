@@ -192,15 +192,15 @@ namespace Proyecto.Server
             app.UseCors(MyAllowSpecificOrigins);
 
             // Configurar el pipeline de solicitudes HTTP.
-            if (app.Environment.IsDevelopment())
-            {
+            
+            
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            
 
             app.UseAuthorization();
             app.MapControllers();
-            app.MapFallbackToFile("/index.html");
+            //app.MapFallbackToFile("/index.html");
 
             app.Run();
         }
