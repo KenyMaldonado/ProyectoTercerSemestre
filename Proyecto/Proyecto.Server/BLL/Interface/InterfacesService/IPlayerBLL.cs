@@ -11,5 +11,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task<PagedResultDTO<JugadorDTO>> GetPlayers(int pagina, int tamañoPagina);
         Task UpdateJugador(string linkNuevo, int jugadorId, JugadorDTO.UpdateJugadorDTO datos);
         Task<List<JugadorDTO>> SearchPlayers(string query);
+        Task<bool> VerifyCarne(int carne, int idJugador);
     }
 }

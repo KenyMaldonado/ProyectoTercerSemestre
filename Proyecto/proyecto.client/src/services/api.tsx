@@ -113,3 +113,31 @@ export const updateJugador = async (id: number, datos: any, file?: File | null):
     throw new Error(err.message || "Error de red al actualizar el jugador.");
   }
 };
+
+// En tu archivo api.ts
+
+export const verifyCarne = async (carne: string, jugadorID: number): Promise<boolean> => {
+  try {
+    const carneInt = parseInt(carne, 10); // Asegura que el carné sea un entero
+
+    // Esto ya está enviando un objeto JSON con las propiedades 'Carne' y 'jugadorID'
+    // que se mapearán correctamente a tu VerifyCarneRequest DTO en el backend.
+    const res = await api.post(`/Players/VerifyCarne`, {
+      Carne: carneInt,
+      JugadorID: jugadorID
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (typeof res.data.data === 'boolean') {
+      return res.data.data;
+    } else {
+      throw new Error("Formato de respuesta inesperado.");
+    }
+  } catch (error: any) {
+    console.error("Error al verificar el carne:", error.message);
+    throw new Error("No se pudo verificar el carne.");
+  }
+};

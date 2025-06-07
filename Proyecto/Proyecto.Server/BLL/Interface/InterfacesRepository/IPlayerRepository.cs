@@ -12,5 +12,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<int> CountPlayers();
         Task UpdatePlayer(string linkNuevo, int jugadorID, JugadorDTO.UpdateJugadorDTO datosNuevos);
         Task<List<JugadorDTO>> SearchPlayer(string query);
+        Task<bool> VerifyCarne(int Carne, int idJugador);
     }
 }

@@ -87,6 +87,7 @@ namespace Proyecto.Server.BLL.Repository
                                   join tj in _appDbContext.TipoJuegoTorneos on t.TipoJuegoId equals tj.TipoJuegoId
                                   join um in _appDbContext.Usuarios on t.UsuarioModifico equals um.UsuarioId into UmGroup
                                   from um in UmGroup.DefaultIfEmpty()
+                                  where t.Estado != Torneo.EstadoTorneo.Eliminado
                                   select new TournamentDTO.GetTournamentDTO
                                   {
                                       TorneoId = t.TorneoId,

@@ -5,6 +5,7 @@ using Proyecto.Server.BLL.Service;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Utils;
 using System.Diagnostics.CodeAnalysis;
+using static Proyecto.Server.DTOs.JugadorDTO;
 
 namespace Proyecto.Server.Controllers
 {
@@ -27,6 +28,24 @@ namespace Proyecto.Server.Controllers
             return ResponseHelper.Success("Estado de los jugadores",respuesta);
         }
 
+        [HttpPost("VerifyCarne")]
+        public async Task<IActionResult> VerifyCarne([FromBody] VerifyCarneRequest request)
+        {
+            if (request == null)
+            {
+                // Esto es útil para depurar: si el cuerpo JSON no se pudo mapear al DTO
+                return BadRequest("Solicitud inválida: el cuerpo no pudo ser deserializado.");
+            }
+
+            // Puedes agregar validación básica del DTO aquí si es necesario
+            if (request.Carne <= 0 || request.JugadorID <= 0) // Ejemplo de validación
+            {
+                return BadRequest("Carné o ID de Jugador inválido.");
+            }
+
+            var respuesta = await _playerBLL.VerifyCarne(request.Carne, request.JugadorID);
+            return ResponseHelper.Success("Estado del carne", respuesta);
+        }
 
         [HttpGet("GetPlayersByTeam")]
         public IActionResult GetPlayersByTeam(int TeamId)
