@@ -110,5 +110,23 @@ namespace Proyecto.Server.Controllers
         }
 
 
+        [HttpGet("GetTeamsBySubtournaments")]
+        public async Task<IActionResult> GetTeamsBySubtournaments(int subTorneoId)
+        {
+            try
+            {
+                var respuesta = await _teamBLL.GetInformacionStartTournamentBySubtorneo(subTorneoId);
+                return ResponseHelper.Success("Listado de equipos listos", respuesta);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
     }
 }

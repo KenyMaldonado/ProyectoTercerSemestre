@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
+using Proyecto.Server.Models;
 using Proyecto.Server.Utils;
+using static Proyecto.Server.DTOs.TournamentDTO;
 
 namespace Proyecto.Server.Controllers
 {
@@ -213,5 +216,26 @@ namespace Proyecto.Server.Controllers
                 return ResponseHelper.HandleGeneralException(ex);
             }
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("UpdateEstadoInscripcion")]
+        public async Task<IActionResult> UpdateEstadoInscripcion([FromBody] UpdateEstadoInscripcionDto request)
+        {
+            try
+            {
+                await _teamManagementBLL.UpdateEstadoInscripcion(request.inscripcionID,request.estado,request.comentario);
+                return NoContent();
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+
     }
 }

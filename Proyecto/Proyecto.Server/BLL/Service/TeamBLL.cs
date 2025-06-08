@@ -1,5 +1,6 @@
 ﻿using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.BLL.Interface.InterfacesService;
+using Proyecto.Server.BLL.Repository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
 
@@ -40,6 +41,10 @@ namespace Proyecto.Server.BLL.Service
         public void UpdateLinkLogoTeam(int TeamId, string linkNuevo)
         {
             teamRepository.UpdateLinkLogoTeam(TeamId, linkNuevo);
+        }
+        public async Task<List<EquipoDTO.GetTeam>> GetInformacionStartTournamentBySubtorneo(int subTorneo)
+        {
+            return await teamRepository.GetInformacionStartTournamentBySubtorneo(subTorneo);
         }
     }
 }

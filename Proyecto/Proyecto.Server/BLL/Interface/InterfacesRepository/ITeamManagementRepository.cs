@@ -17,5 +17,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task CreateNewRegistration(RegistrationTournamentsDTO.NewTeamRegistration datos);
         Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripciones();
         Task<RegistrationTournamentsDTO.GetInformationRegistration> GetDatosInscripcion(int inscripcionId);
+        Task UpdateEstadoInscripcion(TournamentDTO.ParameterUpdateEstadoInscripcion parametro);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Proyecto.Server.BLL.Interface.InterfacesRepository;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
@@ -236,5 +237,43 @@ namespace Proyecto.Server.BLL.Service
         {
             return await _teamManagementRepository.GetDatosInscripcion(inscripcionId);
         }
+
+        public async Task UpdateEstadoInscripcion(int inscripcionID, string estado, string comentario)
+        {
+
+            TournamentDTO.ParameterUpdateEstadoInscripcion parametro = new TournamentDTO.ParameterUpdateEstadoInscripcion();
+            parametro.inscripcionId = inscripcionID;
+            if (estado == null)
+            {
+                throw new ArgumentNullException("Error al actualizar el estado");
+            } else if (estado == "Aprobada")
+            {
+                parametro.estadoInscripcion = Inscripcion.EstadosInscripcion.Aprobada;
+                parametro.estadoEquipo = Equipo.EstadoEquipo.Activo;
+                parametro.estadoJugadorEquipo = true;
+                parametro.estadoJugador = Jugador.EstadoJugador.Activo;
+            } else if (estado == "Rechazada")
+            {
+                parametro.estadoInscripcion = Inscripcion.EstadosInscripcion.Rechazada;
+                parametro.estadoEquipo = Equipo.EstadoEquipo.Inactivo;
+                parametro.estadoJugadorEquipo = false;
+                parametro.estadoJugador = Jugador.EstadoJugador.Libre;
+            }
+            else if (estado == "EnCorreccion")
+            {
+                parametro.estadoInscripcion = Inscripcion.EstadosInscripcion.EnCorreccion;
+                parametro.estadoEquipo = Equipo.EstadoEquipo.Inactivo;
+                parametro.estadoJugadorEquipo = false;
+                parametro.estadoJugador = Jugador.EstadoJugador.Inactivo;
+            }
+            else
+            {
+                throw new CustomException("Error al actualizar el recurso");
+            }
+            parametro.comentario = comentario;
+            await _teamManagementRepository.UpdateEstadoInscripcion(parametro);
+        }
+
+        
     }
 }

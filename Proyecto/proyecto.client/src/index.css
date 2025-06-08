@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'animate.css';
 * {
     margin: 0;
     padding: 0;
@@ -18,4 +22,168 @@ body {
 
     --font-size-base: 16px;
     --font-size-title: 2rem;
+}
+
+
+/* --- Estilos para la barra de progreso (VERSIÓN CORREGIDA Y MÁS ROBUSTA) --- */
+.progress-wizard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 1000%;
+    max-width: 1000px;
+    margin: 0 auto 50px auto;
+    padding: 0; /* Añade padding para que las burbujas queden dentro */
+    box-sizing: border-box; /* Incluye padding en el width */
+}
+
+/* La línea de progreso base (gris) */
+.progress-bar-bg {
+    content: '';
+    position: absolute;
+    height: 4px;
+    background-color: #e0e0e0; /* Color gris de la línea inactiva */
+    width: calc(100% - 80px); /* El ancho de la línea entre los padding */
+    top: 30%;
+    left: 40px; /* Inicia después del padding de la izquierda */
+    transform: translateY(-50%);
+    z-index: 1;
+    border-radius: 2px;
+}
+
+/* La línea de progreso que se rellena (azul) */
+.progress-fill {
+    content: '';
+    position: absolute;
+    height: 4px;
+    background-color: #007bff; /* Color primario de Bootstrap (azul) */
+    width: calc(100% - 80px); /* Se controlará desde React con estilo inline */
+    top: 30%;
+    left: 40px; /* Mismo inicio que la línea base */
+    transform: translateY(-50%);
+    z-index: 1; /* Por encima de la línea base */
+    transition: width 0.4s ease-in-out; /* Animación de llenado */
+    border-radius: 2px;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 3; /* Para que las burbujas estén sobre ambas líneas */
+    transition: all 0.3s ease;
+    
+}
+
+.progress-bubble {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    border: 3px solid #adb5bd;
+    box-shadow: 0 8px 8px rgba(0,0,0,.1);
+}
+
+.progress-label {
+    margin-top: 0px;
+    font-size: 0.95rem;
+    color: #495057;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-weight: 550;
+}
+
+/* Estilos para el paso activo y actual */
+.progress-step.active .progress-bubble {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+.progress-step.active .progress-label {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.progress-step.current .progress-bubble {
+    box-shadow: 0 0 0 6px rgba(0, 123, 255, 0.4);
+}
+
+/* Estilos para las tarjetas de equipo en el Paso 1 y Resumen */
+.team-card img {
+    border: 2px solid #007bff;
+    padding: 3px;
+}
+
+.resume-card .list-group-item {
+    padding-left: 1.5rem;
+}
+
+/* Estilos para el DatePicker (Calendario) */
+.react-datepicker__input-container {
+    width: 100%;
+}
+.react-datepicker__input-container input {
+    width: 100%;
+    text-align: center;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+/* Asegura que el calendario flotante tenga un z-index alto para verse "adelante" */
+.react-datepicker-popper {
+    z-index: 9999 !important;
+}
+
+/* Animaciones para transiciones entre pasos */
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajuste para el ícono de flecha en el botón siguiente */
+.transform-rotate-180 {
+    transform: rotate(180deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .progress-wizard {
+        width: 95%;
+        margin-bottom: 30px;
+        padding: 0 25px;
+    }
+    .progress-bar-bg,
+    .progress-fill {
+        width: calc(100% - 50px);
+        left: 20px;
+    }
+    .progress-bubble {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+    }
+    .progress-label {
+        font-size: 0.75rem;
+    }
 }
