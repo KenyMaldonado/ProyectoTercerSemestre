@@ -130,6 +130,8 @@ namespace Proyecto.Server
             builder.Services.AddScoped<ITeamBLL, TeamBLL>();
             builder.Services.AddScoped<IAdditionalFeaturesRepository, AdditionalFeaturesRepository>();
             builder.Services.AddScoped<IAdditionalFeaturesBLL, AdditionalFeaturesBLL>();
+            builder.Services.AddScoped<IMatchesBLL, MatchesBLL>();  
+            builder.Services.AddScoped<IMatchesRepository, MatchesRepository>();
 
 
             // Definir política de CORS
