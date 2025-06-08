@@ -3,96 +3,76 @@
   "WorkspaceRootPath": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesrepository\\iplayerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesrepository\\iplayerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesrepository\\iadditionalfeaturesrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesrepository\\iadditionalfeaturesrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dal\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dal\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesrepository\\itournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesrepository\\itournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\playerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\playerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\jugadordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\jugadordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\teammanagementcontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\teammanagementcontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesrepository\\itournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesrepository\\itournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\playerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\playerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\tournamentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesservice\\iplayerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesservice\\iplayerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\service\\tournamentbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\service\\tournamentbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\service\\playerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\service\\playerbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\teamrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\teamrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesservice\\iteambll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesservice\\iteambll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\service\\teambll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\service\\teambll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\teamrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\teamrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesrepository\\iteamrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesrepository\\iteamrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesrepository\\iteammanagementrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesrepository\\iteammanagementrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\teammanagementrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\teammanagementrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\additionalfeaturesrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\additionalfeaturesrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesservice\\iteammanagementbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesservice\\iteammanagementbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\service\\teammanagementbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\service\\teammanagementbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\controllers\\teammanagementcontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\controllers\\teammanagementcontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\utils\\correoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\utils\\correoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\utils\\azureblobservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\utils\\azureblobservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\models\\inscripcion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\models\\inscripcion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\tournamentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\tournamentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\dtos\\registrationtournamentsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|c:\\users\\kenet\\downloads\\github\\proyectotercersemestre\\proyecto\\proyecto.server\\bll\\interface\\interfacesservice\\itournamentbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB6659D0-67F3-4FDE-9C1C-E13514B80C9F}|Proyecto.Server\\Proyecto.Server.csproj|solutionrelative:proyecto.server\\bll\\interface\\interfacesservice\\itournamentbll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -102,7 +82,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 15,
           "Children": [
             {
               "$type": "Bookmark",
@@ -142,301 +122,236 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Program.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\Program.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Program.cs",
-              "RelativeToolTip": "Proyecto.Server\\Program.cs",
-              "ViewState": "AgIAAL4AAAAAAAAAAAAAAMMAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T18:10:56.05Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IAdditionalFeaturesRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IAdditionalFeaturesRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IAdditionalFeaturesRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IAdditionalFeaturesRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IAdditionalFeaturesRepository.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-06T23:42:09.32Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DAL\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\DAL\\AppDbContext.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DAL\\AppDbContext.cs",
-              "RelativeToolTip": "Proyecto.Server\\DAL\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-06T15:43:07.691Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ITournamentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-05T03:08:21.258Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "TeamBLL.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-05T01:44:45.771Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "TeamRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-05T01:43:05.582Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "AdditionalFeaturesRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\AdditionalFeaturesRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\AdditionalFeaturesRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\AdditionalFeaturesRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\AdditionalFeaturesRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-05T01:43:03.372Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\UserRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\UserRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\UserRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\UserRepository.cs",
-              "ViewState": "AgIAAKwAAAAAAAAAAAAuwLYAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-04T03:11:53.255Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "TeamManagementControllers.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
-              "RelativeToolTip": "Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-04T02:11:26.559Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "CorreoServices.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Utils\\CorreoServices.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\Utils\\CorreoServices.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Utils\\CorreoServices.cs",
-              "RelativeToolTip": "Proyecto.Server\\Utils\\CorreoServices.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABCAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-03T16:33:03.252Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "PlayersController.cs",
               "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\PlayersController.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\PlayersController.cs",
               "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\PlayersController.cs",
               "RelativeToolTip": "Proyecto.Server\\Controllers\\PlayersController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T04:34:17.365Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "PlayerRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\PlayerRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T04:34:07.067Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "TeamManagementRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
-              "ViewState": "AgIAAIwAAAAAAAAAAAAiwJIAAABZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T04:25:10.507Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\appsettings.json",
-              "RelativeDocumentMoniker": "Proyecto.Server\\appsettings.json",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\appsettings.json",
-              "RelativeToolTip": "Proyecto.Server\\appsettings.json",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-25T02:49:43.757Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "AzureBlobService.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Utils\\AzureBlobService.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\Utils\\AzureBlobService.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Utils\\AzureBlobService.cs",
-              "RelativeToolTip": "Proyecto.Server\\Utils\\AzureBlobService.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAtwIQAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T02:47:45.012Z",
+              "WhenOpened": "2025-06-08T00:30:05.921Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
-              "Title": "TeamController.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamController.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\TeamController.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamController.cs",
-              "RelativeToolTip": "Proyecto.Server\\Controllers\\TeamController.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAkwEAAAABGAAAAAAAAAA==",
+              "Title": "ITeamRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T02:38:19.69Z",
+              "WhenOpened": "2025-06-08T00:19:57.845Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "IPlayerBLL.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\IPlayerBLL.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA0AAAA3AAAAAAAAAA==",
+              "DocumentIndex": 6,
+              "Title": "ITeamBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamBLL.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T02:37:04.627Z",
+              "WhenOpened": "2025-06-08T00:19:48.166Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "PlayerBLL.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\PlayerBLL.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T02:34:14.782Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IPlayerRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
-              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\IPlayerRepository.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAkwA4AAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-25T02:33:55.908Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "TournamentDTO.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
-              "RelativeToolTip": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAQwCsAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T18:37:44.357Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 14,
               "Title": "RegistrationTournamentsDTO.cs",
               "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
               "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
               "RelativeToolTip": "Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAxwG4AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T18:37:38.1Z",
+              "WhenOpened": "2025-06-08T00:01:55.139Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "JugadorDTO.cs",
-              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
-              "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\JugadorDTO.cs",
-              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\JugadorDTO.cs",
-              "RelativeToolTip": "Proyecto.Server\\DTOs\\JugadorDTO.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAQwGYAAAAAAAAAAAAAAA==",
+              "Title": "TeamRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAuwFYAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-10T18:37:36.655Z",
+              "WhenOpened": "2025-06-07T23:49:34.16Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TeamBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAswC8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T23:49:21.855Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TeamController.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamController.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\TeamController.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamController.cs",
+              "RelativeToolTip": "Proyecto.Server\\Controllers\\TeamController.cs",
+              "ViewState": "AgIAAHQAAAAAAAAAAAApwIAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T23:48:58.613Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Inscripcion.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Models\\Inscripcion.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\Models\\Inscripcion.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Models\\Inscripcion.cs",
+              "RelativeToolTip": "Proyecto.Server\\Models\\Inscripcion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T23:16:03.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TeamManagementControllers.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
+              "RelativeToolTip": "Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
+              "ViewState": "AgIAANIAAAAAAAAAAAApwOEAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T19:59:25.054Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "TeamManagementBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TeamManagementBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Service\\TeamManagementBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TeamManagementBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\TeamManagementBLL.cs",
+              "ViewState": "AgIAAAsBAAAAAAAAAAAIwBQBAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T19:46:08.143Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "TournamentBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TournamentBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Service\\TournamentBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Service\\TournamentBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\TournamentBLL.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T19:40:44.518Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TeamManagementRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T19:15:51.061Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ITeamManagementBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamManagementBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamManagementBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamManagementBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamManagementBLL.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA8wBIAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T19:15:22.611Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ITeamManagementRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamManagementRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamManagementRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamManagementRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamManagementRepository.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAA0wBMAAABfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T19:15:11.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "TournamentDTO.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "RelativeToolTip": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
+              "ViewState": "AgIAAJMAAAAAAAAAAAAQwKQAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T18:58:12.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "TournamentRepository.cs",
               "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA/AAAAAAAAAA==",
+              "ViewState": "AgIAAIMAAAAAAAAAAAAcwLcAAABxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-19T00:23:07.002Z",
+              "WhenOpened": "2025-06-07T18:56:30.152Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ITournamentBLL.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITournamentBLL.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITournamentBLL.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITournamentBLL.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITournamentBLL.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T18:56:26.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ITournamentRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
+              "RelativeDocumentMoniker": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
+              "ToolTip": "C:\\Users\\kenet\\Downloads\\GitHub\\ProyectoTercerSemestre\\Proyecto\\Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
+              "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-07T18:56:22.283Z",
               "EditorCaption": ""
             }
           ]
