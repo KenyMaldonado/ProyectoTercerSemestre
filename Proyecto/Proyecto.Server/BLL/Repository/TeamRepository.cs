@@ -18,7 +18,7 @@ namespace Proyecto.Server.BLL.Repository
         public async Task<List<EquipoDTO>> GetTeamsBySubtorneo(int subTorneoId, int pageNumber, int pageSize)
         {
             var equipos = await _appDbContext.Equipos
-                .Where(e => e.SubTorneoId == subTorneoId)
+                .Where(e => e.SubTorneoId == subTorneoId && e.Estado == Equipo.EstadoEquipo.Activo)
                 .OrderBy(e => e.EquipoId) 
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
@@ -77,6 +77,23 @@ namespace Proyecto.Server.BLL.Repository
             {
                 throw new Exception(("Error al encontrar el Equipo"));
             }
+        }
+
+        public async Task<List<EquipoDTO.GetTeam>> GetInformacionStartTournamentBySubtorneo(int subTorneo)
+        {
+            var Informacion = await _appDbContext.Equipos.
+                              Where(e => e.SubTorneoId == subTorneo && e.Estado == Equipo.EstadoEquipo.Activo)
+                              .Select(e => new EquipoDTO.GetTeam
+                              {
+                                  EquipoId = e.EquipoId,
+                                  Nombre = e.Nombre,
+                                  ColorUniforme = e.ColorUniforme,
+                                  ColorUniformeSecundario = e.ColorUniformeSecundario,
+                                  ImagenEquipo = e.ImagenEquipo,
+                                  Estado = (EquipoDTO.EstadoEquipo)e.Estado
+
+                              }).ToListAsync();
+            return Informacion;
         }
 
 

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Proyecto.Server.Models;
 
 namespace Proyecto.Server.DTOs
@@ -138,6 +139,29 @@ namespace Proyecto.Server.DTOs
             public EstadoSubTorneo Estado { get; set; }
 
             public int? CantidadEquipos { get; set; }
+        }
+
+        public class ParameterUpdateEstadoInscripcion
+        {
+            public int inscripcionId {  get; set; }
+            public Inscripcion.EstadosInscripcion estadoInscripcion { get; set; }
+            public Equipo.EstadoEquipo estadoEquipo {  get; set; }
+            public string comentario { get; set; }
+            public bool estadoJugadorEquipo {  get; set; }
+            public Jugador.EstadoJugador estadoJugador {  get; set; }
+        }
+
+        public class UpdateEstadoInscripcionDto
+        {
+            // Si tu frontend envía 'inscripcionID', debe ser 'inscripcionID' o usar [JsonProperty]
+            public int inscripcionID { get; set; }
+
+            [Required] // Puedes mantener esto si quieres que el campo sea obligatorio
+            public string estado { get; set; }
+
+            // Puedes hacer el comentario opcional si lo deseas, o requerirlo
+            [Required(AllowEmptyStrings = true)] // Permite cadena vacía si solo necesitas que no sea null
+            public string comentario { get; set; }
         }
     }
 }

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { updateEstadoInscripcion, EstadoInscripcionUpdate } from '../../../services/api'; 
+import Swal from 'sweetalert2'; 
 
 interface Jugador {
   nombre: string;
@@ -49,13 +51,43 @@ type CamposSimples =
   | 'apellidoCapitan'
   | 'correoCapitan';
 
+type EstadoInscripcionDetalle = 'EnRevision' | 'EnCorreccion' | 'Aprobada' | 'Rechazada' | 'Cancelada';
+
+const coloresEstadosDetalle: Record<EstadoInscripcionDetalle, {
+  textClass: string;
+  badgeClass: string;
+}> = {
+  EnRevision: {
+    textClass: 'text-warning',
+    badgeClass: 'bg-warning text-dark',
+  },
+  EnCorreccion: {
+    textClass: 'text-info', // Opcional: 'text-primary' para un azul más oscuro
+    badgeClass: 'bg-info text-dark', // Opcional: 'bg-primary text-white'
+  },
+  Aprobada: {
+    textClass: 'text-success',
+    badgeClass: 'bg-success text-white',
+  },
+  Rechazada: {
+    textClass: 'text-danger',
+    badgeClass: 'bg-danger text-white',
+  },
+  Cancelada: {
+    textClass: 'text-secondary',
+    badgeClass: 'bg-secondary text-white',
+  },
+};
+
 const DetalleInscripcion: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const ins = location.state as Partial<DatosInscripcion> | undefined;
 
   const [datos, setDatos] = useState<DatosInscripcion | null>(null);
   const [cargando, setCargando] = useState(true);
+  // Eliminado: const [comentarioCorreccion, setComentarioCorreccion] = useState<string>(''); // No se usa directamente
 
   const mostrarDato = (campo: CamposSimples) => {
     if (datos && datos[campo] !== undefined && datos[campo] !== null) return datos[campo];
@@ -77,9 +109,15 @@ const DetalleInscripcion: React.FC = () => {
         const json = await res.json();
         if (json.success) {
           setDatos(json.data);
+        } else {
+          console.warn('API respondió success: false o sin datos.', json);
+          setDatos(null);
+          Swal.fire('Error', 'No se pudo cargar la información de la inscripción.', 'error');
         }
       } catch (error) {
         console.error('Error al obtener detalles:', error);
+        setDatos(null);
+        Swal.fire('Error', 'Hubo un problema de conexión al cargar los detalles de la inscripción.', 'error');
       } finally {
         setCargando(false);
       }
@@ -88,12 +126,135 @@ const DetalleInscripcion: React.FC = () => {
     fetchDetalle();
   }, [id]);
 
+  const handleUpdateEstado = async (estado: EstadoInscripcionUpdate, comentario: string = '') => {
+    if (!datos?.inscripcionID) {
+      Swal.fire('Error', 'No se pudo obtener el ID de la inscripción.', 'error');
+      return false;
+    }
+
+    const success = await updateEstadoInscripcion(datos.inscripcionID, estado, comentario);
+
+    if (success) {
+      // Usar un mapeo para el mensaje si es necesario, pero `estado` aquí siempre será 'Aprobada', 'Rechazada' o 'EnCorreccion'
+      const estadoDisplay = estado === 'EnCorreccion' ? 'En Corrección' : estado; 
+      Swal.fire('¡Éxito!', `Estado de inscripción actualizado a: ${estadoDisplay}`, 'success');
+      
+      // Refrescar los datos después de la actualización exitosa
+      setCargando(true);
+      try {
+        const res = await fetch(`http://localhost:5291/api/TeamManagementControllers/GetInformationRegistration?InscripcionId=${id}`);
+        const json = await res.json();
+        if (json.success) {
+          setDatos(json.data);
+        } else {
+          console.warn('API respondió success: false al refrescar datos.', json);
+          setDatos(null);
+          Swal.fire('Error', 'No se pudo refrescar la información de la inscripción después de la actualización.', 'error');
+        }
+      } catch (error) {
+        console.error('Error al refrescar datos:', error);
+        Swal.fire('Error', 'Hubo un problema de conexión al refrescar los detalles de la inscripción.', 'error');
+      } finally {
+        setCargando(false);
+      }
+      return true;
+    } else {
+      Swal.fire('Error', 'Hubo un error al actualizar el estado de la inscripción. Intenta de nuevo.', 'error');
+      return false;
+    }
+  };
+
+  const handleConfirmarInscripcion = async () => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Deseas aprobar esta inscripción?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, aprobar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      handleUpdateEstado('Aprobada', 'Felicidades, se ha aprobado su inscripción. ¡Mucha suerte en el torneo!');
+    }
+  };
+
+  const handleRechazarInscripcion = async () => {
+    const { value: motivoRechazo } = await Swal.fire({
+      title: 'Rechazar Inscripción',
+      input: 'textarea',
+      inputLabel: 'Por favor, ingresa el motivo del rechazo:',
+      inputPlaceholder: 'Ingresa aquí el motivo...',
+      inputAttributes: {
+        'aria-label': 'Ingresa el motivo del rechazo',
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Rechazar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value || value.trim() === '') {
+          return '¡El motivo del rechazo no puede estar vacío!';
+        }
+        return null;
+      }
+    });
+
+    if (motivoRechazo) {
+      handleUpdateEstado('Rechazada', motivoRechazo);
+    }
+  };
+
+  const handleEnviarCorreccion = async () => {
+    // Ya no necesitas manipular el modal de Bootstrap directamente aquí
+    // const modalElement = document.getElementById('modalCorrecciones');
+    // if (modalElement) {
+    //   const bsModal = (window as any).bootstrap.Modal.getInstance(modalElement);
+    //   if (bsModal) bsModal.hide();
+    // }
+
+    const { value: observaciones } = await Swal.fire({
+      title: 'Enviar a Corrección',
+      input: 'textarea',
+      inputLabel: 'Por favor, ingresa las observaciones para la corrección:',
+      inputPlaceholder: 'Describe los cambios necesarios...',
+      inputAttributes: {
+        'aria-label': 'Ingresa las observaciones',
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value || value.trim() === '') {
+          return '¡Las observaciones no pueden estar vacías!';
+        }
+        return null;
+      }
+    });
+
+    if (observaciones) {
+      handleUpdateEstado('EnCorreccion', observaciones);
+    }
+  };
+
+
   if (cargando) return <div className="text-center mt-4">Cargando detalles...</div>;
   if (!datos && !ins) return <div className="text-danger text-center mt-4">No se encontró la inscripción.</div>;
 
+  const estadoActual = (datos?.estado || ins?.estado || '') as EstadoInscripcionDetalle;
+  const estiloEstado = coloresEstadosDetalle[estadoActual] || { textClass: 'text-dark', badgeClass: 'bg-secondary text-white' };
+
   return (
     <div className="container mt-5 mb-5">
-      <h2 className="mb-4 text-center">Formulario Detalle de Inscripción</h2>
+      <h2 className="mb-4 text-center">
+        Formulario Detalle de Inscripción
+        {estadoActual && (
+          <span className={`ms-3 badge ${estiloEstado.badgeClass}`}>
+            {estadoActual === 'EnRevision' ? 'En Revisión' : estadoActual}
+          </span>
+        )}
+      </h2>
 
       {/* INFORMACIÓN GENERAL */}
       <div className="card shadow p-4 mb-4">
@@ -105,7 +266,7 @@ const DetalleInscripcion: React.FC = () => {
           </div>
           <div className="col-md-4">
             <label className="form-label">Estado</label>
-            <input type="text" className="form-control" value={mostrarDato('estado')} disabled />
+            <input type="text" className={`form-control ${estiloEstado.textClass} fw-bold`} value={mostrarDato('estado')} disabled />
           </div>
           <div className="col-md-4">
             <label className="form-label">Fecha de Inscripción</label>
@@ -141,10 +302,10 @@ const DetalleInscripcion: React.FC = () => {
           </div>
           <div className="col-md-4">
             <label className="form-label">Apellido del Capitán</label>
-            <input type="text" className="form-control" value={mostrarDato('apellidoCapitan')} disabled />
+             <input type="text" className="form-control" value={mostrarDato('apellidoCapitan')} disabled />
           </div>
           <div className="col-md-4">
-            <label className="form-label">Correo del Capitán</label>
+          <label className="form-label">Correo del Capitán</label>
             <input type="email" className="form-control" value={mostrarDato('correoCapitan')} disabled />
           </div>
         </div>
@@ -219,64 +380,29 @@ const DetalleInscripcion: React.FC = () => {
 
       {/* BOTONES */}
       <div className="mt-4 d-flex justify-content-center gap-3">
-        <button className="btn btn-success" onClick={() => alert('✅ Inscripción confirmada')}>
-          Confirmar inscripción
-        </button>
-        <button className="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCorrecciones">
-          Requiere correcciones
-        </button>
-        <button
-          className="btn btn-danger"
-          onClick={() => {
-            if (window.confirm('¿Estás seguro de que deseas rechazar esta inscripción definitivamente?')) {
-              alert('❌ Inscripción rechazada definitivamente');
-            }
-          }}
-        >
-          Rechazar inscripción
+        {estadoActual === 'EnRevision' && (
+          <>
+            <button className="btn btn-success" onClick={handleConfirmarInscripcion}>
+              Confirmar inscripción
+            </button>
+            <button className="btn btn-warning" onClick={handleEnviarCorreccion}>
+              Requiere correcciones
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={handleRechazarInscripcion}
+            >
+              Rechazar inscripción
+            </button>
+          </>
+        )}
+        {/* Botón de Regresar */}
+        <button className="btn btn-outline-secondary" onClick={() => navigate('/admin/inscripciones')}>
+          Regresar a Inscripciones
         </button>
       </div>
 
-      {/* MODAL PARA CORRECCIONES */}
-      <div
-        className="modal fade"
-        id="modalCorrecciones"
-        tabIndex={-1}
-        aria-labelledby="modalCorreccionesLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="modalCorreccionesLabel">Observaciones del administrador</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div className="modal-body">
-              <label htmlFor="motivo" className="form-label">Motivo de corrección:</label>
-              <textarea id="motivo" className="form-control" rows={4}></textarea>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button
-                type="button"
-                className="btn btn-warning"
-                onClick={() => {
-                  const motivo = (document.getElementById('motivo') as HTMLTextAreaElement)?.value;
-                  if (!motivo.trim()) {
-                    alert('Debes ingresar una observación.');
-                    return;
-                  }
-                  alert(`⚠️ Inscripción enviada a corrección: ${motivo}`);
-                  (document.getElementById('motivo') as HTMLTextAreaElement).value = '';
-                  (document.getElementById('modalCorrecciones') as any)?.classList?.remove('show');
-                }}
-              >
-                Enviar observación
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* El modal de Bootstrap ya no es necesario, se eliminó para evitar los errores */}
     </div>
   );
 };

@@ -8,5 +8,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<int> CountTeamsBySubtorneo(int subTorneoId);
         Task UpdateTeam(EquipoDTO.UpdateTeamDTO datosNuevos);
         void UpdateLinkLogoTeam(int TeamId, string linkNuevo);
+        Task<List<EquipoDTO.GetTeam>> GetInformacionStartTournamentBySubtorneo(int subTorneo);
     }
 }

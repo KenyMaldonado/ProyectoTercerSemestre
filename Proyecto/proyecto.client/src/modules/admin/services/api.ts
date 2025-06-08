@@ -188,3 +188,36 @@ export const obtenerInscripciones = async (): Promise<Inscripcion[]> => {
     return [];
   }
 };
+
+export type EstadoInscripcionUpdate = 'Aprobada' | 'Rechazada' | 'EnCorreccion';
+
+export const updateEstadoInscripcion = async (
+  inscripcionID: number,
+  estado: EstadoInscripcionUpdate, // TypeScript ya la encontrará aquí
+  comentario: string = ''
+): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/TeamManagementControllers/UpdateEstadoInscripcion`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        inscripcionID,
+        estado,
+        comentario
+      })
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`Error al actualizar estado de inscripción: ${response.status} - ${errorBody}`);
+      throw new Error(`Error al actualizar estado de inscripción: ${errorBody}`);
+    }
+
+    return true;
+
+  } catch (error) {
+    console.error('Error en updateEstadoInscripcion:', error);
+    return false;
+  }
+};
+

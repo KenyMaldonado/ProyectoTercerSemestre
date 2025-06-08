@@ -15,7 +15,8 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task CrearNuevaInscripcion(RegistrationTournamentsDTO.NewTeamRegistration datos);
         Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripciones();
         Task<RegistrationTournamentsDTO.GetInformationRegistration> GetInformationRegistration(int inscripcionId);
-
+        Task UpdateEstadoInscripcion(int inscripcionID, string estado, string comentario);
+        
 
     }
 }

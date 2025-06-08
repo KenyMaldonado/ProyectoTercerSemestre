@@ -203,6 +203,9 @@ namespace Proyecto.Server.BLL.Repository
             await _appDbContext.SaveChangesAsync();
         }
 
+        public async Task GetInformationStarTournament()
+        {
 
+        }
     }
 }

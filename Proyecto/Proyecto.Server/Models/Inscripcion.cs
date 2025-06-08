@@ -7,7 +7,7 @@
             Aprobada = 1,
             EnRevision = 2,
             Rechazada = 3,
-            ConCorrecion = 4,
+            EnCorreccion = 4,
             Cancelada = 5
         }
         public int EquipoId { get; set; }

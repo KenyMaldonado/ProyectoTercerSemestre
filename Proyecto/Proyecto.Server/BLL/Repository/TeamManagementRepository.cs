@@ -283,8 +283,8 @@ namespace Proyecto.Server.BLL.Repository
         {
             var listado = await _appDbContext.Inscripcions
                 .Where(i => i.Estado != Inscripcion.EstadosInscripcion.Aprobada
-                         && i.Estado != Inscripcion.EstadosInscripcion.Cancelada
-                         && i.Estado != Inscripcion.EstadosInscripcion.Rechazada)
+                         || i.Estado != Inscripcion.EstadosInscripcion.Cancelada
+                         || i.Estado != Inscripcion.EstadosInscripcion.Rechazada)
                 .Select(i => new RegistrationTournamentsDTO.GetRegistrationDTO
                 {
                     InscripcionId = i.InscripcionId,
@@ -345,7 +345,7 @@ namespace Proyecto.Server.BLL.Repository
                         NameFacultad = i.Equipo.Facultad.Nombre
                     },
                     Jugadores = i.Equipo.JugadorEquipos
-                    .Where(j => j.EquipoId == i.EquipoId && j.Estado == false)
+                    .Where(j => j.EquipoId == i.EquipoId)
                     .Select(j => new JugadorDTO
                     {
                         JugadorId = j.JugadorId,
@@ -419,7 +419,35 @@ namespace Proyecto.Server.BLL.Repository
             return listado;
         }
 
-       // public async Task<RegistrationTournamentsDTO.NewTeamRegistration>
+        public async Task UpdateEstadoInscripcion(TournamentDTO.ParameterUpdateEstadoInscripcion parametro)
+        {
+            var Inscripcion = await _appDbContext.Inscripcions
+                .Include(i => i.Equipo)
+                    .ThenInclude(e => e.JugadorEquipos)
+                        .ThenInclude(je => je.Jugador)
+                .FirstOrDefaultAsync(i => i.InscripcionId == parametro.inscripcionId);
+
+            if (Inscripcion == null)
+                throw new CustomException("Inscripción no encontrada", 404);
+
+            // Actualizar datos de la inscripción
+            Inscripcion.Estado = parametro.estadoInscripcion;
+            Inscripcion.ComentarioInscripcion = parametro.comentario;
+
+            // Actualizar estado del equipo
+            Inscripcion.Equipo.Estado = parametro.estadoEquipo;
+
+            // Actualizar estado de cada JugadorEquipo y su respectivo Jugador
+            foreach (var jugadorEquipo in Inscripcion.Equipo.JugadorEquipos)
+            {
+                jugadorEquipo.Estado = parametro.estadoJugadorEquipo; 
+                jugadorEquipo.Jugador.Estado = parametro.estadoJugador;   
+            }
+
+            await _appDbContext.SaveChangesAsync();
+        }
+     
+        
     }
 
 }

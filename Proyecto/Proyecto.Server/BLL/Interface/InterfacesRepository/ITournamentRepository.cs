@@ -12,5 +12,8 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<int> GetLastIDTournaments();
         void UpdateLinkBasesTorneo(int torneoId, string linkNuevo);
         Task UpdateTournament(TournamentDTO.UpdateTournamentDTO torneoModify, int usuarioModificoId);
+
+
+
     }
 }
