@@ -8,7 +8,7 @@ export function usePromptExitGuard(when: boolean, message: string) {
     if (!when) return;
 
     const originalPush = navigator.push;
-    type PushArgs = Parameters<typeof originalPush>; // ✅ guardamos el tipo aquí
+    type PushArgs = Parameters<typeof originalPush>; 
 
     const customPush = (...args: PushArgs) => {
       if (window.confirm(message)) {
