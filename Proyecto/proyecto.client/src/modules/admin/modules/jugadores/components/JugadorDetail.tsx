@@ -465,27 +465,34 @@ const JugadorDetail = () => {
             }
 
             MySwal.fire({
-                title: 'Validando carné...',
-                allowOutsideClick: false,
-                didOpen: () => { MySwal.showLoading(); }
+            title: 'Validando carné...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                const btn = MySwal.getConfirmButton();
+                if (btn) {
+                MySwal.showLoading(btn);
+                }
+            }
             });
             try {
-                const carneExiste = await verifyCarne(formData.carne, jugador.jugadorId);
-                MySwal.close();
-                if (carneExiste) {
-                    await MySwal.fire({
-                        icon: 'error',
-                        title: 'Carné existente',
-                        text: 'El carné que intentas usar ya existe para otro jugador. Por favor, elige uno diferente.',
-                    });
-                    setCarneValidado(false);
-                    if (inputRefs.current['carne']) {
-                        inputRefs.current['carne'].focus();
-                    }
-                    return;
-                } else {
-                    setCarneValidado(true);
+            const carne = String(formData.carne);
+            const carneExiste = await verifyCarne(carne, jugador.jugadorId);
+            MySwal.close();
+            if (carneExiste) {
+                await MySwal.fire({
+                    icon: 'error',
+                    title: 'Carné existente',
+                    text: 'El carné que intentas usar ya existe para otro jugador. Por favor, elige uno diferente.',
+                });
+                setCarneValidado(false);
+                if (inputRefs.current['carne']) {
+                    inputRefs.current['carne'].focus();
                 }
+                return;
+            } else {
+                setCarneValidado(true);
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 MySwal.close();
                 await MySwal.fire({
@@ -522,9 +529,14 @@ const JugadorDetail = () => {
         if (!confirm.isConfirmed) return;
 
         MySwal.fire({
-            title: 'Guardando...',
-            allowOutsideClick: false,
-            didOpen: () => { MySwal.showLoading(); }
+        title: 'Guardando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            const btn = MySwal.getConfirmButton();
+            if (btn) {
+            MySwal.showLoading(btn);
+            }
+        }
         });
 
         try {
@@ -558,7 +570,7 @@ const JugadorDetail = () => {
             updatedJugador.telefono = formatPhoneNumber(String(updatedJugador.telefono));
             setOriginalFormData(updatedJugador);
             setFormData(updatedJugador); // Actualiza formData para reflejar los datos guardados
-
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             await MySwal.fire({
                 title: 'Error',
@@ -601,31 +613,33 @@ const JugadorDetail = () => {
 
             // Comprueba si el carné es diferente al original para la validación API
             if (isEditable && cleanedValue !== String(originalFormData?.carne) && cleanedValue.length === 9) {
-                try {
-                    const carneExiste = await verifyCarne(Number(cleanedValue), jugador.jugadorId);
-                    setCarneValidado(!carneExiste);
-                    if (carneExiste) {
-                        setErrors(prev => ({ ...prev, carne: 'Este carné ya está registrado.' }));
-                        MySwal.fire({
-                            icon: 'warning',
-                            title: 'Carné ya existe',
-                            text: 'Este carné ya está registrado para otro jugador.',
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                    } else {
-                        setErrors(prev => {
-                            const newErrors = { ...prev };
-                            delete newErrors.carne;
-                            return newErrors;
-                        });
+                if (isEditable && cleanedValue !== String(originalFormData?.carne) && cleanedValue.length === 9) {
+                    try {
+                        const carneExiste = await verifyCarne(cleanedValue, jugador.jugadorId);
+                        setCarneValidado(!carneExiste);
+                        if (carneExiste) {
+                            setErrors(prev => ({ ...prev, carne: 'Este carné ya está registrado.' }));
+                            MySwal.fire({
+                                icon: 'warning',
+                                title: 'Carné ya existe',
+                                text: 'Este carné ya está registrado para otro jugador.',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        } else {
+                            setErrors(prev => {
+                                const newErrors = { ...prev };
+                                delete newErrors.carne;
+                                return newErrors;
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Error al verificar carné:", error);
+                        setCarneValidado(false);
+                        setErrors(prev => ({ ...prev, carne: 'Error al verificar carné.' }));
                     }
-                } catch (error) {
-                    console.error("Error al verificar carné:", error);
-                    setCarneValidado(false);
-                    setErrors(prev => ({ ...prev, carne: 'Error al verificar carné.' }));
                 }
             } else {
                 // Si el carné no cambia o es vacío, se considera válido para no bloquear la edición
@@ -659,8 +673,8 @@ const JugadorDetail = () => {
             // No hacemos el return aquí para que la actualización del estado general se haga al final
         } else if (name === 'departamentoId') {
             newValue = Number(value);
-            getMunicipiosByDepartamento(value).then(setMunicipios);
-            setFormData(prev => ({ ...prev, municipioId: '' })); // Resetea el municipio al cambiar departamento
+            getMunicipiosByDepartamento(newValue).then(setMunicipios);
+            setFormData(prev => ({ ...prev, municipioId: '' }));  // Resetea el municipio al cambiar departamento
         } else if (name === 'carreraId') {
             newValue = Number(value);
             getSemestreByCarrera(Number(value)).then(data => {
@@ -779,13 +793,14 @@ const JugadorDetail = () => {
                             <div className="mt-3">
                                 <label htmlFor="file-upload" className="form-label">Actualizar Fotografía</label>
                                 <input
-                                    type="file"
-                                    id="file-upload"
-                                    className="form-control"
-                                    accept="image/*"
-                                    onChange={handleChange}
-                                    ref={el => inputRefs.current['file'] = el} // Ref para el archivo
+                                type="file"
+                                id="file-upload"
+                                className="form-control"
+                                accept="image/*"
+                                onChange={handleChange}
+                                ref={el => { inputRefs.current['file'] = el; }} // Ref para el archivo
                                 />
+
                                 {errors.file && <span style={{ color: 'red' }} className="text-danger">{errors.file}</span>}
 
                                 {jugador.fotografia && ( // Solo muestra el botón de borrar si hay una foto original
@@ -818,21 +833,25 @@ const JugadorDetail = () => {
                                 <div className="col-md-6 mb-3" key={key}>
                                     <label htmlFor={key} className="form-label">{label}</label>
                                     <input
-                                        type={type}
-                                        id={key}
-                                        name={key}
-                                        className={`form-control ${errors[key] ? 'is-invalid' : ''}`}
-                                        value={formData[key as keyof JugadorFormData]}
-                                        onChange={handleChange}
-                                        disabled={!isEditable || disabled}
-                                        ref={el => inputRefs.current[key] = el}
-                                        // Para el teléfono, usamos pattern y title para una validación HTML5 básica
-                                        {...(key === 'telefono' && {
-                                            pattern: "\\d{4}-\\d{4}",
-                                            title: "Formato: 1234-5678",
-                                            placeholder: "Ej: 1234-5678"
-                                        })}
+                                    type={type}
+                                    id={key}
+                                    name={key}
+                                    className={`form-control ${errors[key] ? 'is-invalid' : ''}`}
+                                    value={
+                                        formData[key as keyof JugadorFormData] === null || formData[key as keyof JugadorFormData] === undefined
+                                        ? ''
+                                        : String(formData[key as keyof JugadorFormData])
+                                    }
+                                    onChange={handleChange}
+                                    disabled={!isEditable || disabled}
+                                    ref={el => { inputRefs.current[key] = el; }}
+                                    {...(key === 'telefono' && {
+                                        pattern: "\\d{4}-\\d{4}",
+                                        title: "Formato: 1234-5678",
+                                        placeholder: "Ej: 1234-5678"
+                                    })}
                                     />
+
                                     {errors[key] && <div className="invalid-feedback">{errors[key]}</div>}
                                 </div>
                             ))}
@@ -841,13 +860,13 @@ const JugadorDetail = () => {
                             <div className="col-md-6 mb-3">
                                 <label htmlFor="carreraId" className="form-label">Carrera</label>
                                 <select
-                                    id="carreraId"
-                                    className={`form-select ${errors.carreraId ? 'is-invalid' : ''}`}
-                                    name="carreraId"
-                                    value={formData.carreraId || ''}
-                                    onChange={handleChange}
-                                    disabled={!isEditable}
-                                    ref={el => inputRefs.current['carreraId'] = el}
+                                id="carreraId"
+                                className={`form-select ${errors.carreraId ? 'is-invalid' : ''}`}
+                                name="carreraId"
+                                value={formData.carreraId || ''}
+                                onChange={handleChange}
+                                disabled={!isEditable}
+                                ref={el => { inputRefs.current['carreraId'] = el; }}
                                 >
                                     <option value="">Seleccione carrera</option>
                                     {carreras.map(c => (
@@ -860,13 +879,13 @@ const JugadorDetail = () => {
                             <div className="col-md-6 mb-3">
                                 <label htmlFor="codigoCarrera" className="form-label">Código de Carrera</label>
                                 <select
-                                    id="codigoCarrera"
-                                    className={`form-select ${errors.codigoCarrera ? 'is-invalid' : ''}`}
-                                    name="codigoCarrera"
-                                    value={formData.codigoCarrera || ''}
-                                    onChange={handleChange}
-                                    disabled={!isEditable || !formData.carreraId}
-                                    ref={el => inputRefs.current['codigoCarrera'] = el}
+                                id="codigoCarrera"
+                                className={`form-select ${errors.codigoCarrera ? 'is-invalid' : ''}`}
+                                name="codigoCarrera"
+                                value={formData.codigoCarrera || ''}
+                                onChange={handleChange}
+                                disabled={!isEditable || !formData.carreraId}
+                                ref={el => { inputRefs.current['codigoCarrera'] = el; }}
                                 >
                                     <option value="">Seleccione código</option>
                                     {[...new Set(semestres.map(s => s.codigoCarrera))].map(codigo => (
@@ -909,7 +928,7 @@ const JugadorDetail = () => {
                                     value={formData.departamentoId || ''}
                                     onChange={handleChange}
                                     disabled={!isEditable}
-                                    ref={el => inputRefs.current['departamentoId'] = el}
+                                    ref={el => {inputRefs.current['departamentoId'] = el}}
                                 >
                                     <option value="">Seleccione departamento</option>
                                     {departamentos.map(d => (
@@ -928,7 +947,7 @@ const JugadorDetail = () => {
                                     value={formData.municipioId || ''}
                                     onChange={handleChange}
                                     disabled={!isEditable || municipios.length === 0}
-                                    ref={el => inputRefs.current['municipioId'] = el}
+                                    ref={el => {inputRefs.current['municipioId'] = el}}
                                 >
                                     <option value="">Seleccione municipio</option>
                                     {municipios.map(m => (

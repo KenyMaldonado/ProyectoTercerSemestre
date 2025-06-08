@@ -48,7 +48,10 @@ interface Props {
     equipo: Equipo | null;
 }
 
-const posicionCoordenadas = {
+// Define explícitamente las posiciones posibles
+type PosicionKey = 'GK' | 'DCD' | 'RB' | 'LB' | 'RM' | 'LM' | 'RW' | 'LW' | 'ST' | 'DCI' | 'MC';
+
+const posicionCoordenadas: Record<PosicionKey, { top: string; left: string }> = {
     GK: { top: '50%', left: '9%' },
     DCD: { top: '62%', left: '30%' },
     RB: { top: '83%', left: '35%' },
@@ -81,11 +84,11 @@ const colorMap: { [key: string]: string } = {
 };
 
 const getColor = (color: string): string => {
-    // Convertir el nombre del color a minúsculas para asegurar coincidencias
     return colorMap[color.toLowerCase()] || color;
 };
 
-const posicionMap = [
+// Aquí mantenemos el arreglo de posiciones en el mismo orden que posicionCoordenadas keys
+const posicionMap: PosicionKey[] = [
     'GK', 'DCD', 'RB', 'LB', 'RM', 'LM', 'RW', 'LW', 'ST', 'DCI', 'MC'
 ];
 
@@ -93,6 +96,7 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
     const [jugadores, setJugadores] = useState<Jugador[]>([]);
     const [loadingJugadores, setLoadingJugadores] = useState(false);
     const navigate = useNavigate();
+
     useEffect(() => {
         if (equipo && show) {
             setLoadingJugadores(true);
@@ -115,7 +119,6 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
                 <Modal.Title>{equipo?.nombre}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-               
                 <Row>
                     {/* Logo del equipo */}
                     <Col md={4} className="text-center">
@@ -128,7 +131,7 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
                         />
                     </Col>
 
-                    {/* Informaci�n del equipo + bot�n */}
+                    {/* Información del equipo + botón */}
                     <Col md={8}>
                         <div style={{
                             borderRadius: '12px',
@@ -177,7 +180,6 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
                     </Col>
                 </Row>
 
-
                 <h5 className="mt-4">Jugadores</h5>
                 {loadingJugadores ? (
                     <Spinner animation="border" />
@@ -210,16 +212,43 @@ const EquipoModal: React.FC<Props> = ({ show, onHide, equipo }) => {
 
                 <h5 className="mt-4">Mapa del Equipo</h5>
                 <div style={{ position: 'relative', width: '100%', height: '715px', backgroundImage: 'url("https://documentstorneoumes.blob.core.windows.net/asset/cancha.jpg")', backgroundSize: 'cover' }}>
-                    {jugadores.map(j => (
-                        <Card key={j.jugadorId} bg="light" text="dark" style={{ position: 'absolute', ...posicionCoordenadas[posicionMap[j.asignacion.posicionId - 1]], transform: 'translate(-50%, -50%)', width: '80px', height: 'auto', textAlign: 'center', transition: 'all 0.5s ease', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)' }}>
-                            <Card.Img variant="top" src={j.fotografia || 'https://documentstorneoumes.blob.core.windows.net/asset/ImagenJugadorNull.png'} style={{ height: '60px', width: '100%', objectFit: 'cover' }} />
-                            <Card.Body className="p-1">
-                                <Card.Title className="fs-6 mb-0">{j.nombre} {j.apellido}</Card.Title>
-                                <Card.Text style={{ fontSize: '10px' }}>{posicionMap[j.asignacion.posicionId - 1]}</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    ))}
-                </div>
+                    {jugadores.map(j => {
+                        // Obtenemos la clave de posición segura para el objeto posicionCoordenadas
+                        const posicionKey = posicionMap[j.asignacion.posicionId - 1];
+                        // Evitar renderizar si la posición no está definida
+                        if (!posicionKey || !(posicionKey in posicionCoordenadas)) return null;
+                        return (
+                            <Card
+                                key={j.jugadorId}
+                                bg="light"
+                                text="dark"
+                                style={{
+                                    position: 'absolute',
+                                    top: posicionCoordenadas[posicionKey].top,
+                                    left: posicionCoordenadas[posicionKey].left,
+                                    transform: 'translate(-50%, -50%)',
+                                    width: '80px',
+                                    height: 'auto',
+                                    textAlign: 'center',
+                                    transition: 'all 0.5s ease',
+                                    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)'
+                                }}
+                            >
+                                <Card.Img
+                                    variant="top"
+                                    src={j.fotografia || 'https://documentstorneoumes.blob.core.windows.net/asset/ImagenJugadorNull.png'}
+                                    style={{ height: '60px', width: '100%', objectFit: 'cover' }}
+                                />
+                                <Card.Body className="p-1">
+                                    <Card.Title className="fs-6 mb-0">{j.nombre} {j.apellido}</Card.Title>
+                                    <Card.Text style={{ fontSize: '10px' }}>
+                                        {posicionKey}
+                                    </Card.Text>
+                                </Card.Body>
+                            </Card>
+                        );
+                    })}
+                </div>v
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>Cerrar</Button>

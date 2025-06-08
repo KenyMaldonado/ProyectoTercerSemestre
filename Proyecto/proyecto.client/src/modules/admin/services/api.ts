@@ -11,6 +11,7 @@ function getAuthHeaders() {
 }
 
 // Obtener torneos
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getTorneos = async (): Promise<any[]> => {
     try {
         const response = await fetch(`${API_BASE_URL}/TournamentControllers/GetTournaments`);
@@ -22,7 +23,9 @@ export const getTorneos = async (): Promise<any[]> => {
     }
 };
 
+
 // Obtener subtorneos por torneo ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getSubtorneos = async (torneoId: number): Promise<any[]> => {
     try {
         const response = await fetch(`${API_BASE_URL}/TournamentControllers/GetSubTournaments?TournamentID=${torneoId}`);
@@ -35,6 +38,7 @@ export const getSubtorneos = async (torneoId: number): Promise<any[]> => {
 };
 
 // Obtener equipos por subtorneo ID con paginación
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getEquipos = async (subtorneoId: number, page = 1, pageSize = 10): Promise<any> => {
     try {
         const response = await fetch(
@@ -115,6 +119,7 @@ export const updateTeamLogo = async (teamId: number, file: File): Promise<boolea
 };
 
 // Obtener jugadores con paginación
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getJugadoresPaginados = async (page = 1, pageSize = 8): Promise<any> => {
     try {
         const response = await fetch(
@@ -133,6 +138,7 @@ export const getJugadoresPaginados = async (page = 1, pageSize = 8): Promise<any
 };
 
 // Buscar jugadores por nombre (o parte del nombre) - con autenticación
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const searchPlayers = async (query: string): Promise<any[]> => {
     try {
         const response = await fetch(

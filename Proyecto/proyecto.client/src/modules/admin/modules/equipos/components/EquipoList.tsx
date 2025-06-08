@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getTorneos, getSubtorneos, getEquipos } from '../../../services/api';
 import { Spinner, Button, Card, Form, Col, Row, Container } from 'react-bootstrap';
 import EquipoModal from '../components/EquipoModal';
 import './StyleSheet.css';
 
 const EquipoList = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [torneos, setTorneos] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [subtorneos, setSubtorneos] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [equipos, setEquipos] = useState<any[]>([]);
     const [selectedTorneo, setSelectedTorneo] = useState<number | null>(null);
     const [selectedSubtorneo, setSelectedSubtorneo] = useState<number | null>(null);
@@ -14,6 +17,7 @@ const EquipoList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [showModal, setShowModal] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedEquipo, setSelectedEquipo] = useState<any>(null);
 
     useEffect(() => {
@@ -40,6 +44,7 @@ const EquipoList = () => {
         if (selectedSubtorneo !== null) {
             const fetchEquipos = async () => {
                 setLoading(true);
+                
                 const { items, totalPages } = await getEquipos(selectedSubtorneo, currentPage, 10);
                 setEquipos(items);
                 setTotalPages(totalPages);
@@ -48,7 +53,7 @@ const EquipoList = () => {
             fetchEquipos();
         }
     }, [selectedSubtorneo, currentPage]);
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleShowModal = (equipo: any) => {
         setSelectedEquipo(equipo);
         setShowModal(true);

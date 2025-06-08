@@ -44,6 +44,7 @@ const useTournamentData = () => {
 
   const fetchTorneos = async () => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res = await api.get<ApiResponse<any[]>>("/TournamentControllers/GetTournaments");
 
       if (res.data.success) {

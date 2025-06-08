@@ -51,6 +51,7 @@ const EquipoForm: React.FC = () => {
             Swal.fire('¡Éxito!', 'El equipo se actualizó correctamente.', 'success').then(() => {
                 navigate('/admin/equipos');
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             Swal.fire('Error', error.message || 'No se pudo actualizar el equipo.', 'error');
         }

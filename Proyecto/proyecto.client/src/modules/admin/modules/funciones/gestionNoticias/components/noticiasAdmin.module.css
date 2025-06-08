@@ -14,6 +14,11 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .card-img {
@@ -45,10 +50,20 @@
   text-overflow: ellipsis;
 }
 
+.card-meta {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 .card-actions {
   margin-top: 1rem;
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .card-actions button {
@@ -57,12 +72,60 @@
   font-size: 0.85rem;
   border: none;
   border-radius: 0.5rem;
-  background-color: #085a38;
+  color: white;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
 
-.card-actions button:hover {
-  background-color: #ebba35;
+/* Botón VER */
+.card-actions .btn-ver {
+  background-color: #2563eb;
 }
 
+.card-actions .btn-ver:hover {
+  background-color: #1d4ed8;
+}
+
+/* Botón EDITAR */
+.card-actions .btn-editar {
+  background-color: #f59e0b;
+}
+
+.card-actions .btn-editar:hover {
+  background-color: #d97706;
+}
+
+/* Botón ELIMINAR */
+.card-actions .btn-eliminar {
+  background-color: #dc2626;
+}
+
+.card-actions .btn-eliminar:hover {
+  background-color: #b91c1c;
+}
+
+/* ---------- RESPONSIVE para móviles ---------- */
+@media (max-width: 600px) {
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 90%;
+  }
+
+  .card-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-actions button {
+    width: 100%;
+  }
+}

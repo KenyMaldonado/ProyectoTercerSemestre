@@ -130,8 +130,7 @@
               "RelativeToolTip": "Proyecto.Server\\Controllers\\PlayersController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-08T00:30:05.921Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-08T00:30:05.921Z"
             },
             {
               "$type": "Document",
@@ -143,8 +142,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAuwAoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-08T00:19:57.845Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-08T00:19:57.845Z"
             },
             {
               "$type": "Document",
@@ -156,8 +154,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamBLL.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-08T00:19:48.166Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-08T00:19:48.166Z"
             },
             {
               "$type": "Document",
@@ -169,8 +166,7 @@
               "RelativeToolTip": "Proyecto.Server\\DTOs\\RegistrationTournamentsDTO.cs",
               "ViewState": "AgIAAGAAAAAAAAAAAAAxwG4AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-08T00:01:55.139Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-08T00:01:55.139Z"
             },
             {
               "$type": "Document",
@@ -182,8 +178,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TeamRepository.cs",
               "ViewState": "AgIAAE0AAAAAAAAAAAAuwFYAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T23:49:34.16Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T23:49:34.16Z"
             },
             {
               "$type": "Document",
@@ -195,8 +190,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\TeamBLL.cs",
               "ViewState": "AgIAACQAAAAAAAAAAAAswC8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T23:49:21.855Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T23:49:21.855Z"
             },
             {
               "$type": "Document",
@@ -221,8 +215,7 @@
               "RelativeToolTip": "Proyecto.Server\\Models\\Inscripcion.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T23:16:03.216Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T23:16:03.216Z"
             },
             {
               "$type": "Document",
@@ -234,8 +227,7 @@
               "RelativeToolTip": "Proyecto.Server\\Controllers\\TeamManagementControllers.cs",
               "ViewState": "AgIAANIAAAAAAAAAAAApwOEAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T19:59:25.054Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T19:59:25.054Z"
             },
             {
               "$type": "Document",
@@ -247,8 +239,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\TeamManagementBLL.cs",
               "ViewState": "AgIAAAsBAAAAAAAAAAAIwBQBAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T19:46:08.143Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T19:46:08.143Z"
             },
             {
               "$type": "Document",
@@ -260,8 +251,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Service\\TournamentBLL.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T19:40:44.518Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T19:40:44.518Z"
             },
             {
               "$type": "Document",
@@ -273,8 +263,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TeamManagementRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T19:15:51.061Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T19:15:51.061Z"
             },
             {
               "$type": "Document",
@@ -286,8 +275,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITeamManagementBLL.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAA8wBIAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T19:15:22.611Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T19:15:22.611Z"
             },
             {
               "$type": "Document",
@@ -299,8 +287,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITeamManagementRepository.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAA0wBMAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T19:15:11.193Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T19:15:11.193Z"
             },
             {
               "$type": "Document",
@@ -312,8 +299,7 @@
               "RelativeToolTip": "Proyecto.Server\\DTOs\\TournamentDTO.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAQwKQAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T18:58:12.38Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T18:58:12.38Z"
             },
             {
               "$type": "Document",
@@ -325,8 +311,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Repository\\TournamentRepository.cs",
               "ViewState": "AgIAAIMAAAAAAAAAAAAcwLcAAABxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T18:56:30.152Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T18:56:30.152Z"
             },
             {
               "$type": "Document",
@@ -338,8 +323,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesService\\ITournamentBLL.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T18:56:26.472Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T18:56:26.472Z"
             },
             {
               "$type": "Document",
@@ -351,8 +335,7 @@
               "RelativeToolTip": "Proyecto.Server\\BLL\\Interface\\InterfacesRepository\\ITournamentRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-07T18:56:22.283Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-07T18:56:22.283Z"
             }
           ]
         }
