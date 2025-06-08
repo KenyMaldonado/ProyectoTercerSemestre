@@ -80,96 +80,121 @@ const Torneos: React.FC = () => {
   };
 
   const handleGuardarTorneo = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!urlPDF) {
-      toast.warning("📎 Debes subir primero el PDF.");
+  const hoy = new Date();
+  const inicioTorneo = new Date(nuevoTorneo.fechaInicio);
+  const finTorneo = new Date(nuevoTorneo.fechaFin);
+  const inicioInscripcion = new Date(nuevoTorneo.fechaInicioInscripcion);
+  const finInscripcion = new Date(nuevoTorneo.fechaFinInscripcion);
+
+  // Validaciones
+  if (!archivoPDF) {
+    toast.warning("📎 Debes seleccionar un archivo PDF.");
+    return;
+  }
+
+  if (inicioTorneo < hoy) {
+    toast.warning("📅 La fecha de inicio del torneo no puede ser menor a la fecha actual.");
+    return;
+  }
+
+  if (inicioInscripcion >= inicioTorneo) {
+    toast.warning("🚫 La fecha de inicio de inscripción debe ser antes del inicio del torneo.");
+    return;
+  }
+
+  if (finInscripcion >= inicioTorneo) {
+    toast.warning("🚫 La fecha fin de inscripción debe ser antes del inicio del torneo.");
+    return;
+  }
+
+  if (nuevoTorneo.fechaInicio === nuevoTorneo.fechaFin) {
+    toast.warning("🚫 La fecha de inicio y fin del torneo no pueden ser iguales.");
+    return;
+  }
+
+  if (finTorneo < finInscripcion) {
+    toast.warning("📅 La fecha de finalización del torneo no puede ser menor a la fecha fin de inscripción.");
+    return;
+  }
+
+  // ⏫ Subir PDF antes de enviar
+  setSubiendo(true);
+  let pdfUrl = '';
+  try {
+    const formData = new FormData();
+    formData.append("file", archivoPDF);
+
+    const responsePDF = await fetch("http://localhost:5291/api/TournamentControllers/UploadBasesTournaments", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`
+      },
+      body: formData
+    });
+
+    const result = await responsePDF.json();
+    if (result.success) {
+      pdfUrl = result.data.fileUrl;
+    } else {
+      toast.error("❌ Error al subir el PDF");
       return;
     }
-
-    const hoy = new Date();
-const inicioTorneo = new Date(nuevoTorneo.fechaInicio);
-const finTorneo = new Date(nuevoTorneo.fechaFin);
-const inicioInscripcion = new Date(nuevoTorneo.fechaInicioInscripcion);
-const finInscripcion = new Date(nuevoTorneo.fechaFinInscripcion);
-
-// Validación 1: inicio del torneo después de hoy
-if (inicioTorneo < hoy) {
-  toast.warning("📅 La fecha de inicio del torneo no puede ser menor a la fecha actual.");
-  return;
-}
-
-if (inicioInscripcion >= inicioTorneo) {
-  toast.warning("🚫 La fecha de inicio de inscripción debe ser antes del inicio del torneo.");
-  return;
-}
-
-if (finInscripcion >= inicioTorneo) {
-  toast.warning("🚫 La fecha fin de inscripción debe ser antes del inicio del torneo.");
-  return;
-}
-
-if (nuevoTorneo.fechaInicio === nuevoTorneo.fechaFin) {
-  toast.warning("🚫 La fecha de inicio y fin del torneo no pueden ser iguales.");
-  return;
-}
-
-if (finTorneo < finInscripcion) {
-  toast.warning("📅 La fecha de finalización del torneo no puede ser menor a la fecha fin de inscripción.");
-  return;
-}
-
-
-    const torneoData = {
-      ...nuevoTorneo,
-      basesTorneo: urlPDF,
-      ramas: nuevoTorneo.ramas,
-      subtorneos
-    };
-
-    console.log("📦 JSON enviado al backend:", JSON.stringify(torneoData, null, 2));
-
-    try {
-      const response = await fetch("http://localhost:5291/api/TournamentControllers/CreateNewTournament", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`
-        },
-        body: JSON.stringify(torneoData)
-      });
-
-      if (response.ok) {
-        toast.success("✅ Torneo creado correctamente");
-        setMostrarFormulario(false);
-        setArchivoPDF(null);
-        setUrlPDF('');
-        setNuevoTorneo({
-          nombre: '',
-          fechaInicio: '',
-          fechaFin: '',
-          descripcion: '',
-          fechaInicioInscripcion: '',
-          fechaFinInscripcion: '',
-          tipoTorneoID: 0,
-          tipoJuegoID: 0,
-          ramas: [],
-          participantesPorRama: {
-    masculina: '',
-    femenina: ''
+  } catch (error) {
+    console.error("❌ Error al subir el PDF:", error);
+    toast.error("❌ Error de conexión al subir el PDF");
+    return;
+  } finally {
+    setSubiendo(false);
   }
-        });
-        fetchTorneos();
-      } else {
-        const error = await response.text();
-        console.error("❌ Error del backend:", error);
-        toast.error("❌ Error al crear el torneo");
-      }
-    } catch (error) {
-      console.error("❌ Error de red:", error);
-      toast.error("❌ Error de conexión");
-    }
+
+  const torneoData = {
+    ...nuevoTorneo,
+    basesTorneo: pdfUrl,
+    ramas: nuevoTorneo.ramas,
+    subtorneos
   };
+
+  try {
+    const response = await fetch("http://localhost:5291/api/TournamentControllers/CreateNewTournament", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`
+      },
+      body: JSON.stringify(torneoData)
+    });
+
+    if (response.ok) {
+      toast.success("✅ Torneo creado correctamente");
+      setMostrarFormulario(false);
+      setArchivoPDF(null);
+      setUrlPDF('');
+      setNuevoTorneo({
+        nombre: '',
+        fechaInicio: '',
+        fechaFin: '',
+        descripcion: '',
+        fechaInicioInscripcion: '',
+        fechaFinInscripcion: '',
+        tipoTorneoID: 0,
+        tipoJuegoID: 0,
+        ramas: [],
+        participantesPorRama: { masculina: '', femenina: '' }
+      });
+      fetchTorneos();
+    } else {
+      const error = await response.text();
+      console.error("❌ Error del backend:", error);
+      toast.error("❌ Error al crear el torneo");
+    }
+  } catch (error) {
+    console.error("❌ Error de red:", error);
+    toast.error("❌ Error de conexión");
+  }
+};
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -240,50 +265,6 @@ if (finTorneo < finInscripcion) {
           <div className="mb-3">
             <label>Archivo PDF con Bases del Torneo</label>
             <input type="file" accept=".pdf" className="form-control mb-2" onChange={handleFileChange} />
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              onClick={async () => {
-                if (!archivoPDF) {
-                  toast.warning("📎 Debes seleccionar un archivo PDF.");
-                  return;
-                }
-                setSubiendo(true);
-                const formData = new FormData();
-                formData.append("file", archivoPDF);
-
-                try {
-                  const response = await fetch("http://localhost:5291/api/TournamentControllers/UploadBasesTournaments", {
-                    method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("authToken")}`
-                    },
-                    body: formData
-                  });
-
-                  const result = await response.json();
-                  if (result.success) {
-                    setUrlPDF(result.data.fileUrl);
-                    toast.success("✅ PDF subido correctamente");
-                  } else {
-                    toast.error("❌ Error al subir el PDF");
-                  }
-                } catch (err) {
-                  toast.error("❌ Error de conexión al subir PDF");
-                  console.error("Error al subir PDF:", err);
-                } finally {
-                  setSubiendo(false);
-                }
-              }}
-              disabled={subiendo}
-            >
-              {subiendo ? "Subiendo..." : "📤 Subir PDF"}
-            </button>
-            {urlPDF && (
-              <p className="text-success mt-2">
-                ✅ PDF subido: <a href={urlPDF} target="_blank" rel="noopener noreferrer">Ver documento</a>
-              </p>
-            )}
           </div>
           <div className="mb-2">
             <label>Fecha inicio de inscripción</label>
