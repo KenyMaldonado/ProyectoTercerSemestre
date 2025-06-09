@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import styles from './CanchasAdmin.module.css';
-import { useNavigate } from 'react-router-dom';
 
 interface Chancha {
   canchaId: number;
@@ -14,7 +13,6 @@ const API_URL =
   'https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/MatchesControllers';
 
 const ChanchasAdmin: React.FC = () => {
-  const navigate = useNavigate();
   const [chanchas, setChanchas] = useState<Chancha[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [mostrarFormularioEdicion, setMostrarFormularioEdicion] = useState(false);
