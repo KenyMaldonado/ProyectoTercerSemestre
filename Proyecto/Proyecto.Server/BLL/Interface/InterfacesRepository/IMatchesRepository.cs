@@ -16,6 +16,11 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task CrearJornadaAsync(Jornada jornada);
         Task CrearPartidoAsync(Partido partido);
         Task GuardarCambiosAsync();
-
+        Task<List<Usuario>> GetArbitrosDisponiblesGeneralAsync(); // Nuevo método
+        Task<bool> IsArbitroOcupadoAsync(int arbitroId, DateTime fecha, TimeOnly hora);
+        Task<List<Partido>> GetPartidosProgramadosEnRangoAsync(DateTime fechaInicio, DateTime fechaFin);
+        Task CrearJornadasYPartidosAsync(List<Jornada> jornadas, List<Partido> partidos);
+        Task<List<Jornada>> GetJornadasWithPartidosAndDetailsBySubtorneoAsync(int subtorneoId);
+        Task UpdateEstadoSubtorneo(int subtorneoID);
     }
 }

@@ -20,8 +20,7 @@ namespace Proyecto.Server.Models
 
         public int TorneoId { get; set; }
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public EstadoSubTorneo Estado { get; set; }
+        public string Estado { get; set; } = null!;
 
         public int? CantidadEquipos { get; set; }
 

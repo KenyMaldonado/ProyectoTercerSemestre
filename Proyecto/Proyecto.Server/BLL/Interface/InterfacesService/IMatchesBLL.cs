@@ -10,5 +10,7 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task DeleteCancha(int CanchaID);
         Task CreateCancha(MatchesDTO.CanchaDTO datosNuevos);
         Task IniciarTorneoTodosContraTodosAsync(TournamentDTO.StartTournamentRequest request);
+        Task<List<MatchesDTO.GetPartidosByJornadaDTO>> GetPartidosBySubtorneo(int subtorneoID);
+        Task UpdateEstadoSubtorneo(int subtorneoID);
     }
 }

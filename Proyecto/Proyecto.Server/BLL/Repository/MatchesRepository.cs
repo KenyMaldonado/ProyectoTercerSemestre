@@ -115,5 +115,75 @@ namespace Proyecto.Server.BLL.Repository
         {
             await _appContext.SaveChangesAsync();
         }
+        public async Task<List<Usuario>> GetArbitrosDisponiblesGeneralAsync()
+        {
+            return await _appContext.Usuarios
+                .Where(u => u.Rol.Nombre.ToLower() == "arbitro" &&
+                            u.Estado == Usuario.EstadoUsuario.Activo)
+                .ToListAsync();
+        }
+
+        public async Task<bool> IsArbitroOcupadoAsync(int arbitroId, DateTime fecha, TimeOnly hora)
+        {
+            return await _appContext.Partidos.AnyAsync(p => p.UsuarioId == arbitroId
+                                                            && p.FechaPartido == fecha
+                                                            && p.HoraPartido == hora);
+        }
+
+        public async Task<List<Partido>> GetPartidosProgramadosEnRangoAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            return await _appContext.Partidos
+                .Where(p => p.FechaPartido >= fechaInicio && p.FechaPartido <= fechaFin)
+                .ToListAsync();
+        }
+
+        // Implementación del nuevo método para inserción masiva
+        public async Task CrearJornadasYPartidosAsync(List<Jornada> jornadas, List<Partido> partidos)
+        {
+            await _appContext.Jornada.AddRangeAsync(jornadas);
+            await _appContext.Partidos.AddRangeAsync(partidos);
+            await _appContext.SaveChangesAsync();
+        }
+
+
+        public async Task<List<Jornada>> GetJornadasWithPartidosAndDetailsBySubtorneoAsync(int subtorneoId)
+        {
+            return await _appContext.Jornada
+                .Include(jornada => jornada.Partidos)
+                    .ThenInclude(partido => partido.Equipo1Navigation)
+                        .ThenInclude(equipo => equipo.Facultad)
+                .Include(jornada => jornada.Partidos)
+                    .ThenInclude(partido => partido.Equipo2Navigation)
+                        .ThenInclude(equipo => equipo.Facultad)
+                .Include(jornada => jornada.Partidos)
+                    .ThenInclude(partido => partido.Usuario)
+                .Include(jornada => jornada.Partidos)
+                    .ThenInclude(partido => partido.Cancha)
+                .Where(jornada => jornada.Partidos.Any(p =>
+                    (p.Equipo1Navigation != null && p.Equipo1Navigation.SubTorneoId == subtorneoId) ||
+                    (p.Equipo2Navigation != null && p.Equipo2Navigation.SubTorneoId == subtorneoId)
+                ))
+                .OrderBy(jornada => jornada.NumeroJornada)
+                .ToListAsync();
+        }
+
+        public async Task UpdateEstadoSubtorneo(int subtorneoID)
+        {
+            var subtorneo = await _appContext.SubTorneos
+                            .FirstOrDefaultAsync(s => s.SubTorneoId == subtorneoID);
+
+            if (subtorneo == null)
+            {
+                throw new CustomException("Error al cambiar el estado: no se encontro el subtorneo", 404);
+            }
+            else
+            {
+                subtorneo.Estado = "EnCurso";
+            }
+
+            await _appContext.SaveChangesAsync();
+        }
+
+
     }
 }

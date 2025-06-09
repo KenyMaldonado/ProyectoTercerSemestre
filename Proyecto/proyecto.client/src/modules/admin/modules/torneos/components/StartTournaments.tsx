@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { getEquiposPorSubtorneo, EquipoSubtorneo } from '../../../services/tournamentService';
-import { FaUsers, FaArrowLeft, FaInfoCircle, FaCalendarAlt, FaClock, FaCheckCircle, FaCalendarTimes, FaTimesCircle } from 'react-icons/fa';
+import { 
+    getEquiposPorSubtorneo, 
+    EquipoSubtorneo, 
+    iniciarTodosContraTodos, // Importa directamente tu función de API
+    DiaPartido,              // Importa la interfaz DiaPartido
+    IniciarTodosContraTodosPayload // Importa la interfaz del payload
+} from '../../../services/tournamentService'; 
+import { FaUsers, FaArrowLeft, FaInfoCircle, FaCalendarAlt, FaClock, FaCheckCircle, FaCalendarTimes, FaTimesCircle, FaFlag, FaArrowRight } from 'react-icons/fa'; // Importa FaArrowRight
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'animate.css';
@@ -16,17 +22,20 @@ interface LocationState {
     torneoDescripcion?: string;
     subtorneoDescripcion?: string;
     selectedSubtorneoId: number;
+    fechaInicio?: string; // Fecha de inicio del torneo
+    fechaFin?: string;   // Fecha de fin del torneo
+    tipoTorneo?: string;
 }
 
-interface HorarioDia {
+interface HorarioDiaInterno {
     id: number;
     horaInicio: string;
     horaFin: string;
 }
 
-interface DiaSeleccionado {
+interface DiaSeleccionadoInterno {
     diaSemana: string;
-    horarios: HorarioDia[];
+    horarios: HorarioDiaInterno[];
 }
 
 const TournamentSetupWizard: React.FC = () => {
@@ -41,17 +50,54 @@ const TournamentSetupWizard: React.FC = () => {
     const [cargandoEquipos, setCargandoEquipos] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const { torneoNombre, subtorneoNombre, torneoDescripcion, subtorneoDescripcion } = (location.state as LocationState) || {};
+    const {
+        torneoNombre,
+        subtorneoNombre,
+        torneoDescripcion,
+        subtorneoDescripcion,
+        fechaInicio, // Propiedad fechaInicio del torneo
+        fechaFin,    // Propiedad fechaFin del torneo
+        tipoTorneo
+    } = (location.state as LocationState) || {};
 
-    const [diasSeleccionados, setDiasSeleccionados] = useState<DiaSeleccionado[]>([]);
+    // Parsear fechas de inicio y fin para usarlas en DatePicker
+    const parsedFechaInicio = fechaInicio ? new Date(fechaInicio) : null;
+    const parsedFechaFin = fechaFin ? new Date(fechaFin) : null;
+
+
+    // Usa la interfaz interna para el estado del componente
+    const [diasSeleccionados, setDiasSeleccionados] = useState<DiaSeleccionadoInterno[]>([]);
+    // 1. Días de la semana limitados de Lunes a Viernes
     const diasDeLaSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
     const [fechasOmitidas, setFechasOmitidas] = useState<DateType[]>([]);
     const [tempSelectedDate, setTempSelectedDate] = useState<DateType | null>(null);
 
-    // --- Calculamos el ancho de la barra de progreso ---
-    // (currentStep - 1) porque el primer paso es 1, pero queremos 0% de progreso inicial.
-    // (totalSteps - 1) porque hay 3 "saltos" de progreso para 4 pasos.
+    const formatISODateToLocale = (isoString?: string): string => {
+        if (!isoString) return 'N/A';
+        try {
+            const date = new Date(isoString);
+            if (isNaN(date.getTime())) {
+                return 'Fecha inválida';
+            }
+            // Asegúrate de que la fecha se muestre correctamente en la zona horaria local
+            // Considera el caso de fechas sin componente de tiempo, que pueden interpretarse como UTC
+            // y al convertirlas a local, restar un día si la hora es 00:00 UTC.
+            // Una forma robusta es crearla como UTC y luego formatearla.
+            const [year, month, day] = isoString.split('-').map(Number);
+            const dateUTC = new Date(Date.UTC(year, month - 1, day)); // Usa UTC para evitar desfasos
+            
+            return dateUTC.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (e) {
+            console.error('Error al parsear fecha:', isoString, e);
+            return 'Fecha inválida';
+        }
+    };
+
     const progressWidth = ((currentStep - 1) / (totalSteps - 1)) * 90;
 
     useEffect(() => {
@@ -87,27 +133,24 @@ const TournamentSetupWizard: React.FC = () => {
         fetchEquipos();
     }, [subTorneoId]);
 
-    // --- Manejadores de Navegación entre Pasos ---
     const handleNext = () => {
-        // Validaciones antes de avanzar
         if (currentStep === 2) {
             const diasConHorariosValidos = diasSeleccionados.filter(d =>
-                d.horarios.length > 0 && d.horarios.every(h => h.horaInicio && h.horaFin && h.horaInicio < h.horaFin)
+                d.horarios.length > 0 && d.horarios.every(h => h.horaInicio && h.horaFin)
             );
 
             if (diasConHorariosValidos.length === 0) {
-                Swal.fire('Advertencia', 'Debes seleccionar al menos un día y definir al menos un rango de horario válido (Hora de Inicio < Hora de Fin) para poder continuar.', 'warning');
+                Swal.fire('Advertencia', 'Debes seleccionar al menos un día y definir al menos un rango de horario para poder continuar.', 'warning');
                 return;
             }
 
             for (const dia of diasSeleccionados) {
-                if (dia.horarios.length > 0) { // Solo si el día tiene horarios definidos
+                if (dia.horarios.length > 0) {
                     for (const horario of dia.horarios) {
                         if (!horario.horaInicio || !horario.horaFin) {
                             Swal.fire('Advertencia', `Por favor, completa los rangos de horario para el día ${dia.diaSemana}.`, 'warning');
                             return;
                         }
-                        // Verifica que la hora de inicio sea anterior a la hora de fin
                         if (horario.horaInicio >= horario.horaFin) {
                             Swal.fire('Advertencia', `La hora de inicio (${horario.horaInicio}) debe ser anterior a la hora de fin (${horario.horaFin}) para los horarios del día ${dia.diaSemana}.`, 'warning');
                             return;
@@ -127,14 +170,11 @@ const TournamentSetupWizard: React.FC = () => {
         navigate('/admin/torneos/iniciar');
     };
 
-    // --- Manejadores para el Paso 2 (Días y Horarios) ---
     const handleDiaToggle = (dia: string) => {
         setDiasSeleccionados(prev => {
             if (prev.some(d => d.diaSemana === dia)) {
-                // Si ya está seleccionado, lo deselecciona (remueve)
                 return prev.filter(d => d.diaSemana !== dia);
             } else {
-                // Si no está seleccionado, lo agrega con un horario por defecto
                 return [...prev, { diaSemana: dia, horarios: [{ id: Date.now(), horaInicio: '08:00', horaFin: '17:00' }] }];
             }
         });
@@ -175,18 +215,16 @@ const TournamentSetupWizard: React.FC = () => {
         );
     };
 
-    // --- Manejadores para el Paso 3 (Fechas Omitidas) ---
     const handleAddFechaOmitida = (date: DateType | null) => {
-        if (date) { // Solo si la fecha no es nula
+        if (date) {
             setFechasOmitidas(prev => {
-                // Evita duplicados comparando la representación de la fecha (solo día, mes, año)
                 const newDateFormatted = date.toDateString();
                 if (!prev.some(d => d.toDateString() === newDateFormatted)) {
                     return [...prev, date].sort((a, b) => a.getTime() - b.getTime());
                 }
                 return prev;
             });
-            setTempSelectedDate(null); // Resetea el seleccionador para elegir otra fecha
+            setTempSelectedDate(null);
         }
     };
 
@@ -194,8 +232,7 @@ const TournamentSetupWizard: React.FC = () => {
         setFechasOmitidas(prev => prev.filter(date => date.toDateString() !== dateToRemove.toDateString()));
     };
 
-    // --- Manejador para la Confirmación Final ---
-    const handleConfirmSetup = () => {
+    const handleConfirmSetup = async () => {
         Swal.fire({
             title: '¿Confirmar Configuración del Torneo?',
             html: `Estás a punto de configurar el torneo <strong>${torneoNombre}</strong>, subtorneo <strong>${subtorneoNombre}</strong>.<br/><br/>Esta acción iniciará el proceso de planificación de partidos basado en tu configuración.`,
@@ -209,36 +246,89 @@ const TournamentSetupWizard: React.FC = () => {
                 cancelButton: 'btn btn-danger'
             },
             buttonsStyling: false
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                console.log('Configuración a enviar:', {
-                    subTorneoId: subTorneoId,
-                    diasSeleccionados: diasSeleccionados,
-                    fechasOmitidas: fechasOmitidas.map(date => date.toISOString().split('T')[0]) // Formato YYYY-MM-DD
-                });
-
+                // Mostrar SweetAlert de "Comprobando disponibilidad"
                 Swal.fire({
-                    title: 'Enviando configuración...',
+                    title: 'Comprobando disponibilidad...',
+                    text: 'Esto puede tomar un momento.',
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading(null);
                     }
                 });
 
-                setTimeout(() => { // Simula un retraso de la API
-                    Swal.fire(
-                        '¡Configurado!',
-                        'El torneo ha sido configurado exitosamente y está listo para la planificación de partidos.',
-                        'success'
-                    ).then(() => {
-                        navigate('/admin/torneos/iniciar');
+                try {
+                    // Validar que subTorneoId no sea nulo
+                    if (!subTorneoId) {
+                        throw new Error('ID de subtorneo no disponible para iniciar el proceso.');
+                    }
+
+                    // Extraer los IDs de los equipos
+                    const equiposId = equipos.map(equipo => equipo.equipoId);
+
+                    // Mapear los días y horarios al formato que espera la API
+                    const diasPartidos: DiaPartido[] = diasSeleccionados.map(dia => ({
+                        dia: dia.diaSemana,
+                        // El `horarios` de la API espera un array de strings (ej: ["18:00", "20:00"])
+                        horarios: dia.horarios.flatMap(h => [h.horaInicio, h.horaFin])
+                    }));
+
+                    // Mapear las fechas omitidas a formato "YYYY-MM-DD"
+                    const diasOmitidos = fechasOmitidas.map(date => date.toISOString().split('T')[0]);
+
+                    // Construir el payload completo para la API
+                    const payload: IniciarTodosContraTodosPayload = {
+                        subtorneoId: parseInt(subTorneoId),
+                        equiposId: equiposId,
+                        diasPartidos: diasPartidos,
+                        diasOmitidos: diasOmitidos
+                    };
+
+                    console.log('Enviando configuración al endpoint IniciarTodosContraTodos:', payload);
+
+                    // Simula un retraso para la "comprobación de disponibilidad"
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+
+                    // Actualiza el SweetAlert a "Creando torneo"
+                    Swal.update({
+                        title: 'Creando torneo...',
+                        text: 'Estamos generando la planificación de partidos. Esto puede tardar unos segundos.',
+                        icon: undefined 
                     });
-                }, 2000);
+
+                    // Llama a tu función de API real
+                    const success = await iniciarTodosContraTodos(payload);
+
+                    if (success) {
+                        Swal.fire(
+                            '¡Configurado!',
+                            'El torneo ha sido configurado exitosamente y está listo para la planificación de partidos.',
+                            'success'
+                        ).then(() => {
+                            navigate('/admin/torneos/iniciar');
+                        });
+                    } else {
+                        // Esto se activará si iniciarTodosContraTodos retorna 'false'
+                        Swal.fire(
+                            'Error',
+                            'La configuración del torneo falló en el servidor. Por favor, revisa los datos o intenta de nuevo más tarde.',
+                            'error'
+                        );
+                    }
+
+                } catch (apiError: any) {
+                    console.error('Error al configurar el torneo:', apiError);
+                    Swal.fire(
+                        'Error',
+                        `Hubo un problema al configurar el torneo: ${apiError.message || 'Error desconocido'}. Por favor, intenta de nuevo.`,
+                        'error'
+                    );
+                }
             }
         });
     };
 
-    // --- Renderizado Condicional por Paso ---
     if (cargandoEquipos) {
         return (
             <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
@@ -270,11 +360,8 @@ const TournamentSetupWizard: React.FC = () => {
                 <FaUsers className="me-3 text-primary" /> Configuración del Torneo
             </h1>
 
-            {/* Barra de Progreso */}
             <div className="progress-wizard mb-5">
-                {/* Nueva línea de progreso de fondo */}
                 <div className="progress-bar-bg"></div>
-                {/* Nueva barra de progreso que se rellena */}
                 <div className="progress-fill" style={{ width: `${progressWidth}%` }}></div>
 
                 {[1, 2, 3, 4].map((stepNum) => (
@@ -303,7 +390,6 @@ const TournamentSetupWizard: React.FC = () => {
                             <h2 className="mb-4 text-primary fw-bold text-center">
                                 <FaInfoCircle className="me-2" /> Paso 1: Resumen del Evento y Equipos
                             </h2>
-                            {/* Detalles del Torneo/Subtorneo */}
                             <div className="card shadow-sm p-4 mb-4 border-start border-primary border-4">
                                 <div className="card-body">
                                     <h4 className="card-title mb-3 text-primary fw-bold">Detalles</h4>
@@ -315,6 +401,28 @@ const TournamentSetupWizard: React.FC = () => {
                                         <div className="col-md-6">
                                             <label className="form-label fw-semibold">Subtorneo:</label>
                                             <input type="text" className="form-control" value={subtorneoNombre || 'N/A'} disabled />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label fw-semibold">Fecha de Inicio:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formatISODateToLocale(fechaInicio)}
+                                                disabled
+                                            />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label fw-semibold">Fecha de Fin:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formatISODateToLocale(fechaFin)}
+                                                disabled
+                                            />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label fw-semibold">Tipo de Torneo:</label>
+                                            <input type="text" className="form-control" value={tipoTorneo || 'N/A'} disabled />
                                         </div>
                                         {torneoDescripcion && (
                                             <div className="col-12">
@@ -332,7 +440,6 @@ const TournamentSetupWizard: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Listado de Equipos */}
                             <h3 className="mb-4 text-center text-secondary fw-bold">
                                 Equipos Inscritos ({equipos.length})
                             </h3>
@@ -447,15 +554,15 @@ const TournamentSetupWizard: React.FC = () => {
                                 <div className="col-lg-6">
                                     <div className="card shadow-sm p-4">
                                         <h5 className="mb-3">Selecciona una fecha:</h5>
-                                        {/* DatePicker corregido para visualizarse completamente */}
                                         <DatePicker
                                             selected={tempSelectedDate}
                                             onChange={handleAddFechaOmitida}
                                             dateFormat="dd/MM/yyyy"
                                             className="form-control mb-3 text-center"
                                             placeholderText="Haz click para seleccionar una fecha"
-                                            minDate={new Date()}
-                                            portalId="root-portal" // Esto es clave para que el calendario no se recorte
+                                            minDate={parsedFechaInicio || undefined} // 2. Restringir minDate
+                                            maxDate={parsedFechaFin || undefined}   // 2. Restringir maxDate
+                                            portalId="root-portal"
                                             wrapperClassName="w-100"
                                         />
                                         {fechasOmitidas.length > 0 && (
@@ -469,6 +576,7 @@ const TournamentSetupWizard: React.FC = () => {
                                                                 : 'Fecha inválida'}
                                                             <button
                                                                 className="btn btn-danger btn-sm"
+                                                                type="button"
                                                                 onClick={() => handleRemoveFechaOmitida(date)}
                                                             >
                                                                 <FaTimesCircle />
@@ -500,29 +608,30 @@ const TournamentSetupWizard: React.FC = () => {
                                 <ul className="list-group list-group-flush mb-4">
                                     <li className="list-group-item"><strong>Torneo:</strong> {torneoNombre || 'N/A'}</li>
                                     <li className="list-group-item"><strong>Subtorneo:</strong> {subtorneoNombre || 'N/A'}</li>
-                                    {torneoDescripcion && <li className="list-group-item"><strong>Descripción Torneo:</strong> {torneoDescripcion}</li>}
-                                    {subtorneoDescripcion && <li className="list-group-item"><strong>Descripción Subtorneo:</strong> {subtorneoDescripcion}</li>}
+                                    <li className="list-group-item">
+                                        <FaCalendarAlt className="me-2 text-info" /><strong>Fecha de Inicio:</strong> {formatISODateToLocale(fechaInicio)}
+                                    </li>
+                                    <li className="list-group-item">
+                                        <FaCalendarAlt className="me-2 text-info" /><strong>Fecha de Fin:</strong> {formatISODateToLocale(fechaFin)}
+                                    </li>
+                                    <li className="list-group-item">
+                                        <FaFlag className="me-2 text-info" /><strong>Tipo de Torneo:</strong> {tipoTorneo || 'N/A'}
+                                    </li>
                                 </ul>
 
-                                <h4 className="card-title mb-3 text-secondary border-bottom pb-2">Días y Horarios Programados</h4>
+                                <h4 className="card-title mb-3 text-secondary border-bottom pb-2">Días y Horarios Seleccionados</h4>
                                 {diasSeleccionados.length === 0 ? (
-                                    <p className="text-muted">No se seleccionaron días ni horarios de juego.</p>
+                                    <p className="text-muted">No se han seleccionado días ni horarios.</p>
                                 ) : (
                                     <ul className="list-group list-group-flush mb-4">
                                         {diasSeleccionados.map(dia => (
                                             <li key={dia.diaSemana} className="list-group-item">
-                                                <strong>{dia.diaSemana}:</strong>
-                                                {dia.horarios.length === 0 ? (
-                                                    <span className="ms-2 text-danger">No se definieron horarios.</span>
-                                                ) : (
-                                                    <ul className="list-unstyled ms-3 mt-1">
-                                                        {dia.horarios.map((h, index) => (
-                                                            <li key={index} className="d-flex align-items-center">
-                                                                <FaClock className="me-2 text-info" /> {h.horaInicio} - {h.horaFin}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
+                                                <strong className="text-primary">{dia.diaSemana}:</strong>
+                                                <ul className="list-unstyled ms-3 mt-1">
+                                                    {dia.horarios.map((horario, idx) => (
+                                                        <li key={idx}><FaClock className="me-1 text-success" /> {horario.horaInicio} - {horario.horaFin}</li>
+                                                    ))}
+                                                </ul>
                                             </li>
                                         ))}
                                     </ul>
@@ -530,69 +639,57 @@ const TournamentSetupWizard: React.FC = () => {
 
                                 <h4 className="card-title mb-3 text-secondary border-bottom pb-2">Fechas a Omitir</h4>
                                 {fechasOmitidas.length === 0 ? (
-                                    <p className="text-muted">No se seleccionaron fechas para omitir.</p>
+                                    <p className="text-muted">No se han seleccionado fechas a omitir.</p>
                                 ) : (
                                     <ul className="list-group list-group-flush mb-4">
                                         {fechasOmitidas.map((date, index) => (
-                                            <li key={index} className="list-group-item d-flex align-items-center">
-                                                <FaCalendarTimes className="me-2 text-danger" />
-                                                {date instanceof Date && !isNaN(date.getTime())
-                                                    ? date.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-                                                    : 'Fecha inválida'}
+                                            <li key={index} className="list-group-item">
+                                                <FaCalendarTimes className="me-2 text-danger" /> {date.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                             </li>
                                         ))}
                                     </ul>
                                 )}
 
-                                <h4 className="card-title mb-3 text-secondary border-bottom pb-2">Equipos Inscritos ({equipos.length})</h4>
+                                {/* Mostrar equipos en el resumen */}
+                                <h4 className="card-title mb-3 text-secondary border-bottom pb-2">Equipos Inscritos</h4>
                                 {equipos.length === 0 ? (
-                                    <p className="text-muted">No hay equipos inscritos.</p>
+                                    <p className="text-muted">No hay equipos inscritos para este subtorneo.</p>
                                 ) : (
-                                    <div className="row row-cols-1 row-cols-md-2 g-3">
-                                        {equipos.map(equipo => (
-                                            <div key={equipo.equipoId} className="col">
-                                                <div className="d-flex align-items-center p-2 border rounded shadow-sm bg-light-subtle">
-                                                    {equipo.imagenEquipo && (
-                                                        <img
-                                                            src={equipo.imagenEquipo}
-                                                            alt={equipo.nombre}
-                                                            className="rounded-circle me-3"
-                                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                                        />
-                                                    )}
-                                                    <div>
-                                                        <h6 className="mb-0 text-primary fw-bold">{equipo.nombre}</h6>
-                                                        <small className="text-muted">{equipo.nameFacultad || 'Facultad Desconocida'}</small>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <ul className="list-group list-group-flush">
+                                        {equipos.map((equipo) => (
+                                            <li key={equipo.equipoId} className="list-group-item d-flex align-items-center">
+                                                {equipo.imagenEquipo && (
+                                                    <img 
+                                                        src={equipo.imagenEquipo} 
+                                                        alt={equipo.nombre} 
+                                                        className="rounded-circle me-3" 
+                                                        // Aumentar el tamaño de la imagen para mejor visibilidad en el resumen
+                                                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                                    />
+                                                )}
+                                                <span className="fw-semibold text-dark">{equipo.nombre}</span>
+                                            </li>
                                         ))}
-                                    </div>
+                                    </ul>
                                 )}
                             </div>
                         </div>
                     )}
 
-                    {/* --- Controles de Navegación (Botones) --- */}
-                    <div className="d-flex justify-content-between mt-5 pt-3 border-top">
+                    {/* --- Botones de Navegación --- */}
+                    <div className="d-flex justify-content-between mt-4">
                         {currentStep > 1 && (
-                            <button className="btn btn-secondary btn-lg" onClick={handleBack}>
-                                <FaArrowLeft className="me-2" /> Atrás
+                            <button className="btn btn-secondary" onClick={handleBack}>
+                                <FaArrowLeft className="me-2" /> Anterior
                             </button>
                         )}
-                        {currentStep === 1 && (
-                            <button className="btn btn-outline-secondary btn-lg" onClick={handleGoBackToSelector}>
-                                <FaArrowLeft className="me-2" /> Volver al Selector
+                        {currentStep < totalSteps ? (
+                            <button className="btn btn-primary ms-auto" onClick={handleNext}>
+                                Siguiente <FaArrowRight className="ms-2" /> {/* Cambiado a FaArrowRight y removido rotate-icon */}
                             </button>
-                        )}
-                        {currentStep < totalSteps && (
-                            <button className={`btn btn-primary btn-lg ${currentStep === 1 ? 'ms-auto' : ''}`} onClick={handleNext}>
-                                Siguiente <FaArrowLeft className="ms-2 transform-rotate-180" />
-                            </button>
-                        )}
-                        {currentStep === totalSteps && (
-                            <button className="btn btn-success btn-lg ms-auto" onClick={handleConfirmSetup}>
-                                <FaCheckCircle className="me-2" /> Confirmar Configuración
+                        ) : (
+                            <button className="btn btn-success ms-auto" onClick={handleConfirmSetup}>
+                                <FaCheckCircle className="me-2" /> Confirmar y Crear Torneo
                             </button>
                         )}
                     </div>

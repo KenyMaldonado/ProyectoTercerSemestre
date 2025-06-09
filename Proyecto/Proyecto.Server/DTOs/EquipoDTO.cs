@@ -62,5 +62,13 @@ namespace Proyecto.Server.DTOs
             [JsonConverter(typeof(JsonStringEnumConverter))]
             public EstadoEquipo Estado { get; set; }
         }
+
+        public class GetTeamDTO
+        {
+            public int EquipoId { get; set; }
+            public string Nombre { get; set; } = null!;
+            public string NameFacultad { get; set; }
+            public string ImagenEquipo { get; set; }
+        }
     }
 }

@@ -135,8 +135,7 @@ namespace Proyecto.Server.DTOs
 
             public int TorneoId { get; set; }
 
-            [JsonConverter(typeof(JsonStringEnumConverter))]
-            public EstadoSubTorneo Estado { get; set; }
+            public string Estado { get; set; }
 
             public int? CantidadEquipos { get; set; }
         }
