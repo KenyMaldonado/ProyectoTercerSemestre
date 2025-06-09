@@ -104,6 +104,51 @@ const TorneoAdminEditar: React.FC = () => {
     e.preventDefault();
     setIsSaving(true);
 
+    const hoy = new Date().toISOString().split('T')[0];
+
+    const {
+      fechaInicio,
+      fechaFin,
+      fechaInicioInscripcion,
+      fechaFinInscripcion
+    } = torneo;
+
+    // Validaciones de fechas
+    if (
+      fechaInicio < hoy ||
+      fechaFin < hoy ||
+      fechaInicioInscripcion < hoy ||
+      fechaFinInscripcion < hoy
+    ) {
+      setIsSaving(false);
+      Swal.fire('❌ Error en fechas', 'Ninguna fecha puede ser menor al día actual.', 'error');
+      return;
+    }
+
+    if (fechaInicio > fechaFin) {
+      setIsSaving(false);
+      Swal.fire('❌ Fechas incorrectas', 'La fecha de inicio del torneo no puede ser mayor que la fecha de fin.', 'error');
+      return;
+    }
+
+    if (fechaInicioInscripcion > fechaFinInscripcion) {
+      setIsSaving(false);
+      Swal.fire('❌ Fechas incorrectas', 'La fecha de inicio de inscripción no puede ser mayor que la de fin.', 'error');
+      return;
+    }
+
+    if (fechaInicio < fechaFinInscripcion) {
+      setIsSaving(false);
+      Swal.fire('❌ Fechas inválidas', 'La fecha de inicio del torneo no puede ser menor que la fecha fin de inscripción.', 'error');
+      return;
+    }
+
+    if (fechaFin < fechaFinInscripcion) {
+      setIsSaving(false);
+      Swal.fire('❌ Fechas inválidas', 'La fecha de fin del torneo no puede ser menor que la fecha fin de inscripción.', 'error');
+      return;
+    }
+
     Swal.fire({
       title: 'Guardando cambios...',
       text: 'Por favor espera',
@@ -141,10 +186,10 @@ const TorneoAdminEditar: React.FC = () => {
         torneoId: parseInt(id || ''),
         nombre: torneo.nombre,
         descripcion: torneo.descripcion,
-        fechaInicio: torneo.fechaInicio,
-        fechaFin: torneo.fechaFin,
-        fechaInicioInscripcion: torneo.fechaInicioInscripcion,
-        fechaFinInscripcion: torneo.fechaFinInscripcion
+        fechaInicio,
+        fechaFin,
+        fechaInicioInscripcion,
+        fechaFinInscripcion
       };
 
       const res = await fetch(`http://localhost:5291/api/TournamentControllers/UpdateTournament`, {
@@ -254,5 +299,3 @@ const TorneoAdminEditar: React.FC = () => {
 };
 
 export default TorneoAdminEditar;
-
-
