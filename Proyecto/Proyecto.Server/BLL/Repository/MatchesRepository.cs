@@ -61,6 +61,7 @@ namespace Proyecto.Server.BLL.Repository
             {
                 Nombre = datos.Nombre,
                 Capacidad = datos.Capacidad,
+                Estado = "Disponible"
             };
             
             _appContext.Canchas.Add(canchaNueva);

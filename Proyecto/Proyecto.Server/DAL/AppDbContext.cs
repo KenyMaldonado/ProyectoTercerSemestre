@@ -171,7 +171,9 @@ public partial class AppDbContext : DbContext
             entity.ToTable("cancha");
 
             entity.Property(e => e.CanchaId).HasColumnName("Cancha_ID");
-            entity.Property(e => e.Estado).HasColumnType("enum('Disponible','Reservada','Ocupada','En mantenimiento','Fuera de servicio')");
+            entity.Property(e => e.Estado)
+                .HasDefaultValueSql("'Disponible'")
+                .HasColumnType("enum('Disponible','Reservada','Ocupada','EnMantenimiento','FueraDeServicio','Eliminado')");
             entity.Property(e => e.Nombre).HasMaxLength(50);
         });
 
