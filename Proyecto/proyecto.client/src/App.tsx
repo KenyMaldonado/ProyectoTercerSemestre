@@ -10,7 +10,7 @@ import ForgotPassword from './modules/auth/components/ForgotPassword';
 import ResetPassword from './modules/auth/components/ResetPassword';
 import AdminPanel from './modules/admin/components/AdminPanel';
 import ProtectedRoute from './routes/ProtectedRoute';
-import Inscripcion from './modules/inscripcion/components/Inscripcion';
+//import Inscripcion from './modules/inscripcion/components/Inscripcion';
 import ActivarCuenta from './modules/auth/components/ActivarCuenta';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -43,7 +43,7 @@ function App() {
     else if (path.startsWith('/jugadores')) pageTitle = 'Jugadores';
     else if (path.startsWith('/partidos')) pageTitle = 'Partidos';
     else if (path.startsWith('/login')) pageTitle = 'Inicio de Sesión';
-    else if (path.startsWith('/inscripcion')) pageTitle = 'Inscripción';
+    //else if (path.startsWith('/inscripcion')) pageTitle = 'Inscripción';
     else if (path.startsWith('/forgotpassword')) pageTitle = 'Recuperar contraseña';
 
     document.title = pageTitle;
@@ -64,7 +64,7 @@ function App() {
           <Route path="/torneos/view-pdf/:fileUrl" element={<PdfViewer />} />
           <Route path="/" element={<Inicio />} />
           <Route path="/torneos" element={<Torneos />} />
-          <Route path="/inscripcion" element={<Inscripcion />} />
+          
           <Route path="/equipos" element={<Equipos />} />
           <Route path="/jugadores" element={<Jugadores />} />
           <Route path="/partidos" element={<Partidos />} />
@@ -87,3 +87,4 @@ function App() {
 }
 
 export default App;
+//<Route path="/inscripcion" element={<Inscripcion />} />

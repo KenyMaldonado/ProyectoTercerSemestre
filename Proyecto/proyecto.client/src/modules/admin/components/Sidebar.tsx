@@ -5,14 +5,11 @@ import {
   FaBars, FaTrophy, FaUsers, FaSignOutAlt,
   FaHome, FaUser, FaAngleDown, FaAngleRight, FaToolbox,
   FaUserCog, FaNewspaper, FaClipboardList, FaPlay,
-  FaFutbol,
   FaRegFutbol
 } from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
 import gsap from 'gsap';
 import styles from './Sidebar.module.css';
-import { FaFaceAngry } from 'react-icons/fa6';
-import { BiSquare } from 'react-icons/bi';
 
 const Sidebar = () => {
   const { logout } = useAuth();

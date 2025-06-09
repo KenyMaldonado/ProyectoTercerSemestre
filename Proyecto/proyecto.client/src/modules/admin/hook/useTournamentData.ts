@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react"; // ¡Importa useCallback!
 import api from "../../../services/api";
 
 interface ApiResponse<T> {
@@ -42,7 +42,8 @@ const useTournamentData = () => {
   const [subTournamentsMap, setSubTournamentsMap] = useState<{ [key: number]: SubTorneo[] }>({});
   const [tiposTorneo, setTiposTorneo] = useState<TipoTorneo[]>([]);
 
-  const fetchTorneos = async () => {
+  // Memoizar fetchTorneos
+  const fetchTorneos = useCallback(async () => {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res = await api.get<ApiResponse<any[]>>("/TournamentControllers/GetTournaments");
@@ -70,9 +71,15 @@ const useTournamentData = () => {
     } catch (err) {
       console.error("Error al obtener torneos:", err);
     }
-  };
+  }, []); // Dependencias vacías porque no depende de ningún estado o prop del hook
 
-  const fetchSubTorneos = async (torneoId: number) => {
+  // Memoizar fetchSubTorneos
+  const fetchSubTorneos = useCallback(async (torneoId: number) => {
+    // Agregamos una verificación aquí para evitar llamadas si ya se cargó para este torneoId
+    if (subTournamentsMap[torneoId]) {
+        console.log(`Subtorneos para ${torneoId} ya cargados. Evitando llamada duplicada.`);
+        return;
+    }
     try {
       const res = await api.get<ApiResponse<SubTorneo[]>>("/TournamentControllers/GetSubTournaments", {
         params: { TournamentID: torneoId },
@@ -87,9 +94,10 @@ const useTournamentData = () => {
     } catch (err) {
       console.error("Error al obtener subtorneos:", err);
     }
-  };
+  }, [subTournamentsMap]); // Depende de subTournamentsMap para asegurar que la verificación `subTournamentsMap[torneoId]` sea actual.
 
-  const fetchTiposTorneo = async () => {
+  // Memoizar fetchTiposTorneo
+  const fetchTiposTorneo = useCallback(async () => {
     try {
       const res = await api.get<TipoTorneo[]>("/TournamentControllers/GetTypeTournaments");
       setTiposTorneo(res.data);
@@ -97,11 +105,12 @@ const useTournamentData = () => {
     } catch (err) {
       console.error("Error al obtener tipos de torneo:", err);
     }
-  };
+  }, []); // Dependencias vacías
 
+  // El useEffect aquí en el custom hook sigue estando bien si solo quieres cargar torneos al inicio
   useEffect(() => {
     fetchTorneos();
-  }, []);
+  }, [fetchTorneos]); // Ahora fetchTorneos está memoizada, así que esta dependencia es estable.
 
   return {
     tournaments,
@@ -114,5 +123,3 @@ const useTournamentData = () => {
 };
 
 export default useTournamentData;
-
-

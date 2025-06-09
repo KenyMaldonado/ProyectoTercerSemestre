@@ -56,7 +56,9 @@ const JugadorList = () => {
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [torneos, setTorneos] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [subtorneos, setSubtorneos] = useState<any[]>([]);
     const [equiposNombres, setEquiposNombres] = useState<EquipoNombre[]>([]);
     const [selectedTorneoId, setSelectedTorneoId] = useState<number | null>(null);
@@ -122,7 +124,7 @@ const JugadorList = () => {
                     do {
                         const data = await getEquipos(selectedSubtorneoId, currentPage);
                         if (data && data.items) {
-                            allEquipos = allEquipos.concat(data.items.map(e => ({ equipoId: e.equipoId, nombre: e.nombre })));
+                            allEquipos = allEquipos.concat(data.items.map((e: { equipoId: number; nombre: string }) => ({ equipoId: e.equipoId, nombre: e.nombre })));
                             fetchedTotalPages = data.totalPages || 1;
                         } else {
                             fetchedTotalPages = 0; break;
@@ -191,6 +193,7 @@ const JugadorList = () => {
         const fetchData = async () => {
             try {
                 if (search.trim()) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const dataFromSearch: any = await searchPlayers(search); // Almacenamos la respuesta completa
                     // Accedemos a la propiedad 'data' del objeto de respuesta
                     setJugadores(dataFromSearch.data || []); 
@@ -212,7 +215,7 @@ const JugadorList = () => {
         const torneoId = e.target.value === '' ? null : Number(e.target.value);
         setSelectedTorneoId(torneoId);
         setSelectedSubtorneoId(null); 
-        setSelectedEquipoId(null);    
+        setSelectedEquipoId(null);
         setPage(1); 
         setSearch(''); 
     };

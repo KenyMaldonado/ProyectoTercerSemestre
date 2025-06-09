@@ -43,7 +43,7 @@ const ResetPassword: React.FC = () => {
         const data = await response.json();
         toast.error(data.message || '❌ Error al actualizar la contraseña.');
       }
-    } catch (err) {
+    } catch {
       toast.error('⚠️ Error de conexión con el servidor.');
     }
   };

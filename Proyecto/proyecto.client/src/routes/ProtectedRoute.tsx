@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
         const token = localStorage.getItem('authToken');
 
         if (!token || isTokenExpired(token)) {
-            toast.error('Tu sesi�n ha expirado. Inicia sesi�n nuevamente.');
+            toast.error('Tu sesión ha expirado. Inicia sesión nuevamente.');
             logout();
             setIsValidSession(false);
             navigate('/login');

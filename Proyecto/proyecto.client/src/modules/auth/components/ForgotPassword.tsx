@@ -27,7 +27,7 @@ const ForgotPassword: React.FC = () => {
         const data = await response.json();
         toast.error(data.message || '❌ No se pudo enviar el código.');
       }
-    } catch (err) {
+    } catch {
       toast.error('⚠️ Error de conexión con el servidor.');
     }
   };
@@ -55,7 +55,7 @@ const ForgotPassword: React.FC = () => {
       } else {
         toast.error(data.message || '❌ Código incorrecto o expirado.');
       }
-    } catch (err) {
+    } catch {
       toast.error('⚠️ Error de conexión con el servidor.');
     }
   };
