@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Configuración de axios
 const api = axios.create({
-  baseURL: 'https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net',
+  baseURL: 'https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api',
   headers: {
     'Content-Type': 'application/json',
   },

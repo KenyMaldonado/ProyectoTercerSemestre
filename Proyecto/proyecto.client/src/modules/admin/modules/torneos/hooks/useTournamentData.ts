@@ -32,7 +32,7 @@ const useTournamentData = () => {
 
   const fetchTorneos = async () => {
     try {
-      const response = await fetch('http://localhost:5291/api/TournamentControllers/GetTorneos');
+      const response = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TournamentControllers/GetTorneos');
       if (response.ok) {
         const data = await response.json();
         setTournaments(data);
@@ -46,7 +46,7 @@ const useTournamentData = () => {
 
   const fetchSubTorneos = async (torneoId: number) => {
     try {
-      const response = await fetch(`http://localhost:5291/api/SubTorneoControllers/GetByTorneo/${torneoId}`);
+      const response = await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/SubTorneoControllers/GetByTorneo/${torneoId}`);
       if (response.ok) {
         const data = await response.json();
         setSubTournamentsMap((prev) => ({

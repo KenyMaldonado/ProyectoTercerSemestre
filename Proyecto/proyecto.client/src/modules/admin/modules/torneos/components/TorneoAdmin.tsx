@@ -169,7 +169,7 @@ const Torneos: React.FC = () => {
       const formData = new FormData();
       formData.append("file", archivoPDF as File);
 
-      const responsePDF = await fetch("http://localhost:5291/api/TournamentControllers/UploadBasesTournaments", {
+      const responsePDF = await fetch("https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TournamentControllers/UploadBasesTournaments", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`
@@ -200,7 +200,7 @@ const Torneos: React.FC = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5291/api/TournamentControllers/CreateNewTournament", {
+      const response = await fetch("https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TournamentControllers/CreateNewTournament", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -333,7 +333,7 @@ const Torneos: React.FC = () => {
   // también exponga la función fetchTiposTorneo (ya lo hace)
   const fetchTiposJuego = useCallback(async () => {
     try {
-      const res = await fetch('http://localhost:5291/api/TournamentControllers/GetTournamentGameTypes', {
+      const res = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TournamentControllers/GetTournamentGameTypes', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}` // Añade el token aquí
         }

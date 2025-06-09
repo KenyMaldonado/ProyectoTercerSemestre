@@ -256,7 +256,7 @@ const TorneoAdminEditar: React.FC = () => {
         const formData = new FormData();
         formData.append("file", archivoPDF);
 
-        const response = await fetch(`http://localhost:5291/api/TournamentControllers/UpdateBasesTournaments?TorneoId=${parseInt(id || '')}`, {
+        const response = await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TournamentControllers/UpdateBasesTournaments?TorneoId=${parseInt(id || '')}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`
@@ -286,7 +286,7 @@ const TorneoAdminEditar: React.FC = () => {
         fechaFinInscripcion: torneo.fechaFinInscripcion
       };
 
-      const res = await fetch(`http://localhost:5291/api/TournamentControllers/UpdateTournament`, {
+      const res = await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TournamentControllers/UpdateTournament`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
