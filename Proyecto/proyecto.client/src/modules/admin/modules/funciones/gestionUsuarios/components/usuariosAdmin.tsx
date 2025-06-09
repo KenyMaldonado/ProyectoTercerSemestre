@@ -80,11 +80,12 @@ const UsuariosAdmin: React.FC = () => {
           </select>
         </div>
 
-        <button type="submit" className="btn btn-success">Crear Usuario</button>
+        <button type="submit" className="btn btn-success">Crear Usuarios</button>
       </form>
     </div>
   );
 };
+
 
 export default UsuariosAdmin;
 
