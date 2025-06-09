@@ -1,6 +1,6 @@
 // src/services/api.ts
 
-const API_BASE_URL = 'http://localhost:5291/api';
+const API_BASE_URL = 'https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('authToken'); // o la llave que uses para guardar el token

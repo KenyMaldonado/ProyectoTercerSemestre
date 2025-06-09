@@ -168,7 +168,10 @@ namespace Proyecto.Server
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                     policy =>
                                     {
-                                        policy.WithOrigins("http://localhost:5173") // Permitir el frontend
+                                        policy.WithOrigins(
+                                            "https://lemon-meadow-015c9cd0f.6.azurestaticapps.net",
+                                            "http://localhost:5173",
+                                            "https://torneosumes.site") // Permitir el frontend
                                                 .AllowAnyHeader()
                                                 .AllowAnyMethod()
                                                 .AllowCredentials(); // Permitir cookies y autenticación

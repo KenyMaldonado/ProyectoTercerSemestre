@@ -19,7 +19,7 @@ const Inicio = () => {
   useEffect(() => {
     const fetchNoticias = async () => {
       try {
-        const res = await fetch('http://localhost:5291/api/AdditionalFeaturesControllers/GetNews', {
+        const res = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AdditionalFeaturesControllers/GetNews', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`,
             Accept: '*/*',

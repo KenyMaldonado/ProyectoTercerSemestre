@@ -1,5 +1,5 @@
 // Define tu URL base de la API aquí, o impórtala si está en otro archivo de configuración
-const API_BASE_URL = 'http://localhost:5291/api'; // Asegúrate de que esta sea la URL correcta de tu API
+const API_BASE_URL = 'https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api'; // Asegúrate de que esta sea la URL correcta de tu API
 
 // --- Interfaces ---
 export interface Torneo {
