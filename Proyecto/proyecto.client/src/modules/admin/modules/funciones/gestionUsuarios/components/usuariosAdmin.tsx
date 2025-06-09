@@ -28,7 +28,7 @@ const UsuariosAdmin: React.FC = () => {
     console.log("➡️ Enviando usuario:", nuevoUsuario);
 
     try {
-      const res = await fetch('http://localhost:5291/api/AuthControllers/CreateNewUser', {
+      const res = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AuthControllers/CreateNewUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

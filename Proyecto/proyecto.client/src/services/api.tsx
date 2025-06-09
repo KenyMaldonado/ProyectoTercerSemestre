@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Configuración de axios
 const api = axios.create({
-  baseURL: 'http://localhost:5291/api',
+  baseURL: 'https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +10,7 @@ const api = axios.create({
 
 export default api;
 
-const baseURL = 'http://localhost:5291/api/TeamManagementControllers';
+const baseURL = 'https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TeamManagementControllers';
 
 // Tipos TypeScript
 export type Departamento = {
@@ -90,7 +90,7 @@ export const updateJugador = async (id: number, datos: any, file?: File | null):
   }
 
   try {
-    const response = await fetch(`http://localhost:5291/api/Players/UpdatePlayer/${id}`, {
+    const response = await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/Players/UpdatePlayer/${id}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,

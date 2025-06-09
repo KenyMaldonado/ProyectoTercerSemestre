@@ -25,7 +25,7 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5291/api/AuthControllers/AuthUser', {
+      const response = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AuthControllers/AuthUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

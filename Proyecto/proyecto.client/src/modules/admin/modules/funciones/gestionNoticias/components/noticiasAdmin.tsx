@@ -40,7 +40,7 @@ const NoticiasAdmin = () => {
 
   const fetchNoticias = async () => {
     try {
-      const response = await fetch('http://localhost:5291/api/AdditionalFeaturesControllers/GetNews', {
+      const response = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AdditionalFeaturesControllers/GetNews', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           Accept: '*/*',
@@ -57,7 +57,7 @@ const NoticiasAdmin = () => {
 
   const toggleVisibilidad = async (id: number) => {
     try {
-      await fetch(`http://localhost:5291/api/AdditionalFeaturesControllers/UpdateVisible?NoticiaId=${id}`, {
+      await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AdditionalFeaturesControllers/UpdateVisible?NoticiaId=${id}`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -84,7 +84,7 @@ const NoticiasAdmin = () => {
 
     if (result.isConfirmed) {
       try {
-        await fetch(`http://localhost:5291/api/AdditionalFeaturesControllers/Delete?NoticiaId=${id}`, {
+        await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AdditionalFeaturesControllers/Delete?NoticiaId=${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`
@@ -127,7 +127,7 @@ const NoticiasAdmin = () => {
     form.append('CreateByUserID', String(formData.createByUserID));
 
     try {
-      const res = await fetch('http://localhost:5291/api/AdditionalFeaturesControllers/CreateNews', {
+      const res = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AdditionalFeaturesControllers/CreateNews', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`
@@ -170,7 +170,7 @@ const NoticiasAdmin = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5291/api/AdditionalFeaturesControllers/UpdateNews', {
+      const response = await fetch('https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AdditionalFeaturesControllers/UpdateNews', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`

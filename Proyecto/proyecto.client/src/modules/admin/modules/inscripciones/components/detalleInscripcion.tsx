@@ -104,7 +104,7 @@ const DetalleInscripcion: React.FC = () => {
     const fetchDetalle = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5291/api/TeamManagementControllers/GetInformationRegistration?InscripcionId=${id}`
+          `https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TeamManagementControllers/GetInformationRegistration?InscripcionId=${id}`
         );
         const json = await res.json();
         if (json.success) {
@@ -142,7 +142,7 @@ const DetalleInscripcion: React.FC = () => {
       // Refrescar los datos después de la actualización exitosa
       setCargando(true);
       try {
-        const res = await fetch(`http://localhost:5291/api/TeamManagementControllers/GetInformationRegistration?InscripcionId=${id}`);
+        const res = await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/TeamManagementControllers/GetInformationRegistration?InscripcionId=${id}`);
         const json = await res.json();
         if (json.success) {
           setDatos(json.data);

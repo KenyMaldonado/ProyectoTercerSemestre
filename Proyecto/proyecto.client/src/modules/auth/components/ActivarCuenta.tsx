@@ -36,7 +36,7 @@ const ActivarCuenta: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5291/api/AuthControllers/ActiveAccount?Token=${encodeURIComponent(
+        `https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AuthControllers/ActiveAccount?Token=${encodeURIComponent(
           token
         )}&NewPassword=${encodeURIComponent(password)}`,
         { method: 'PATCH' }

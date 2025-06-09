@@ -27,7 +27,7 @@ const ResetPassword: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5291/api/AuthControllers/UpdatePasswordWithToken?password=${encodeURIComponent(password)}`, {
+      const response = await fetch(`https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AuthControllers/UpdatePasswordWithToken?password=${encodeURIComponent(password)}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`

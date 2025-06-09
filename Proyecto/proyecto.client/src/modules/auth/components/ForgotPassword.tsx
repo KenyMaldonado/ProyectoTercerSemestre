@@ -40,7 +40,7 @@ const ForgotPassword: React.FC = () => {
       const codigoLimpio = code.trim();
 
       const response = await fetch(
-        `http://localhost:5291/api/AuthControllers/VerifyCode?correo=${encodeURIComponent(correoLimpio)}&code=${encodeURIComponent(codigoLimpio)}`,
+        `https://apitorneosmeso-feh5hqeqe5bresgm.eastus-01.azurewebsites.net/api/AuthControllers/VerifyCode?correo=${encodeURIComponent(correoLimpio)}&code=${encodeURIComponent(codigoLimpio)}`,
         {
           method: 'POST',
         }
