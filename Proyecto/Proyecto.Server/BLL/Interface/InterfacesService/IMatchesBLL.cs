@@ -1,4 +1,5 @@
 ﻿using Proyecto.Server.DTOs;
+using static Proyecto.Server.DTOs.TournamentDTO;
 
 namespace Proyecto.Server.BLL.Interface.InterfacesService
 {
@@ -8,5 +9,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesService
         Task UpdateCancha(MatchesDTO.CanchaDTO datos);
         Task DeleteCancha(int CanchaID);
         Task CreateCancha(MatchesDTO.CanchaDTO datosNuevos);
+        Task IniciarTorneoTodosContraTodosAsync(TournamentDTO.StartTournamentRequest request);
     }
 }

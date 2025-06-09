@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Utils;
+using static Proyecto.Server.DTOs.TournamentDTO;
 
 namespace Proyecto.Server.Controllers
 {
@@ -91,6 +92,30 @@ namespace Proyecto.Server.Controllers
             catch (Exception ex)
             {
                 return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("IniciarTodosContraTodos")]
+        public async Task<IActionResult> IniciarTodosContraTodos([FromBody] TournamentDTO.StartTournamentRequest request)
+        {
+            if (request == null)
+                return BadRequest("Datos del torneo no proporcionados.");
+
+            try
+            {
+                await _matchesBLL.IniciarTorneoTodosContraTodosAsync(request);
+                return Ok(new { mensaje = "Torneo iniciado correctamente con el formato todos contra todos." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Este tipo de excepción es lanzada cuando no hay suficientes fechas/canchas/etc.
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Para errores inesperados
+                return StatusCode(500, new { error = "Ocurrió un error al iniciar el torneo.", detalle = ex.Message });
             }
         }
 

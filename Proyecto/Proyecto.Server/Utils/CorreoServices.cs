@@ -86,7 +86,7 @@ namespace Proyecto.Server.Utils
         {
             try
             {
-                var urlActivacion = $"http://localhost:5173/activar-cuenta?token={token}";
+                var urlActivacion = $"https://torneosumes.site/activar-cuenta?token={token}";
 
                 var mensaje = new MailMessage
                 {

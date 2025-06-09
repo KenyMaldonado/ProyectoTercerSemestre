@@ -163,5 +163,21 @@ namespace Proyecto.Server.DTOs
             [Required(AllowEmptyStrings = true)] // Permite cadena vacía si solo necesitas que no sea null
             public string comentario { get; set; }
         }
+
+        public class StartTournamentRequest
+        {
+            public int SubtorneoId { get; set; }
+            public List<int> EquiposId { get; set; } = new();
+            public List<DiaPartidoDTO> DiasPartidos { get; set; } = new();
+            public List<DateOnly> DiasOmitidos { get; set; } = new();
+        }
+
+        public class DiaPartidoDTO
+        {
+            public string Dia { get; set; } = string.Empty;  // ej: "lunes"
+            public List<TimeOnly> Horarios { get; set; } = new();
+        }
+
+
     }
 }

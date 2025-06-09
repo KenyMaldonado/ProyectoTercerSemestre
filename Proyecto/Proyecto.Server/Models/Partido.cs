@@ -18,7 +18,7 @@
 
         public int? FaseId { get; set; }
 
-        public int UsuarioId { get; set; }
+        public int? UsuarioId { get; set; }
 
         public int CanchaId { get; set; }
 

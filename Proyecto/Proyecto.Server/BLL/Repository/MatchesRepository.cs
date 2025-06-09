@@ -63,10 +63,57 @@ namespace Proyecto.Server.BLL.Repository
                 Capacidad = datos.Capacidad,
                 Estado = "Disponible"
             };
-            
+
             _appContext.Canchas.Add(canchaNueva);
             await _appContext.SaveChangesAsync();
         }
 
+        public async Task<Torneo?> GetTorneoBySubtorneoAsync(int subtorneoId)
+        {
+            return await _appContext.SubTorneos
+                .Where(s => s.SubTorneoId == subtorneoId)
+                .Select(s => s.Torneo)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Cancha>> GetCanchasDisponiblesAsync()
+        {
+            return await _appContext.Canchas
+                .Where(c => c.Estado == "Disponible")
+                .ToListAsync();
+        }
+
+        public async Task<List<Usuario>> GetArbitrosDisponiblesAsync(DateTime fecha, TimeOnly hora)
+        {
+            return await _appContext.Usuarios
+                .Where(u => u.Rol.Nombre.ToLower() == "arbitro" &&
+                            u.Estado == Usuario.EstadoUsuario.Activo &&
+                            !_appContext.Partidos.Any(p => p.UsuarioId == u.UsuarioId
+                                                    && p.FechaPartido == fecha
+                                                    && p.HoraPartido == hora))
+                .ToListAsync();
+        }
+
+        public async Task<bool> IsCanchaDisponibleAsync(int canchaId, DateTime fecha, TimeOnly hora)
+        {
+            return !await _appContext.Partidos.AnyAsync(p => p.CanchaId == canchaId
+                                                        && p.FechaPartido == fecha
+                                                        && p.HoraPartido == hora);
+        }
+
+        public async Task CrearJornadaAsync(Jornada jornada)
+        {
+            await _appContext.Jornada.AddAsync(jornada);
+        }
+
+        public async Task CrearPartidoAsync(Partido partido)
+        {
+            await _appContext.Partidos.AddAsync(partido);
+        }
+
+        public async Task GuardarCambiosAsync()
+        {
+            await _appContext.SaveChangesAsync();
+        }
     }
 }
