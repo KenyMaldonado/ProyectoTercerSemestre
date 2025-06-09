@@ -23,16 +23,9 @@ const NoticiasAdmin = () => {
     content: '',
     file: null as File | null,
     published: true,
-    createByUserID: 1,  // default, actualizar según usuario real
+    createByUserID: 1, 
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-
-  // Aquí podrías cargar el usuario logueado y actualizar createByUserID si es necesario
-  // Ejemplo:
-  // useEffect(() => {
-  //   const userID = obtenerUsuarioLogueadoID();
-  //   setFormData(prev => ({ ...prev, createByUserID: userID }));
-  // }, []);
 
   useEffect(() => {
     if (!modoCrear && !modoEditar) fetchNoticias();
