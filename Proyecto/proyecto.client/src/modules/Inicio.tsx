@@ -44,14 +44,6 @@ const Inicio = () => {
     return () => clearInterval(interval);
   }, [noticias]);
 
-  const avanzar = () => {
-    setCurrent((prev) => (prev + 1) % noticias.length);
-  };
-
-  const retroceder = () => {
-    setCurrent((prev) => (prev - 1 + noticias.length) % noticias.length);
-  };
-
   return (
     <div className="inicio-container">
       {/* HERO */}

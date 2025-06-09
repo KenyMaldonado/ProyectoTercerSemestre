@@ -7,6 +7,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
 export default api;
 
 const baseURL = 'http://localhost:5291/api/TeamManagementControllers';
@@ -33,41 +34,40 @@ export type Semestre = {
   carreraId: number;
   semestre: number;
   seccion: string;
-
 };
 
+// ✅ Corregido con tipos genéricos para evitar errores TS18046
 export const getDepartamentos = async (): Promise<Departamento[]> => {
-  const res = await api.get(`${baseURL}/GetDepartamentos`);
-  return res.data.data as Departamento[]; // ✅ Aquí haces cast explícito
+  const res = await api.get<{ data: Departamento[] }>(`${baseURL}/GetDepartamentos`);
+  return res.data.data;
 };
 
 export const getMunicipiosByDepartamento = async (
   departamentoId: number
 ): Promise<Municipio[]> => {
-  const res = await api.get(`${baseURL}/GetMunicipiosByDepartamento`, {
+  const res = await api.get<{ data: Municipio[] }>(`${baseURL}/GetMunicipiosByDepartamento`, {
     params: { DepartamentoID: departamentoId },
   });
-  return res.data.data as Municipio[];
+  return res.data.data;
 };
 
 export const getCarrerasByFacultad = async (
   facultadId: number
 ): Promise<Carrera[]> => {
-  const res = await api.get(`${baseURL}/GetCarrerasByFacultad`, {
+  const res = await api.get<{ data: Carrera[] }>(`${baseURL}/GetCarrerasByFacultad`, {
     params: { FacultadId: facultadId },
   });
-  return res.data.data as Carrera[];
+  return res.data.data;
 };
 
 export const getSemestreByCarrera = async (
   carreraId: number
 ): Promise<Semestre[]> => {
-  const res = await api.get(`${baseURL}/GetSemestreByCarrera`, {
+  const res = await api.get<{ data: Semestre[] }>(`${baseURL}/GetSemestreByCarrera`, {
     params: { CarreraId: carreraId },
   });
-  return res.data.data as Semestre[];
+  return res.data.data;
 };
-
 
 export const updateJugador = async (id: number, datos: any, file?: File | null): Promise<void> => {
   const formData = new FormData();
@@ -114,21 +114,14 @@ export const updateJugador = async (id: number, datos: any, file?: File | null):
   }
 };
 
-// En tu archivo api.ts
-
+// ✅ Corregido con tipo genérico boolean
 export const verifyCarne = async (carne: string, jugadorID: number): Promise<boolean> => {
   try {
-    const carneInt = parseInt(carne, 10); // Asegura que el carné sea un entero
+    const carneInt = parseInt(carne, 10);
 
-    // Esto ya está enviando un objeto JSON con las propiedades 'Carne' y 'jugadorID'
-    // que se mapearán correctamente a tu VerifyCarneRequest DTO en el backend.
-    const res = await api.post(`/Players/VerifyCarne`, {
+    const res = await api.post<{ data: boolean }>(`/Players/VerifyCarne`, {
       Carne: carneInt,
       JugadorID: jugadorID
-    }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
     });
 
     if (typeof res.data.data === 'boolean') {
