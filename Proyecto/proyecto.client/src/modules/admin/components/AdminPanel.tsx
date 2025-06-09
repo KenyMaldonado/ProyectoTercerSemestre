@@ -16,6 +16,7 @@ import DetalleInscripcion from '../modules/inscripciones/components/detalleInscr
 import TournamentSelector from '../modules/torneos/components/TournamentSelector';
 import TournamentTeams from '../modules/torneos/components/StartTournaments';
 import CanchasAdmin from '../modules/funciones/gestionCancha/components/CanchasAdmin';
+import PartidosAdmin from '../modules/partidos/components/partidosAdmin';
 
 const AdminPanel = () => {
     return (
@@ -24,6 +25,7 @@ const AdminPanel = () => {
         <main className={styles.mainContent}>
             <Routes>
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="partidos" element={<PartidosAdmin />} />
             <Route path="torneos/gestionar" element={<TorneosAdmin />} />
             <Route path="torneos/iniciar" element={<TournamentSelector />} />
             <Route path="torneos/iniciar/detalles/:subTorneoId" element={<TournamentTeams />} />

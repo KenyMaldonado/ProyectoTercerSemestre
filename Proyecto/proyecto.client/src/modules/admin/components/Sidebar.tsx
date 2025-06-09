@@ -5,11 +5,12 @@ import {
   FaBars, FaTrophy, FaUsers, FaSignOutAlt,
   FaHome, FaUser, FaAngleDown, FaAngleRight, FaToolbox,
   FaUserCog, FaNewspaper, FaClipboardList, FaPlay,
-  FaRegFutbol
+  FaRegFutbol,
 } from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
 import gsap from 'gsap';
 import styles from './Sidebar.module.css';
+import { FaCalendarCheck} from 'react-icons/fa6';
 
 const Sidebar = () => {
   const { logout } = useAuth();
@@ -54,6 +55,7 @@ const Sidebar = () => {
 
   const navItems = [
     { to: '/admin/dashboard', icon: <FaHome />, label: 'Dashboard' },
+    { to: '/admin/partidos', icon: <FaCalendarCheck/>, label: 'Partidos'},
     { to: '/admin/inscripciones', icon: <FaClipboardList />, label: 'Inscripciones' },
     { to: '/admin/equipos', icon: <FaUsers />, label: 'Equipos' },
     { to: '/admin/jugadores', icon: <FaUser />, label: 'Jugadores' },
