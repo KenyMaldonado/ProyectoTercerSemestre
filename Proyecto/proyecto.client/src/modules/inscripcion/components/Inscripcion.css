@@ -79,6 +79,7 @@
   
   .inscripcion-wrapper {
     padding: 2rem;
+    margin-top: 2rem;
   }
   
   .animated-form {
@@ -283,6 +284,16 @@
 .card {
   animation: fadeInUp 0.5s ease-out forwards;
   opacity: 0;
+  border-radius: 0.5rem;
+}
+
+.card-header {
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.card-body {
+  padding: 1.5rem;
 }
 
 .card:nth-child(1) {
@@ -310,4 +321,10 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.form-wrapper {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 1.5rem;
 }

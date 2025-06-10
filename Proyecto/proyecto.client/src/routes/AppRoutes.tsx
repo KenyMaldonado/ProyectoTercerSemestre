@@ -4,6 +4,7 @@ import Torneos from '../modules/torneos/components/Torneos';
 import Equipos from '../modules/equipos/components/Equipos';
 import Jugadores from '../modules/jugadores/components/Jugadores';
 import Partidos from '../modules/partidos/components/Partidos';
+import InscripcionTorneo from '../modules/inscripcion/components/Inscripcion';
 import Login from '../modules/auth/components/Login';
 import ForgotPassword from '../modules/auth/components/ForgotPassword';
 import ActivarCuenta from '../modules/auth/components/ActivarCuenta';
@@ -20,6 +21,7 @@ const AppRoutes = () => {
         <Route path="/equipos" element={<Equipos />} />
         <Route path="/jugadores" element={<Jugadores />} />
         <Route path="/partidos" element={<Partidos />} />
+        <Route path="/inscripcion" element={<InscripcionTorneo />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/activar-cuenta/:token" element={<ActivarCuenta />} />
