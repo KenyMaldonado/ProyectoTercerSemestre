@@ -1,5 +1,6 @@
 ﻿using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
+using static Proyecto.Server.DTOs.MatchesDTO;
 
 namespace Proyecto.Server.BLL.Interface.InterfacesRepository
 {
@@ -22,5 +23,6 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task CrearJornadasYPartidosAsync(List<Jornada> jornadas, List<Partido> partidos);
         Task<List<Jornada>> GetJornadasWithPartidosAndDetailsBySubtorneoAsync(int subtorneoId);
         Task UpdateEstadoSubtorneo(int subtorneoID);
+        Task<List<TablaPosicionesDto>> ObtenerTablaPosicionesAsync(int subTorneoId);
     }
 }

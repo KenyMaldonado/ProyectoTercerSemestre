@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Utils;
+using static Proyecto.Server.DTOs.MatchesDTO;
 using static Proyecto.Server.DTOs.TournamentDTO;
 
 namespace Proyecto.Server.Controllers
@@ -165,6 +166,25 @@ namespace Proyecto.Server.Controllers
             }
         }
 
+
+        [HttpGet("tabla-posiciones/{subTorneoId}")]
+        public async Task<IActionResult> GetTablaPosiciones(int subTorneoId)
+        {
+            try
+            {
+                var resultado = await _matchesBLL.ObtenerTablaPosicionesAsync(subTorneoId);
+                return ResponseHelper.Success("tabla de posiciones:", resultado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+            
+        }
 
     }
 }

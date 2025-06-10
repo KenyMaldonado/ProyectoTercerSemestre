@@ -4,6 +4,7 @@ using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
 using Proyecto.Server.Utils;
+using static Proyecto.Server.DTOs.MatchesDTO;
 
 namespace Proyecto.Server.BLL.Repository
 {
@@ -184,6 +185,81 @@ namespace Proyecto.Server.BLL.Repository
             await _appContext.SaveChangesAsync();
         }
 
+        public async Task<List<TablaPosicionesDto>> ObtenerTablaPosicionesAsync(int subTorneoId)
+        {
+            var equipos = await _appContext.Equipos
+                .Where(e => e.SubTorneoId == subTorneoId)
+                .Select(e => new
+                {
+                    e.EquipoId,
+                    e.Nombre,
+                    e.ImagenEquipo
+                })
+                .ToListAsync();
+
+            var resultados = await _appContext.ResultadoPartidos
+                .Include(r => r.Partido)
+                .Where(r => r.Partido.Equipo1.HasValue && r.Partido.Equipo2.HasValue)
+                .ToListAsync();
+
+            var tabla = new List<TablaPosicionesDto>();
+
+            foreach (var equipo in equipos)
+            {
+                var partidos = resultados.Where(r =>
+                    r.Partido.Equipo1 == equipo.EquipoId || r.Partido.Equipo2 == equipo.EquipoId);
+
+                int puntos = 0, ganados = 0, empatados = 0, perdidos = 0;
+                int golesFavor = 0, golesContra = 0;
+
+                foreach (var partido in partidos)
+                {
+                    bool esEquipo1 = partido.Partido.Equipo1 == equipo.EquipoId;
+
+                    int golesPropios = esEquipo1 ? partido.GolesEquipo1 : partido.GolesEquipo2;
+                    int golesRivales = esEquipo1 ? partido.GolesEquipo2 : partido.GolesEquipo1;
+
+                    golesFavor += golesPropios;
+                    golesContra += golesRivales;
+
+                    if (golesPropios > golesRivales)
+                    {
+                        puntos += 3;
+                        ganados++;
+                    }
+                    else if (golesPropios == golesRivales)
+                    {
+                        puntos += 1;
+                        empatados++;
+                    }
+                    else
+                    {
+                        perdidos++;
+                    }
+                }
+
+                tabla.Add(new TablaPosicionesDto
+                {
+                    EquipoId = equipo.EquipoId,
+                    NombreEquipo = equipo.Nombre,
+                    URLImagenEquipo = equipo.ImagenEquipo,
+                    Puntos = puntos,
+                    PartidosJugados = ganados + empatados + perdidos,
+                    PartidosGanados = ganados,
+                    PartidosEmpatados = empatados,
+                    PartidosPerdidos = perdidos,
+                    GolesAFavor = golesFavor,
+                    GolesEnContra = golesContra,
+                    DiferenciaGoles = golesFavor - golesContra
+                });
+            }
+
+            return tabla
+                .OrderByDescending(t => t.Puntos)
+                .ThenByDescending(t => t.DiferenciaGoles)
+                .ThenByDescending(t => t.GolesAFavor)
+                .ToList();
+        }
 
     }
 }

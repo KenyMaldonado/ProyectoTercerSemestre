@@ -6,6 +6,7 @@ using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
 using Proyecto.Server.Utils; // Asegúrate de tener esta referencia si usas CustomException
 using static Proyecto.Server.DTOs.EquipoDTO;
+using static Proyecto.Server.DTOs.MatchesDTO;
 using static Proyecto.Server.DTOs.TournamentDTO;
 
 namespace Proyecto.Server.BLL.Service
@@ -372,6 +373,12 @@ namespace Proyecto.Server.BLL.Service
         {
             await _matchesRepository.UpdateEstadoSubtorneo(subtorneoID);
         }
+
+        public async Task<List<TablaPosicionesDto>> ObtenerTablaPosicionesAsync(int subTorneoId)
+        {
+            return await _matchesRepository.ObtenerTablaPosicionesAsync(subTorneoId);
+        }
+
     }
 }
 
