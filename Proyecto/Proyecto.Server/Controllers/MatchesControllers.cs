@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
 using Proyecto.Server.Utils;
+using static Proyecto.Server.DTOs.MatchesDTO;
 using static Proyecto.Server.DTOs.TournamentDTO;
 
 namespace Proyecto.Server.Controllers
@@ -95,7 +96,17 @@ namespace Proyecto.Server.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Inicia un torneo en formato "todos contra todos", generando sus jornadas y partidos.
+        /// Requiere rol de Administrador.
+        /// </summary>
+        /// <param name="request">Datos para iniciar el torneo, incluyendo ID del subtorneo, equipos, días y horarios.</param>
+        /// <returns>Mensaje de éxito o error con detalles.</returns>
         [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("IniciarTodosContraTodos")]
         public async Task<IActionResult> IniciarTodosContraTodos([FromBody] TournamentDTO.StartTournamentRequest request)
         {
@@ -105,18 +116,74 @@ namespace Proyecto.Server.Controllers
             try
             {
                 await _matchesBLL.IniciarTorneoTodosContraTodosAsync(request);
+                await _matchesBLL.UpdateEstadoSubtorneo(request.SubtorneoId);
                 return Ok(new { mensaje = "Torneo iniciado correctamente con el formato todos contra todos." });
             }
-            catch (InvalidOperationException ex)
+            catch (CustomException ex) // ¡Cambio aquí! Ahora captura CustomException
             {
-                // Este tipo de excepción es lanzada cuando no hay suficientes fechas/canchas/etc.
-                return BadRequest(new { error = ex.Message });
+                // Captura las excepciones personalizadas con mensajes específicos
+                return BadRequest(new { error = ex.Message }); // Puedes usar ex.StatusCode si CustomException lo expone
             }
             catch (Exception ex)
             {
-                // Para errores inesperados
-                return StatusCode(500, new { error = "Ocurrió un error al iniciar el torneo.", detalle = ex.Message });
+                // Para errores inesperados no controlados por CustomException
+                return StatusCode(500, new { error = "Ocurrió un error inesperado al iniciar el torneo.", detalle = ex.Message });
             }
+        }
+
+
+        /// <summary>
+        /// Obtiene todos los partidos de un subtorneo específico, agrupados por jornada.
+        /// </summary>
+        /// <param name="subtorneoID">El ID del subtorneo del que se quieren obtener los partidos.</param>
+        /// <returns>Una lista de jornadas, cada una conteniendo sus partidos y detalles.</returns>
+        [HttpGet("subtorneo/{subtorneoID}/partidosPorJornada")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<MatchesDTO.GetPartidosByJornadaDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPartidosBySubtorneo(int subtorneoID)
+        {
+            try
+            {
+                var partidosPorJornada = await _matchesBLL.GetPartidosBySubtorneo(subtorneoID);
+
+                if (partidosPorJornada == null || !partidosPorJornada.Any())
+                {
+                    return NotFound(new { mensaje = $"No se encontraron partidos para el subtorneo ID {subtorneoID}." });
+                }
+
+                return Ok(partidosPorJornada);
+            }
+            catch (CustomException ex) // ¡Cambio aquí! Ahora captura CustomException
+            {
+                // Captura las excepciones personalizadas con mensajes específicos
+                return BadRequest(new { error = ex.Message }); // Puedes usar ex.StatusCode si CustomException lo expone
+            }
+            catch (Exception ex)
+            {
+                // Para errores inesperados no controlados por CustomException
+                return StatusCode(500, new { error = "Ocurrió un error inesperado al iniciar el torneo.", detalle = ex.Message });
+            }
+        }
+
+
+        [HttpGet("tabla-posiciones/{subTorneoId}")]
+        public async Task<IActionResult> GetTablaPosiciones(int subTorneoId)
+        {
+            try
+            {
+                var resultado = await _matchesBLL.ObtenerTablaPosicionesAsync(subTorneoId);
+                return ResponseHelper.Success("tabla de posiciones:", resultado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+            
         }
 
     }

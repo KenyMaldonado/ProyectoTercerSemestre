@@ -38,4 +38,5 @@
 
         public virtual Usuario Usuario { get; set; } = null!;
     }
+
 }

@@ -19,7 +19,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Inicio />} />
         <Route path="/torneos" element={<Torneos />} />
         <Route path="/equipos" element={<Equipos />} />
-        <Route path="/jugadores" element={<Jugadores />} />
+        <Route path="/tabla-posiciones" element={<Jugadores />} />
         <Route path="/partidos" element={<Partidos />} />
         <Route path="/inscripcion" element={<InscripcionTorneo />} />
         <Route path="/login" element={<Login />} />

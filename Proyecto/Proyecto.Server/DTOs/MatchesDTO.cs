@@ -19,23 +19,41 @@ namespace Proyecto.Server.DTOs
             public DateTime FechaPartido { get; set; }
 
             public TimeOnly HoraPartido { get; set; }
-
-            public int? Equipo1 { get; set; }
-
-            public int? Equipo2 { get; set; }
+            public EquipoDTO.GetTeamDTO equipo1 { get; set; }
+            public EquipoDTO.GetTeamDTO equipo2 { get; set; }
 
             public string Estado { get; set; } = null!;
 
-            public int? JornadaId { get; set; }
+            public int? Jornada { get; set; }
 
             public int? FaseId { get; set; }
 
-            public int UsuarioId { get; set; }
+            public string NameArbitro { get; set; }
 
-            public int CanchaId { get; set; }
+            public string NameCancha {  get; set; }
 
         }
 
-        
+        public class GetPartidosByJornadaDTO
+        {
+            public int NumeroJornada { get; set; }
+            public List<MatchesDTO.PartidoDTO> partidos {get; set; }
+        }
+
+        public class TablaPosicionesDto
+        {
+            public int EquipoId { get; set; }
+            public string NombreEquipo { get; set; } = string.Empty;
+            public string URLImagenEquipo { get; set; } = string.Empty;
+            public int Puntos { get; set; }
+            public int PartidosJugados { get; set; }
+            public int PartidosGanados { get; set; }
+            public int PartidosEmpatados { get; set; }
+            public int PartidosPerdidos { get; set; }
+            public int GolesAFavor { get; set; }
+            public int GolesEnContra { get; set; }
+            public int DiferenciaGoles { get; set; }
+        }
+
     }
 }

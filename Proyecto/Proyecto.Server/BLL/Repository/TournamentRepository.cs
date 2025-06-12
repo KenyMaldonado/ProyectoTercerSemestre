@@ -122,7 +122,7 @@ namespace Proyecto.Server.BLL.Repository
                                       SubTorneoId = st.SubTorneoId,
                                       Categoria = st.Categoria,
                                       TorneoId = st.TorneoId,
-                                      Estado = (TournamentDTO.EstadoSubTorneo)st.Estado,
+                                      Estado = st.Estado,
                                       CantidadEquipos = st.CantidadEquipos
                                   }).ToListAsync();
             return consulta;

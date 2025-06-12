@@ -227,3 +227,35 @@ export const updateEstadoInscripcion = async (
   }
 };
 
+// Obtener tabla de posiciones por SubTorneoId
+export interface TablaPosiciones {
+  equipoId: number;
+  nombreEquipo: string;
+  urlImagenEquipo : string
+  puntos: number;
+  partidosJugados: number;
+  partidosGanados: number;
+  partidosEmpatados: number;
+  partidosPerdidos: number;
+  golesAFavor: number;
+  golesEnContra: number;
+  diferenciaGoles: number;
+}
+
+
+export const getTablaPosiciones = async (subTorneoId: number): Promise<TablaPosiciones[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/MatchesControllers/tabla-posiciones/${subTorneoId}`);
+    const json = await response.json();
+
+    if (json.success) {
+      return json.data;
+    } else {
+      console.error('Error en respuesta de tabla de posiciones:', json.message);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error en fetch de tabla de posiciones:', error);
+    return [];
+  }
+};

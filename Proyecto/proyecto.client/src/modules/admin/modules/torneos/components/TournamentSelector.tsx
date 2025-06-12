@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-// Asegúrate de que la ruta sea correcta, ajusta si moviste el archivo
-import { getTorneos, getSubtorneos, Torneo, Subtorneo } from '../../../services/tournamentService';
+import { getTorneos, getSubtorneos, Torneo, Subtorneo } from '../../../services/tournamentService'; // Asegúrate de que la ruta sea correcta
 import { FaFutbol, FaClipboardList } from 'react-icons/fa';
 
 const TournamentSelector: React.FC = () => {
@@ -64,20 +63,30 @@ const TournamentSelector: React.FC = () => {
 
     const handleIniciarTorneo = () => {
         if (selectedTorneoId && selectedSubtorneoId) {
-            // USAR LAS PROPIEDADES DE TUS INTERFACES
             const selectedTorneo = torneos.find(t => t.torneoId === selectedTorneoId);
             const selectedSubtorneo = subtorneos.find(st => st.subTorneoId === selectedSubtorneoId);
 
             if (selectedTorneo && selectedSubtorneo) {
+                // **Nueva validación: Verificar estado del subtorneo**
+                // Asumiendo que la interfaz Subtorneo en tournamentService.ts ahora incluye 'estado'
+                if (selectedSubtorneo.estado === 'EnCurso') {
+                    Swal.fire({
+                        title: 'Torneo en curso',
+                        text: 'No se puede iniciar un torneo que ya está en curso.',
+                        icon: 'warning',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return; // Detener la ejecución si el torneo está en curso
+                }
+
                 navigate(`/admin/torneos/iniciar/detalles/${selectedSubtorneoId}`, {
                     state: {
-                        // USAR LAS PROPIEDADES DE TUS INTERFACES
                         torneoNombre: selectedTorneo.nombre,
-                        subtorneoNombre: selectedSubtorneo.categoria, // 'categoria' es correcto aquí
+                        subtorneoNombre: selectedSubtorneo.categoria,
                         torneoDescripcion: selectedTorneo.descripcion,
-                        // Si quieres pasar una descripción del subtorneo, y no existe 'descripcion' en Subtorneo,
-                        // considera agregarla a la interfaz o dejarla fuera si no viene de la API.
-                        // subtorneoDescripcion: selectedSubtorneo.descripcion, // Comentar/Eliminar si no existe
+                        tipoTorneo: selectedTorneo.nameTipoTorneo,
+                        fechaInicio: selectedTorneo.fechaInicio,
+                        fechaFin: selectedTorneo.fechaFin,
                         selectedSubtorneoId: selectedSubtorneoId
                     }
                 });
@@ -114,7 +123,6 @@ const TournamentSelector: React.FC = () => {
                                 >
                                     <option value="">{cargandoTorneos ? 'Cargando torneos...' : 'Selecciona un Torneo'}</option>
                                     {torneos.map((torneo) => (
-                                        // USAR LAS PROPIEDADES DE TUS INTERFACES
                                         <option key={torneo.torneoId} value={torneo.torneoId}>
                                             {torneo.nombre}
                                         </option>
@@ -150,7 +158,6 @@ const TournamentSelector: React.FC = () => {
                                                 : 'Selecciona un Subtorneo'}
                                     </option>
                                     {subtorneos.map((subtorneo) => (
-                                        // USAR LAS PROPIEDADES DE TUS INTERFACES
                                         <option key={subtorneo.subTorneoId} value={subtorneo.subTorneoId}>
                                             {subtorneo.categoria}
                                         </option>

@@ -121,10 +121,6 @@ public partial class AppDbContext : DbContext
         .Property(st => st.Estado)
         .HasConversion<string>();
 
-        modelBuilder.Entity<SubTorneo>()
-            .Property(t => t.Estado)
-            .HasDefaultValue(SubTorneo.EstadoSubTorneo.Activo);
-
 
         modelBuilder
             .UseCollation("utf8mb3_general_ci")
@@ -661,7 +657,9 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.SubTorneoId).HasColumnName("Sub_Torneo_ID");
             entity.Property(e => e.Categoria).HasMaxLength(50);
-            entity.Property(e => e.Estado).HasColumnType("enum('Activo','Finalizado','Suspendido','EnCurso','Cancelado','Eliminado')");
+            entity.Property(e => e.Estado)
+                .HasDefaultValueSql("'Activo'")
+                .HasColumnType("enum('Activo','Finalizado','Suspendido','EnCurso','Cancelado','Eliminado')");
             entity.Property(e => e.TorneoId).HasColumnName("Torneo_ID");
 
             entity.HasOne(d => d.Torneo).WithMany(p => p.SubTorneos)
