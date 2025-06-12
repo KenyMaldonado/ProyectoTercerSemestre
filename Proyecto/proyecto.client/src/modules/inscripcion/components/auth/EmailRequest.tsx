@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import Swal from "sweetalert2";
 import api from "../../../../services/api";
 
-const EmailRequest = ({ onEmailSent }) => {
+const EmailRequest = ({
+  onEmailSent,
+}: {
+  onEmailSent: (preInscripcionId: number, correo: string) => void;
+}) => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const correoRegex =
@@ -29,17 +33,24 @@ const EmailRequest = ({ onEmailSent }) => {
         }
       );
 
-      if (response.data.success) {
+      if ((response.data as { success: boolean }).success) {
         Swal.fire(
           "Código asignado",
-          `Tu código es: ${response.data.data.codigo}`,
+          `Tu código es: ${
+            (response.data as { data: { codigo: string } }).data.codigo
+          }`,
           "info"
         );
-        onEmailSent(response.data.data.preInscripcionId);
+        onEmailSent(
+          (response.data as { data: { preInscripcionId: number } }).data
+            .preInscripcionId,
+          email
+        );
       } else {
         Swal.fire(
           "Error",
-          response.data.message || "Error desconocido",
+          (response.data as { message?: string })?.message ||
+            "Error desconocido",
           "error"
         );
       }

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { defineStepper } from "@stepperize/react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import "./Inscripcion.css";
 import Swal from "sweetalert2";
+import { debounce } from "lodash";
 
 import useTournamentData from "../hooks/useTournamentData";
 import usePreloadedFormData from "../hooks/usePreloadedFormData";
@@ -11,6 +12,7 @@ import api from "../../../services/api";
 import ImagenUploader from "./ImagenUploader";
 import EmailRequest from "./auth/EmailRequest";
 import CodeVerification from "./auth/CodeVerification";
+import { useInitialData } from "../hooks/useInscripcionData";
 
 const { Scoped, useStepper, steps } = defineStepper(
   {
@@ -82,19 +84,19 @@ interface StepContentProps {
   formData: any;
   preInscripcionId: number | null;
   datosRecuperados: boolean;
-  fase: "inicio" | "cargando" | "formulario";
-  setFase: React.Dispatch<
-    React.SetStateAction<"inicio" | "cargando" | "formulario">
-  >;
-  email: string; // Nueva prop para el correo electrónico
+  setFase: (fase: "inicio" | "cargando" | "formulario") => void;
+  email: string;
 }
 
-const StepContent = () => {
+const StepContent = ({
+  formData,
+  preInscripcionId,
+  datosRecuperados,
+  setFase,
+  email,
+}: StepContentProps) => {
   const stepper = useStepper();
-  const [isCorreoValidado, setIsCorreoValidado] = useState(false);
   const [imagenEquipo, setImagenEquipo] = useState<string | null>(null);
-  const correoRegex =
-    /^[^\s@]+@(umes\.edu\.gt|gmail\.com|outlook\.com|yahoo\.com)$/;
 
   const {
     tournaments,
@@ -106,17 +108,12 @@ const StepContent = () => {
   } = useTournamentData();
 
   const [facultades, setFacultades] = useState([]);
-  const [posiciones, setPosiciones] = useState([]);
+  const [departamentos, setDepartamentos] = useState([]);
   const [municipios, setMunicipios] = useState([]);
   const [carreras, setCarreras] = useState([]);
+  const [posiciones, setPosiciones] = useState([]);
 
-  const [departamentos, setDepartamentos] = useState([]);
-  const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
-  const [carrerasFiltradas, setCarrerasFiltradas] = useState([]);
-  const [semestresFiltrados, setSemestresFiltrados] = useState([]);
-  const [selectedDepartamentoId, setSelectedDepartamentoId] = useState("");
-  const [selectedCarreraId, setSelectedCarreraId] = useState("");
-  const [selectedFacultadId, setSelectedFacultadId] = useState("");
+  useInitialData(setDepartamentos, setFacultades, setMunicipios, setCarreras, setPosiciones);
 
   const [teamName, setTeamName] = useState("");
   const [uniformColor, setUniformColor] = useState("");
@@ -209,8 +206,20 @@ const StepContent = () => {
     const updated = [...players];
     updated[index][field] = value;
     setPlayers(updated);
-    // Verificar jugador cuando se ingresa el carné y tiene la longitud adecuada
-    if (field === "carne" && value.length >= 8 && value.length <= 9) {
+
+    if (field === "carne" && value.length === 9) {
+      if (!/^\d{9}$/.test(value)) {
+        Swal.fire(
+          "Carné inválido",
+          "El carné debe contener exactamente 9 dígitos numéricos.",
+          "warning"
+        );
+        return;
+      }
+
+      // Prevenir revalidación si ya fue validado
+      if (players[index].jugadorVerificado) return;
+
       verificarJugadorEquipo(value, index);
     }
   };
@@ -595,7 +604,7 @@ const StepContent = () => {
             telefono: "",
             fechaNacimiento: "",
             edad: 0,
-            facultadId: 0,
+            facultadId: "",
             municipioId: 0,
             departamentoId: 0,
             carreraSemestreId: 0,
@@ -659,7 +668,7 @@ const StepContent = () => {
           telefono: "",
           fechaNacimiento: "",
           edad: 0,
-          facultadId: 0,
+          facultadId: "",
           municipioId: 0,
           departamentoId: 0,
           carreraSemestreId: 0,
@@ -697,53 +706,102 @@ const StepContent = () => {
       (player, index) => index !== currentIndex && player.carne === carne
     );
   };
+  // Set para controlar alertas por carné duplicado y otros mensajes para que no repita
+  const alertShownRef = useRef({
+    carnetDuplicado: {},
+    dorsalDuplicado: {},
+  });
+
+  const validandoRef = useRef<boolean[]>([]);
 
   const verificarJugadorEquipo = async (carne: string, index: number) => {
     try {
-      if (!carne || carne.length < 8 || carne.length > 9) {
-        return;
-      }
-      // Primero verificar si el carné está duplicado
-      if (isCarnetDuplicado(carne, index)) {
-        Swal.fire(
-          "Carné Duplicado",
-          "Este carné ya ha sido registrado en el equipo.",
-          "warning"
-        );
+      if (!/^\d{9}$/.test(carne)) return;
 
-        // Limpiar el campo de carné y otros campos
-        const updatedPlayers = [...players];
-        updatedPlayers[index] = {
-          ...updatedPlayers[index],
-          carne: "",
-          nombre: "",
-          apellido: "",
-          telefono: "",
-          fechaNacimiento: "",
-          edad: 0,
-          departamentoId: 0,
-          municipioId: 0,
-          carreraSemestreId: 0,
-          facultadId: "",
-          carreraId: "",
-          posicionId: "",
-          jugadorVerificado: false,
-        };
-        setPlayers(updatedPlayers);
+      // Bloqueo de ejecución paralela
+      if (validandoRef.current[index]) return;
+      validandoRef.current[index] = true;
+
+      const jugadorActual = players[index];
+      if (jugadorActual.ultimoCarneValidado === carne) return;
+
+      // Carnet duplicado
+      if (isCarnetDuplicado(carne, index)) {
+        if (!alertShownRef.current.carnetDuplicado[index]) {
+          alertShownRef.current.carnetDuplicado[index] = true;
+          await Swal.fire(
+            "Carné Duplicado",
+            "Este carné ya ha sido registrado en el equipo.",
+            "warning"
+          );
+        }
+        if (jugadorActual.carne !== "") {
+          const updatedPlayers = [...players];
+          updatedPlayers[index] = {
+            ...jugadorActual,
+            carne: "",
+            nombre: "",
+            apellido: "",
+            telefono: "",
+            fechaNacimiento: "",
+            edad: 0,
+            departamentoId: 0,
+            municipioId: 0,
+            carreraSemestreId: 0,
+            facultadId: "",
+            carreraId: "",
+            posicionId: "",
+            jugadorVerificado: false,
+          };
+          setPlayers(updatedPlayers);
+        }
         return;
+      } else {
+        alertShownRef.current.carnetDuplicado[index] = false;
       }
-      // Si no está duplicado, verificar el jugador
+
+      // Dorsal duplicado
+      // Validar dorsal duplicado
+      const dorsalActual = players[index].posicionId;
+
+      if (isDorsalDuplicado(dorsalActual, index)) {
+        if (!alertShownRef.current.dorsalDuplicado[index]) {
+          alertShownRef.current.dorsalDuplicado[index] = true;
+
+          await Swal.fire(
+            "Dorsal Duplicado",
+            "El dorsal ya está asignado a otro jugador. Elige otro.",
+            "warning"
+          );
+        }
+      } else {
+        alertShownRef.current.dorsalDuplicado[index] = false;
+      }
+
+      const facultadId = captain.facultadId || "";
+      const departamentoId = captain.departamentoId || 0;
+
+      const carrerasFiltradas = carreras.filter(
+        (c) => c.facultadId === parseInt(facultadId)
+      );
+      const municipiosFiltrados = departamentoId
+        ? municipios.filter(
+            (m) => m.departamentoId === parseInt(departamentoId.toString())
+          )
+        : [];
+
       const response = await api.post("/Players/VerifyPlayers", [
         parseInt(carne),
       ]);
       const result = response.data;
 
-      if (result.success && result.data && result.data.length > 0) {
+      const updatedPlayers = [...players];
+
+      if (result.success && result.data?.length > 0) {
         const jugador = result.data[0];
 
-        // CASO 1: Jugador no elegible (aprobado: false, datosJugador: null)
         if (!jugador.aprobado && jugador.datosJugador === null) {
-          Swal.fire(
+          await Swal.fire(
             "Jugador No Disponible",
             "Este jugador ya se encuentra inscrito en otro torneo o tiene una restricción.",
             "error"
@@ -751,40 +809,23 @@ const StepContent = () => {
           return;
         }
 
-        // CASO 2: Jugador nuevo o sin registrar (aprobado: true, datosJugador con valores null)
         if (
           jugador.aprobado &&
           jugador.datosJugador &&
-          (jugador.datosJugador.nombre === null ||
-            jugador.datosJugador.nombre === undefined)
+          !jugador.datosJugador.nombre
         ) {
-          // Permitir entrada manual - Desplegar formulario
-          const updatedPlayers = [...players];
-          const facultadId = captain.facultadId || "";
-
-          const carrerasFiltradas = carreras.filter(
-            (c) => c.facultadId === parseInt(facultadId)
-          );
-
-          const municipiosFiltrados = captain.departamentoId
-            ? municipios.filter(
-                (m) =>
-                  m.departamentoId ===
-                  parseInt(captain.departamentoId.toString())
-              )
-            : [];
-
           updatedPlayers[index] = {
-            ...updatedPlayers[index],
-            carne: carne,
+            ...jugadorActual,
+            carne,
             jugadorVerificado: false,
-            carrerasFiltradas: carrerasFiltradas,
-            municipiosFiltrados: municipiosFiltrados,
-            facultadId: facultadId,
+            carrerasFiltradas,
+            municipiosFiltrados,
+            facultadId,
+            ultimoCarneValidado: carne,
           };
           setPlayers(updatedPlayers);
 
-          Swal.fire(
+          await Swal.fire(
             "Jugador no registrado",
             "Llena el formulario para registrar un nuevo jugador.",
             "info"
@@ -792,95 +833,84 @@ const StepContent = () => {
           return;
         }
 
-        // CASO 3: Jugador existente con datos (aprobado: true, datosJugador con valores)
-        if (
-          jugador.aprobado &&
-          jugador.datosJugador &&
-          jugador.datosJugador.nombre !== null &&
-          jugador.datosJugador.nombre !== undefined
-        ) {
-          const updatedPlayers = [...players];
-          const facultadId = captain.facultadId || "";
-
-          const carrerasFiltradas = carreras.filter(
-            (c) => c.facultadId === parseInt(facultadId)
-          );
-
-          const municipiosFiltrados = captain.departamentoId
-            ? municipios.filter(
-                (m) =>
-                  m.departamentoId ===
-                  parseInt(captain.departamentoId.toString())
-              )
-            : [];
-
+        if (jugador.aprobado && jugador.datosJugador?.nombre) {
           updatedPlayers[index] = {
-            ...updatedPlayers[index],
-            carne: carne,
-            nombre: jugador.datosJugador.nombre || "",
-            apellido: jugador.datosJugador.apellido || "",
-            telefono: jugador.datosJugador.telefono || "",
-            fechaNacimiento: jugador.datosJugador.fechaNacimiento
-              ? jugador.datosJugador.fechaNacimiento.split("T")[0]
-              : "",
-            edad: jugador.datosJugador.edad || 0,
-            departamentoId: jugador.datosJugador.departamentoId || 0,
-            municipioId: jugador.datosJugador.municipioId || 0,
-            facultadId: facultadId,
+            ...jugadorActual,
+            carne,
+            nombre: jugador.datosJugador.nombre,
+            apellido: jugador.datosJugador.apellido,
+            telefono: jugador.datosJugador.telefono,
+            fechaNacimiento:
+              jugador.datosJugador.fechaNacimiento?.split("T")[0] ?? "",
+            edad: jugador.datosJugador.edad ?? 0,
+            departamentoId: jugador.datosJugador.departamentoId ?? 0,
+            municipioId: jugador.datosJugador.municipioId ?? 0,
+            facultadId,
             carreraId: "",
             carreraSemestreId: "",
             jugadorVerificado: true,
-            carrerasFiltradas: carrerasFiltradas,
+            carrerasFiltradas,
             semestresFiltrados: [],
-            municipiosFiltrados: municipiosFiltrados,
+            municipiosFiltrados,
+            ultimoCarneValidado: carne,
           };
-
           setPlayers(updatedPlayers);
 
-          Swal.fire(
+          await Swal.fire(
             "Jugador Encontrado",
             "Los datos del jugador han sido cargados correctamente. Selecciona la carrera y el semestre.",
             "success"
           );
           return;
         }
-      } else {
-        // Carné no existe en la base de datos, permitir entrada manual
-        const updatedPlayers = [...players];
-        const facultadId = captain.facultadId || "";
-
-        const carrerasFiltradas = carreras.filter(
-          (c) => c.facultadId === parseInt(facultadId)
-        );
-
-        const municipiosFiltrados = captain.departamentoId
-          ? municipios.filter(
-              (m) =>
-                m.departamentoId === parseInt(captain.departamentoId.toString())
-            )
-          : [];
-
-        updatedPlayers[index] = {
-          ...updatedPlayers[index],
-          carne: carne,
-          jugadorVerificado: false,
-          carrerasFiltradas: carrerasFiltradas,
-          municipiosFiltrados: municipiosFiltrados,
-          facultadId: facultadId,
-        };
-        setPlayers(updatedPlayers);
-
-        Swal.fire({
-          icon: "info",
-          title: "Jugador no registrado",
-          text: "Por favor, complete todos los datos del jugador.",
-          showConfirmButton: true,
-        });
       }
+
+      // Entrada manual si no se encontró el jugador
+      updatedPlayers[index] = {
+        ...jugadorActual,
+        carne,
+        jugadorVerificado: false,
+        carrerasFiltradas,
+        municipiosFiltrados,
+        facultadId,
+        ultimoCarneValidado: carne,
+      };
+      setPlayers(updatedPlayers);
+
+      await Swal.fire({
+        icon: "info",
+        title: "Jugador no registrado",
+        text: "Por favor, complete todos los datos del jugador.",
+      });
     } catch (error) {
       console.error("Error al verificar el jugador", error);
-      Swal.fire("Error", "No se pudo verificar el jugador", "error");
+      await Swal.fire("Error", "No se pudo verificar el jugador", "error");
+    } finally {
+      validandoRef.current[index] = false; // ¡Importantísimo!
     }
+  };
+
+  // Función para validar dorsal duplicado (asumiendo dorsal es string)
+  const isDorsalDuplicado = (
+    dorsal: number | string,
+    jugadorIndex?: number
+  ): boolean => {
+    const dorsalInt = parseInt(dorsal as string);
+
+    const dorsalesDelEquipo = players.map((p, i) =>
+      i !== jugadorIndex ? parseInt(p.dorsal) : null
+    );
+
+    if (jugadorIndex === undefined) {
+      // Estamos validando al capitán
+      return dorsalesDelEquipo.includes(dorsalInt);
+    }
+
+    // Validamos a un jugador, verificamos también contra el capitán
+    return (
+      dorsalInt === parseInt(captain.dorsal as string) ||
+      dorsalesDelEquipo.includes(dorsalInt)
+    );
   };
 
   useEffect(() => {
@@ -1025,7 +1055,7 @@ const StepContent = () => {
                         onChange={(e) =>
                           setCaptain({
                             ...captain,
-                            departamentoId: e.target.value,
+                            departamentoId: parseInt(e.target.value),
                           })
                         }
                         required
@@ -1051,7 +1081,7 @@ const StepContent = () => {
                         onChange={(e) =>
                           setCaptain({
                             ...captain,
-                            municipioId: e.target.value,
+                            municipioId: parseInt(e.target.value),
                           })
                         }
                         required
@@ -1349,11 +1379,17 @@ const StepContent = () => {
                           min="1"
                           max="99"
                           value={captain.dorsal || ""}
-                          onChange={(e) => {
-                            setCaptain({
-                              ...captain,
-                              dorsal: parseInt(e.target.value),
-                            });
+                          onChange={async (e) => {
+                            const nuevoDorsal = parseInt(e.target.value);
+                            if (isDorsalDuplicado(nuevoDorsal)) {
+                              await Swal.fire(
+                                "Dorsal Duplicado",
+                                "Ese dorsal ya está asignado a un jugador del equipo.",
+                                "warning"
+                              );
+                              return;
+                            }
+                            setCaptain({ ...captain, dorsal: nuevoDorsal });
                           }}
                           required
                         />
@@ -1376,15 +1412,22 @@ const StepContent = () => {
                             <Form.Control
                               type="text"
                               value={player.carne}
-                              onChange={(e) =>
-                                updatePlayer(index, "carne", e.target.value)
-                              }
-                              onBlur={async () => {
-                                if (player.carne) {
-                                  await verificarJugadorEquipo(
-                                    player.carne,
-                                    index
-                                  );
+                              onChange={(e) => {
+                                updatePlayer(index, "carne", e.target.value);
+                                alertShownRef.current.carnetDuplicado[index] =
+                                  false;
+                                alertShownRef.current.dorsalDuplicado[index] =
+                                  false;
+                              }}
+                              onBlur={async (e) => {
+                                const carne = e.target.value;
+                                if (
+                                  carne &&
+                                  carne !==
+                                    players[index].ultimoCarneValidado &&
+                                  !players[index].jugadorVerificado
+                                ) {
+                                  await verificarJugadorEquipo(carne, index);
                                 }
                               }}
                               required
@@ -1675,9 +1718,22 @@ const StepContent = () => {
                               min="1"
                               max="99"
                               value={player.dorsal}
-                              onChange={(e) =>
-                                updatePlayer(index, "dorsal", e.target.value)
-                              }
+                              onChange={async (e) => {
+                                const nuevoDorsal = parseInt(e.target.value);
+                                if (isDorsalDuplicado(nuevoDorsal, index)) {
+                                  await Swal.fire(
+                                    "Dorsal Duplicado",
+                                    "Ese dorsal ya está asignado a otro jugador. Elige otro.",
+                                    "warning"
+                                  );
+                                  return;
+                                }
+                                updatePlayer(
+                                  index,
+                                  "dorsal",
+                                  nuevoDorsal.toString()
+                                );
+                              }}
                               required
                             />
                           </Form.Group>
@@ -2078,16 +2134,15 @@ const InscripcionTorneo = () => {
   const [fase, setFase] = useState<"inicio" | "cargando" | "formulario">(
     "inicio"
   );
-  const {
-    formData,
-    preInscripcionId,
-    datosRecuperados,
-    verificarCodigo
-  } = usePreloadedFormData();
+  const { formData, preInscripcionId, datosRecuperados, verificarCodigo } =
+    usePreloadedFormData();
 
   const [email, setEmail] = useState("");
+  const [players, setPlayers] = useState([]);
+  const [selectedTournament, setSelectedTournament] = useState("");
+  const [selectedSubTournament, setSelectedSubTournament] = useState("");
 
-  
+  const [preId, setPreInscripcionId] = useState<number | null>(null);
 
   return (
     <Scoped>
@@ -2100,7 +2155,7 @@ const InscripcionTorneo = () => {
               </div>
               <div className="card-body">
                 <EmailRequest
-                  onEmailSent={(id, correo) => {
+                  onEmailSent={(id: number, correo: string) => {
                     setPreInscripcionId(id);
                     setEmail(correo);
                     setFase("formulario");
@@ -2117,7 +2172,7 @@ const InscripcionTorneo = () => {
               <div className="card-body">
                 <CodeVerification
                   verificarCodigo={verificarCodigo}
-                  onValidated={(id, correo) => {
+                  onValidated={(id: number, correo: string) => {
                     setPreInscripcionId(id);
                     setDatosRecuperados(true);
                     setEmail(correo || "");
@@ -2134,7 +2189,7 @@ const InscripcionTorneo = () => {
         <div className="mt-4">
           <StepContent
             formData={formData}
-            preInscripcionId={preInscripcionId}
+            preInscripcionId={preId}
             datosRecuperados={datosRecuperados}
             setFase={setFase}
             email={email}
