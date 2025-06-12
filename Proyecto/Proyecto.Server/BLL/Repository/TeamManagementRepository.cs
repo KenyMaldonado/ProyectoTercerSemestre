@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Operators;
 using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.DAL;
 using Proyecto.Server.DTOs;
@@ -447,6 +448,19 @@ namespace Proyecto.Server.BLL.Repository
             await _appDbContext.SaveChangesAsync();
         }
      
+        public async Task<List<UserRegistrationDTO.GetArbitro>> GetArbitros()
+        {
+            var listado = await _appDbContext.Usuarios
+                          .Where(u => u.RolId == 2 && u.Estado == Usuario.EstadoUsuario.Activo)
+                          .Select(u => new UserRegistrationDTO.GetArbitro
+                          {
+                              UsuarioId = u.UsuarioId,
+                              Nombre = u.Nombre,
+                              Apellido = u.Apellido
+                          }).ToListAsync();
+            return listado;
+        }
+
         
     }
 

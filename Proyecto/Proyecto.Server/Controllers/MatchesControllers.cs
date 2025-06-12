@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
@@ -12,10 +13,12 @@ namespace Proyecto.Server.Controllers
     [ApiController]
     public class MatchesControllers : Controller
     {
+        private readonly ILogger<MatchesControllers> _logger;
         private readonly IMatchesBLL _matchesBLL;
         private readonly AzureBlobService _blobService;
-        public MatchesControllers(IMatchesBLL matchesBLL, AzureBlobService blobService)
+        public MatchesControllers(IMatchesBLL matchesBLL, AzureBlobService blobService, ILogger<MatchesControllers> logger)
         {
+            _logger = logger;
             _matchesBLL = matchesBLL;
             _blobService = blobService;
         }
@@ -137,15 +140,31 @@ namespace Proyecto.Server.Controllers
         /// </summary>
         /// <param name="subtorneoID">El ID del subtorneo del que se quieren obtener los partidos.</param>
         /// <returns>Una lista de jornadas, cada una conteniendo sus partidos y detalles.</returns>
+        [AllowAnonymous]
         [HttpGet("subtorneo/{subtorneoID}/partidosPorJornada")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<MatchesDTO.GetPartidosByJornadaDTO>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetPartidosBySubtorneo(int subtorneoID)
         {
             try
             {
-                var partidosPorJornada = await _matchesBLL.GetPartidosBySubtorneo(subtorneoID);
+                string? rol = null;
+                int usuarioId = 0;
+
+                if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    rol = User.GetRol();
+                    usuarioId = User.GetUsuarioId() ?? 0;
+                }
+
+                List<MatchesDTO.GetPartidosByJornadaDTO> partidosPorJornada;
+
+                if (rol == "Arbitro")
+                {
+                    partidosPorJornada = await _matchesBLL.GetPartidosBySubtorneo(subtorneoID, 2, usuarioId);
+                }
+                else
+                {
+                    partidosPorJornada = await _matchesBLL.GetPartidosBySubtorneo(subtorneoID, 1, usuarioId);
+                }
 
                 if (partidosPorJornada == null || !partidosPorJornada.Any())
                 {
@@ -154,15 +173,13 @@ namespace Proyecto.Server.Controllers
 
                 return Ok(partidosPorJornada);
             }
-            catch (CustomException ex) // ¡Cambio aquí! Ahora captura CustomException
+            catch (CustomException ex)
             {
-                // Captura las excepciones personalizadas con mensajes específicos
-                return BadRequest(new { error = ex.Message }); // Puedes usar ex.StatusCode si CustomException lo expone
+                return BadRequest(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                // Para errores inesperados no controlados por CustomException
-                return StatusCode(500, new { error = "Ocurrió un error inesperado al iniciar el torneo.", detalle = ex.Message });
+                return StatusCode(500, new { error = "Ocurrió un error inesperado al obtener los partidos.", detalle = ex.Message });
             }
         }
 
@@ -184,6 +201,69 @@ namespace Proyecto.Server.Controllers
                 return ResponseHelper.HandleGeneralException(ex);
             }
             
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("UpdateArbitroPartido")]
+        public async Task<IActionResult> UpdateArbitroPartido(int ArbitroID, int PartidoID)
+        {
+            try
+            {
+                await _matchesBLL.AsignarArbitroAsync(ArbitroID, PartidoID);
+                return NoContent();
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+
+        }
+
+
+        [Authorize(Roles = "Admin , Arbitro")]
+        [HttpPost("registrar-resultados")]
+        public async Task<IActionResult> RegistrarResultados([FromBody] ResultadosPartido dto)
+        {
+            try
+            {
+                var resultado = await _matchesBLL.RegistrarResultadosAsync(dto);
+                if (resultado) return Ok("Resultados registrados correctamente");
+
+                return BadRequest("No se pudo registrar el resultado");
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogWarning(ex, "Excepción personalizada al registrar resultados.");
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error general al registrar resultados.");
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
+
+        [HttpGet("resultadoPartidos")]
+        public async Task<IActionResult> resultadoPartidos(int subTorneoId)
+        {
+            try
+            {
+                var resultado = await _matchesBLL.GetResultadosDetalladosPartidosBySubtorneo(subTorneoId);
+                return ResponseHelper.Success("tabla de posiciones:", resultado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+
         }
 
     }

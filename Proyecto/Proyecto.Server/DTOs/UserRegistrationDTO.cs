@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Interfaces;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json.Serialization;
 
 namespace Proyecto.Server.DTOs
 {
@@ -33,6 +34,13 @@ namespace Proyecto.Server.DTOs
             public string Contrasenia { get; set; }
             public string Correo { set; get; }
 
+        }
+
+        public class GetArbitro
+        {
+            public int UsuarioId { get; set; }
+            public string Nombre { get; set; } = null!;
+            public string Apellido { get; set; } = null!;
         }
     }
     

@@ -18,5 +18,7 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<List<RegistrationTournamentsDTO.GetRegistrationDTO>> GetInscripciones();
         Task<RegistrationTournamentsDTO.GetInformationRegistration> GetDatosInscripcion(int inscripcionId);
         Task UpdateEstadoInscripcion(TournamentDTO.ParameterUpdateEstadoInscripcion parametro);
+        Task<List<UserRegistrationDTO.GetArbitro>> GetArbitros();
+        
     }
 }

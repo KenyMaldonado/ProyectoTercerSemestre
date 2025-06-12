@@ -17,7 +17,7 @@ const AppRoutes = () => {
         {/* Rutas públicas */}
         <Route path="/" element={<Inicio />} />
         <Route path="/torneos" element={<Torneos />} />
-        <Route path="/equipos" element={<Equipos />} />
+        <Route path="/calendarios" element={<Equipos />} />
         <Route path="/tabla-posiciones" element={<Jugadores />} />
         <Route path="/partidos" element={<Partidos />} />
         <Route path="/login" element={<Login />} />

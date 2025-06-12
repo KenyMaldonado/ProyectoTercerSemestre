@@ -55,5 +55,39 @@ namespace Proyecto.Server.DTOs
             public int DiferenciaGoles { get; set; }
         }
 
+        public class ResultadosPartido
+        {
+            public int PartidoID { get; set; }
+            public List<MatchesDTO.GolDTO> golesPartido { get; set; }
+            public List<MatchesDTO.TarjetaDTO> tarjetasPartido {  get; set; }
+        }
+
+        public class GolDTO
+        {
+            public int? MinutoGol { get; set; }
+
+            public int? OrdenPenal { get; set; }
+
+            public int ResultadoPartidoId { get; set; }
+
+            public int JugadorId { get; set; }
+
+            public int TipoGolId { get; set; }
+        }
+        public class TarjetaDTO
+        {
+
+            public int MinutoTarjeta { get; set; }
+
+            public string? Descripcion { get; set; }
+
+            public string? Estado { get; set; }
+
+            public string TipoTarjeta { get; set; } = null!;
+
+            public int ResultadoPartidoId { get; set; }
+
+            public int JugadorId { get; set; }
+        }
     }
 }

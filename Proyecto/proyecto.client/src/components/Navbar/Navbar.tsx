@@ -53,7 +53,7 @@ const Navbar = () => {
       >
         <li><NavLink to="/" end className={({ isActive }) => isActive ? styles.active : ''}>Inicio</NavLink></li>
         <li><NavLink to="/torneos" className={({ isActive }) => isActive ? styles.active : ''}>Torneos</NavLink></li>
-        <li><NavLink to="/equipos" className={({ isActive }) => isActive ? styles.active : ''}>Calendario</NavLink></li>
+        <li><NavLink to="/calendarios" className={({ isActive }) => isActive ? styles.active : ''}>Calendario</NavLink></li>
         <li><NavLink to="/tabla-posiciones" className={({ isActive }) => isActive ? styles.active : ''}>Tabla de Posiciones</NavLink></li>
         <li><NavLink to="/partidos" className={({ isActive }) => isActive ? styles.active : ''}>Partidos</NavLink></li>
         <li><Link to="/login" target="_blank" rel="noopener noreferrer">Login</Link></li>

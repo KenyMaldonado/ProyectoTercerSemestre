@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
+using Pomelo.EntityFrameworkCore.MySql.Storage.Internal;
 using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
@@ -309,9 +310,9 @@ namespace Proyecto.Server.BLL.Service
         }
 
 
-        public async Task<List<MatchesDTO.GetPartidosByJornadaDTO>> GetPartidosBySubtorneo(int subtorneoID)
+        public async Task<List<MatchesDTO.GetPartidosByJornadaDTO>> GetPartidosBySubtorneo(int subtorneoID, int rol, int usuarioID)
         {
-            var jornadasDb = await _matchesRepository.GetJornadasWithPartidosAndDetailsBySubtorneoAsync(subtorneoID);
+            var jornadasDb = await _matchesRepository.GetJornadasWithPartidosAndDetailsBySubtorneoAsync(subtorneoID, rol, usuarioID);
 
             if (jornadasDb == null || !jornadasDb.Any())
             {
@@ -319,51 +320,46 @@ namespace Proyecto.Server.BLL.Service
             }
 
             var result = jornadasDb
-                .Select(jornada => new MatchesDTO.GetPartidosByJornadaDTO
+    .Select(jornada => new MatchesDTO.GetPartidosByJornadaDTO
+    {
+        NumeroJornada = jornada.NumeroJornada,
+        partidos = jornada.Partidos
+            .Where(p => (p.Equipo1Navigation != null && p.Equipo1Navigation.SubTorneoId == subtorneoID) ||
+                        (p.Equipo2Navigation != null && p.Equipo2Navigation.SubTorneoId == subtorneoID))
+            .Select(partido => new MatchesDTO.PartidoDTO
+            {
+                PartidoId = partido.PartidoId,
+                FechaPartido = partido.FechaPartido,
+                HoraPartido = partido.HoraPartido,
+                Estado = partido.Estado,
+                Jornada = partido.Jornada.NumeroJornada,
+                FaseId = partido.FaseId,
+                NameArbitro = partido.Usuario != null ?
+                              (partido.Usuario.Nombre ?? "") + " " + (partido.Usuario.Apellido ?? "") :
+                              "Sin asignar",
+                NameCancha = partido.Cancha?.Nombre ?? "Desconocida",
+                equipo1 = partido.Equipo1Navigation != null ? new GetTeamDTO
                 {
-                    NumeroJornada = jornada.NumeroJornada,
-                    partidos = jornada.Partidos
-                        .Where(p => (p.Equipo1Navigation != null && p.Equipo1Navigation.SubTorneoId == subtorneoID) ||
-                                    (p.Equipo2Navigation != null && p.Equipo2Navigation.SubTorneoId == subtorneoID)) // <--- FILTRO ADICIONAL AQUÍ
-                        .Select(partido => new MatchesDTO.PartidoDTO
-                        {
-                            PartidoId = partido.PartidoId,
-                            FechaPartido = partido.FechaPartido,
-                            HoraPartido = partido.HoraPartido,
-                            Estado = partido.Estado,
-                            Jornada = partido.Jornada.NumeroJornada,
-                            FaseId = partido.FaseId,
-                            // Nombre del árbitro: Accede a Usuario.NombreCompleto, si es nulo, "Sin asignar"
-                            NameArbitro = partido.Usuario != null ?
-                                          (partido.Usuario.Nombre ?? "") + " " + (partido.Usuario.Apellido ?? "") :
-                                          "Sin asignar", // Ajusta a la propiedad de nombre real en tu Usuario
+                    EquipoId = partido.Equipo1Navigation.EquipoId,
+                    Nombre = partido.Equipo1Navigation.Nombre,
+                    NameFacultad = partido.Equipo1Navigation.Facultad?.Nombre ?? "Desconocida",
+                    ImagenEquipo = partido.Equipo1Navigation.ImagenEquipo ?? ""
+                } : null,
+                equipo2 = partido.Equipo2Navigation != null ? new GetTeamDTO
+                {
+                    EquipoId = partido.Equipo2Navigation.EquipoId,
+                    Nombre = partido.Equipo2Navigation.Nombre,
+                    NameFacultad = partido.Equipo2Navigation.Facultad?.Nombre ?? "Desconocida",
+                    ImagenEquipo = partido.Equipo2Navigation.ImagenEquipo ?? ""
+                } : null
+            })
+            .OrderBy(p => p.FechaPartido)
+            .ThenBy(p => p.HoraPartido)
+            .ToList()
+    })
+    .Where(j => j.partidos.Any()) // <- Este es el filtro clave para eliminar jornadas vacías
+    .ToList();
 
-                            // Nombre de la cancha: Accede a Cancha.Name, si es nulo, "Desconocida"
-                            NameCancha = partido.Cancha?.Nombre ?? "Desconocida",
-
-                            // Mapeo del Equipo 1
-                            equipo1 = partido.Equipo1Navigation != null ? new GetTeamDTO
-                            {
-                                EquipoId = partido.Equipo1Navigation.EquipoId,
-                                Nombre = partido.Equipo1Navigation.Nombre,
-                                NameFacultad = partido.Equipo1Navigation.Facultad?.Nombre ?? "Desconocida",
-                                ImagenEquipo = partido.Equipo1Navigation.ImagenEquipo ?? ""
-                            } : null,
-
-                            // Mapeo del Equipo 2
-                            equipo2 = partido.Equipo2Navigation != null ? new GetTeamDTO
-                            {
-                                EquipoId = partido.Equipo2Navigation.EquipoId,
-                                Nombre = partido.Equipo2Navigation.Nombre,
-                                NameFacultad = partido.Equipo2Navigation.Facultad?.Nombre ?? "Desconocida",
-                                ImagenEquipo = partido.Equipo2Navigation.ImagenEquipo ?? ""
-                            } : null
-                        })
-                        .OrderBy(p => p.FechaPartido)
-                        .ThenBy(p => p.HoraPartido)
-                        .ToList()
-                })
-                .ToList();
 
             return result;
         }
@@ -378,6 +374,97 @@ namespace Proyecto.Server.BLL.Service
         {
             return await _matchesRepository.ObtenerTablaPosicionesAsync(subTorneoId);
         }
+
+        public async Task AsignarArbitroAsync(int idArbitro, int partidoId)
+        {
+            var exito = await _matchesRepository.AsignarArbitroPartido(idArbitro, partidoId);
+
+            if (!exito)
+            {
+                throw new CustomException("No se puede asignar el árbitro porque ya tiene un partido en esa fecha y hora.");
+            }
+        }
+
+        public async Task<bool> RegistrarResultadosAsync(ResultadosPartido dto)
+        {
+            // 1. Crear primero el ResultadoPartido
+            var nuevoResultado = new ResultadoPartido
+            {
+                PartidoId = dto.PartidoID
+                // Agrega aquí cualquier otro campo obligatorio de tu entidad si lo necesitas
+            };
+
+            var resultadoCreado = await _matchesRepository.CrearResultadoPartidoAsync(nuevoResultado);
+            var resultadoId = resultadoCreado.ResultadoPartidoId;
+
+            // 2. Construir los goles con el nuevo ResultadoPartidoId
+            var goles = dto.golesPartido.Select(g => new Goles
+            {
+                JugadorId = g.JugadorId,
+                MinutoGol = g.MinutoGol,
+                OrdenPenal = g.OrdenPenal,
+                ResultadoPartidoId = resultadoId,
+                TipoGolId = g.TipoGolId,
+                EsTiempoExtra = false
+            }).ToList();
+
+            // 3. Construir las tarjetas con el nuevo ResultadoPartidoId
+            var tarjetas = dto.tarjetasPartido.Select(t => new Tarjeta
+            {
+                JugadorId = t.JugadorId,
+                MinutoTarjeta = t.MinutoTarjeta,
+                Descripcion = t.Descripcion,
+                Estado = true,
+                TipoTarjeta = t.TipoTarjeta,
+                ResultadoPartidoId = resultadoId
+            }).ToList();
+
+            // 4. Guardar goles y tarjetas
+            await _matchesRepository.AgregarGolesAsync(goles);
+            await _matchesRepository.AgregarTarjetasAsync(tarjetas);
+
+            // 5. Suspender jugadores con tarjeta roja
+            foreach (var tarjeta in tarjetas)
+            {
+                if (tarjeta.TipoTarjeta.ToLower() == "roja")
+                {
+                    await _matchesRepository.ActualizarEstadoJugadorAsync(tarjeta.JugadorId, Jugador.EstadoJugador.Suspendido);
+                }
+            }
+
+            // 6. Calcular los goles válidos
+            int golesEq1 = 0, golesEq2 = 0;
+
+            var resultado = await _matchesRepository.ObtenerPartidoConJugadoresAsync(resultadoId);
+
+            if (resultado == null)
+                throw new Exception($"No se encontró el partido con ID {resultadoId}");
+
+            foreach (var gol in goles)
+            {
+                var equipo = await _matchesRepository.ObtenerEquipoDeJugadorAsync(gol.JugadorId);
+
+                if (equipo == resultado.Equipo1)
+                    golesEq1++;
+                else if (equipo == resultado.Equipo2)
+                    golesEq2++;
+                else
+                    throw new Exception($"El jugador {gol.JugadorId} no pertenece a ninguno de los equipos del partido.");
+            }
+
+            // 7. Actualizar el resultado con los goles
+            await _matchesRepository.ActualizarGolesResultadoAsync(resultadoId, golesEq1, golesEq2);
+            // 8. Actualizar el estado del partido 
+            await _matchesRepository.ActualizarEstadoPartido(dto.PartidoID);
+            return true;
+        }
+
+
+        public async Task<List<ResultadoDTO.PartidoDetalladoDTO>> GetResultadosDetalladosPartidosBySubtorneo(int subtorneoId)
+        {
+            return await _matchesRepository.GetResultadosDetalladosPartidosBySubtorneo(subtorneoId);
+        }
+
 
     }
 }

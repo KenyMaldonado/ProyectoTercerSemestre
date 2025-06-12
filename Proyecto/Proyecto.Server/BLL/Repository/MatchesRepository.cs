@@ -5,6 +5,7 @@ using Proyecto.Server.DTOs;
 using Proyecto.Server.Models;
 using Proyecto.Server.Utils;
 using static Proyecto.Server.DTOs.MatchesDTO;
+using static Proyecto.Server.DTOs.ResultadoDTO;
 
 namespace Proyecto.Server.BLL.Repository
 {
@@ -147,25 +148,43 @@ namespace Proyecto.Server.BLL.Repository
         }
 
 
-        public async Task<List<Jornada>> GetJornadasWithPartidosAndDetailsBySubtorneoAsync(int subtorneoId)
+        public async Task<List<Jornada>> GetJornadasWithPartidosAndDetailsBySubtorneoAsync(int subtorneoId, int rol, int usuarioId)
         {
-            return await _appContext.Jornada
-                .Include(jornada => jornada.Partidos)
-                    .ThenInclude(partido => partido.Equipo1Navigation)
-                        .ThenInclude(equipo => equipo.Facultad)
-                .Include(jornada => jornada.Partidos)
-                    .ThenInclude(partido => partido.Equipo2Navigation)
-                        .ThenInclude(equipo => equipo.Facultad)
-                .Include(jornada => jornada.Partidos)
-                    .ThenInclude(partido => partido.Usuario)
-                .Include(jornada => jornada.Partidos)
-                    .ThenInclude(partido => partido.Cancha)
-                .Where(jornada => jornada.Partidos.Any(p =>
-                    (p.Equipo1Navigation != null && p.Equipo1Navigation.SubTorneoId == subtorneoId) ||
-                    (p.Equipo2Navigation != null && p.Equipo2Navigation.SubTorneoId == subtorneoId)
-                ))
-                .OrderBy(jornada => jornada.NumeroJornada)
+            // Primero, filtramos los partidos según condiciones:
+            // - Que pertenezcan al subtorneo por Equipo1 o Equipo2
+            // - Y si no es admin, que el partido esté asignado al usuario con rol 2 (árbitro)
+            var partidosQuery = _appContext.Partidos
+                .Where(p =>
+                    ((p.Equipo1Navigation != null && p.Equipo1Navigation.SubTorneoId == subtorneoId) ||
+                     (p.Equipo2Navigation != null && p.Equipo2Navigation.SubTorneoId == subtorneoId)) &&
+                    (rol == 1 || (p.UsuarioId == usuarioId && p.Usuario.RolId == 2))
+                )
+                .Include(p => p.Equipo1Navigation)
+                    .ThenInclude(e => e.Facultad)
+                .Include(p => p.Equipo2Navigation)
+                    .ThenInclude(e => e.Facultad)
+                .Include(p => p.Usuario)
+                .Include(p => p.Cancha);
+
+            // Luego, agrupamos los partidos por Jornada (puede ser null, se filtra)
+            var jornadas = await partidosQuery
+                .Where(p => p.Jornada != null)
+                .GroupBy(p => p.Jornada!)
+                .Select(g => g.Key)
+                .OrderBy(j => j.NumeroJornada)
                 .ToListAsync();
+
+            // Finalmente, para cada jornada cargamos los partidos filtrados que corresponden
+            // (Ya tenemos la lista de jornadas con partidos filtrados)
+            foreach (var jornada in jornadas)
+            {
+                // Cargamos los partidos para esa jornada con el mismo filtro (por seguridad)
+                jornada.Partidos = await partidosQuery
+                    .Where(p => p.JornadaId == jornada.JornadaId)
+                    .ToListAsync();
+            }
+
+            return jornadas;
         }
 
         public async Task UpdateEstadoSubtorneo(int subtorneoID)
@@ -188,7 +207,7 @@ namespace Proyecto.Server.BLL.Repository
         public async Task<List<TablaPosicionesDto>> ObtenerTablaPosicionesAsync(int subTorneoId)
         {
             var equipos = await _appContext.Equipos
-                .Where(e => e.SubTorneoId == subTorneoId)
+                .Where(e => e.SubTorneoId == subTorneoId && e.SubTorneo.Estado == "EnCurso")
                 .Select(e => new
                 {
                     e.EquipoId,
@@ -259,6 +278,192 @@ namespace Proyecto.Server.BLL.Repository
                 .ThenByDescending(t => t.DiferenciaGoles)
                 .ThenByDescending(t => t.GolesAFavor)
                 .ToList();
+        }
+
+        public async Task<bool> AsignarArbitroPartido(int idArbitro, int partidoId)
+        {
+            var partido = await _appContext.Partidos.FindAsync(partidoId);
+
+            if (partido == null)
+                return false; // No se encontró el partido
+
+            // Buscar si el árbitro ya tiene un partido en el mismo día y hora
+            bool conflicto = await _appContext.Partidos.AnyAsync(p =>
+                p.PartidoId != partidoId &&               // Excluir el mismo partido
+                p.UsuarioId == idArbitro &&              // Mismo árbitro
+                p.FechaPartido.Date == partido.FechaPartido.Date && // Mismo día
+                p.HoraPartido == partido.HoraPartido     // Misma hora exacta
+            );
+
+            if (conflicto)
+                return false; // El árbitro ya está ocupado en ese horario
+
+            // Asignar árbitro
+            partido.UsuarioId = idArbitro;
+            _appContext.Partidos.Update(partido);
+            await _appContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<ResultadoPartido> CrearResultadoPartidoAsync(ResultadoPartido resultado)
+        {
+            _appContext.ResultadoPartidos.Add(resultado);
+            await _appContext.SaveChangesAsync();
+            return resultado;
+        }
+
+        public async Task AgregarGolesAsync(List<Goles> goles)
+        {
+            await _appContext.Goles.AddRangeAsync(goles);
+            await _appContext.SaveChangesAsync();
+        }
+
+        public async Task AgregarTarjetasAsync(List<Tarjeta> tarjetas)
+        {
+            await _appContext.Tarjeta.AddRangeAsync(tarjetas);
+            await _appContext.SaveChangesAsync();
+        }
+
+        public async Task<Jugador?> ObtenerJugadorPorIdAsync(int jugadorId)
+        {
+            return await _appContext.Jugadors.FindAsync(jugadorId);
+        }
+
+        public async Task ActualizarEstadoJugadorAsync(int jugadorId, Jugador.EstadoJugador nuevoEstado)
+        {
+            var jugador = await _appContext.Jugadors.FindAsync(jugadorId);
+            if (jugador != null)
+            {
+                jugador.Estado = nuevoEstado;
+                await _appContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task ActualizarGolesResultadoAsync(int resultadoId, int golesEq1, int golesEq2)
+        {
+            try
+            {
+                var resultado = await _appContext.ResultadoPartidos.FindAsync(resultadoId);
+                if (resultado == null)
+                    throw new Exception($"ResultadoPartido con ID {resultadoId} no encontrado.");
+
+                resultado.GolesEquipo1 = golesEq1;
+                resultado.GolesEquipo2 = golesEq2;
+                await _appContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("Error al guardar los goles en la base de datos. Detalles: " + dbEx.InnerException?.Message ?? dbEx.Message, dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error inesperado al actualizar los goles: " + ex.Message, ex);
+            }
+        }
+
+        public async Task<Partido?> ObtenerPartidoConJugadoresAsync(int resultadoId)
+        {
+            try
+            {
+                var partido = await _appContext.ResultadoPartidos
+                    .Where(r => r.ResultadoPartidoId == resultadoId)
+                    .Select(r => r.Partido)
+                    .FirstOrDefaultAsync();
+
+                if (partido == null)
+                    throw new Exception($"No se encontró el partido asociado al ResultadoPartidoId {resultadoId}");
+
+                return partido;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el partido con jugadores: " + ex.Message, ex);
+            }
+        }
+
+        public async Task<int?> ObtenerEquipoDeJugadorAsync(int jugadorId)
+        {
+            try
+            {
+                var equipoId = await _appContext.JugadorEquipos
+                    .Where(je => je.JugadorId == jugadorId && je.Estado)
+                    .Select(je => (int?)je.EquipoId)
+                    .FirstOrDefaultAsync();
+
+                if (!equipoId.HasValue)
+                    throw new Exception($"No se encontró equipo activo para el jugador con ID {jugadorId}");
+
+                return equipoId;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el equipo del jugador: " + ex.Message, ex);
+            }
+        }
+
+        public async Task ActualizarEstadoPartido(int partidoID)
+        {
+            var partido = await _appContext.Partidos
+                          .FirstOrDefaultAsync(p => p.PartidoId == partidoID);
+            partido.Estado = "Finalizado";
+            await _appContext.SaveChangesAsync();
+        }
+
+        public async Task<List<PartidoDetalladoDTO>> GetResultadosDetalladosPartidosBySubtorneo(int subtorneoId)
+        {
+            var partidos = await _appContext.Partidos
+                .Where(p =>
+                    p.Estado == "Finalizado" &&
+                    ((p.Equipo1Navigation != null && p.Equipo1Navigation.SubTorneoId == subtorneoId) ||
+                     (p.Equipo2Navigation != null && p.Equipo2Navigation.SubTorneoId == subtorneoId)))
+                .Include(p => p.Equipo1Navigation)
+                .Include(p => p.Equipo2Navigation)
+                .Include(p => p.ResultadoPartidos)
+                    .ThenInclude(rp => rp.Goles)
+                        .ThenInclude(g => g.Jugador)
+                .Include(p => p.ResultadoPartidos)
+                    .ThenInclude(rp => rp.Goles)
+                        .ThenInclude(g => g.TipoGol)
+                .Include(p => p.ResultadoPartidos)
+                    .ThenInclude(rp => rp.Tarjeta)
+                        .ThenInclude(t => t.Jugador)
+                .OrderBy(p => p.FechaPartido)
+                .ToListAsync();
+
+            var lista = partidos.Select(p => {
+                var resultado = p.ResultadoPartidos.FirstOrDefault();
+
+                return new PartidoDetalladoDTO
+                {
+                    PartidoId = p.PartidoId,
+                    FechaPartido = p.FechaPartido,
+                    HoraPartido = p.HoraPartido,
+                    Estado = p.Estado,
+                    Equipo1Nombre = p.Equipo1Navigation?.Nombre ?? "Por definir",
+                    Equipo2Nombre = p.Equipo2Navigation?.Nombre ?? "Por definir",
+                    GolesEquipo1 = resultado?.GolesEquipo1 ?? 0,
+                    GolesEquipo2 = resultado?.GolesEquipo2 ?? 0,
+                    Goles = resultado?.Goles.Select(g => new ResultadoDTO.GolDTO
+                    {
+                        MinutoGol = g.MinutoGol ?? 0,
+                        EsTiempoExtra = g.EsTiempoExtra,
+                        OrdenPenal = g.OrdenPenal,
+                        JugadorNombre = $"{g.Jugador.Nombre} {g.Jugador.Apellido}",
+                        ImagenJugador = g.Jugador.Fotografia ?? "", // Asegúrate que exista este campo en la entidad Jugador
+                        TipoGol = g.TipoGol.Nombre
+                    }).ToList() ?? new(),
+                    Tarjetas = resultado?.Tarjeta.Select(t => new ResultadoDTO.TarjetaDTO
+                    {
+                        MinutoTarjeta = t.MinutoTarjeta,
+                        TipoTarjeta = t.TipoTarjeta,
+                        Descripcion = t.Descripcion,
+                        JugadorNombre = $"{t.Jugador.Nombre} {t.Jugador.Apellido}"
+                    }).ToList() ?? new()
+                };
+            }).ToList();
+
+            return lista;
         }
 
     }

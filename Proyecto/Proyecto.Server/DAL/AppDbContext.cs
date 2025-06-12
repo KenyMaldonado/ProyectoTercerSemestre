@@ -698,6 +698,7 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("Relationship33");
         });
 
+
         modelBuilder.Entity<TipoGol>(entity =>
         {
             entity.HasKey(e => e.TipoGolId).HasName("PRIMARY");

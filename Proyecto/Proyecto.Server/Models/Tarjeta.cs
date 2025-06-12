@@ -8,7 +8,7 @@
 
         public string? Descripcion { get; set; }
 
-        public string? Estado { get; set; }
+        public bool Estado { get; set; }
 
         public string TipoTarjeta { get; set; } = null!;
 

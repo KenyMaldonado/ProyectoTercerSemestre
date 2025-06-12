@@ -236,6 +236,23 @@ namespace Proyecto.Server.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetArbitros")]
+        public async Task<IActionResult> GetArbitros()
+        {
+            try
+            {
+                var listado = await _teamManagementBLL.GetArbitros();
+                return ResponseHelper.Success("Listado de arbitros", listado);
+            }
+            catch (CustomException ex)
+            {
+                return ResponseHelper.HandleCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.HandleGeneralException(ex);
+            }
+        }
     }
 }

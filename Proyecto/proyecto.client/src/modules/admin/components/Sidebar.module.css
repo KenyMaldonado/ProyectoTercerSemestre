@@ -1,16 +1,18 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100vh;
   width: 220px;
   background-color: #0a4735;
   padding: 1rem;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: width 0.3s ease, box-shadow 0.3s ease; /* <-- esta línea es clave */
+  transition: width 0.3s ease, box-shadow 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
 }
-
 
 .collapsed {
   width: 80px !important;
@@ -58,17 +60,46 @@
   text-decoration: none;
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
-
+.sidebarContent {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 1rem;
+  padding-right: 0.3rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
 .sidebarLink:hover {
   background-color: #097740;
   color: yellow;
   transform: translateX(8px);
+}
+.sidebarContent::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .active {
   font-weight: bold;
   text-decoration: underline;
   background-color: #075c30;
+}
+
+/* 👇 Botón hamburguesa flotante */
+.floatingToggle {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1100; /* subido para que quede encima */
+  background-color: #0a4735;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0.6rem;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: none; /* solo visible en móvil */
 }
 
 .linkLabel {
@@ -165,3 +196,30 @@
 }
 
 /* LOS ESTILOS EXISTENTES PERMANECEN IGUAL */
+
+/* MÓVIL */
+@media (max-width: 768px) {
+  .floatingToggle {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050; /* debajo del botón */
+    height: 100vh;
+    width: 220px;
+    max-width: 80vw;
+    padding: 1rem;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    background-color: #0a4735;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.expanded {
+    transform: translateX(0);
+  }
+}

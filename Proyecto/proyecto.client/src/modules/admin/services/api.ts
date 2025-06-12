@@ -9,6 +9,19 @@ function getAuthHeaders() {
     'Content-Type': 'application/json',
   };
 }
+function getAuthHeaders2() {
+  const token = localStorage.getItem('authToken'); // o la llave correcta
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return headers;
+}
 
 // Obtener torneos
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -256,6 +269,227 @@ export const getTablaPosiciones = async (subTorneoId: number): Promise<TablaPosi
     }
   } catch (error) {
     console.error('Error en fetch de tabla de posiciones:', error);
+    return [];
+  }
+};
+
+export interface Gol {
+  minutoGol: number;
+  ordenPenal: number;
+  resultadoPartidoId: number;
+  jugadorId: number;
+  tipoGolId: number;
+}
+
+export interface Tarjeta {
+  minutoTarjeta: number;
+  descripcion: string;
+  estado: string;
+  tipoTarjeta: string;
+  resultadoPartidoId: number;
+  jugadorId: number;
+}
+
+export interface RegistrarResultadosPayload {
+  partidoID: number;
+  golesPartido: Gol[];
+  tarjetasPartido: Tarjeta[];
+}
+
+export const registrarResultados = async (
+  payload: RegistrarResultadosPayload
+): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/MatchesControllers/registrar-resultados`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload), // El payload ya contiene partidoID
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error en la petición: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error registrando resultados:', error);
+    return false;
+  }
+};
+
+// Interfaces para el tipo de dato que devuelve el endpoint
+interface EquipoResumen {
+  equipoId: number;
+  nombre: string;
+  nameFacultad: string;
+  imagenEquipo: string;
+}
+
+export interface PartidoResumen {
+  partidoId: number;
+  fechaPartido: string; // ISO date string
+  horaPartido: string;
+  equipo1: EquipoResumen;
+  equipo2: EquipoResumen;
+  estado: string;
+  jornada: number;
+  faseId: number;
+  nameArbitro: string;
+  nameCancha: string;
+}
+
+export interface JornadaPartidos {
+  numeroJornada: number;
+  partidos: PartidoResumen[];
+}
+
+// Método para obtener partidos por jornada dado un subTorneoId
+export const getPartidosPorJornada = async (subTorneoId: number): Promise<JornadaPartidos[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/MatchesControllers/subtorneo/${subTorneoId}/partidosPorJornada`, {
+      method: 'GET',
+      headers: getAuthHeaders2(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Asumiendo que el API responde directamente el array sin wrapper { success, data }
+    // si no es así, ajustar data = data.data o similar
+
+    return data as JornadaPartidos[];
+
+  } catch (error) {
+    console.error('Error fetching partidos por jornada:', error);
+    return [];
+  }
+};
+
+// api.ts
+
+export interface UpdateArbitroInput {
+  arbitroId: number;
+  partidoId: number;
+}
+
+export const updateArbitroPartido = async (input: UpdateArbitroInput): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const { arbitroId, partidoId } = input;
+
+    const url = `${API_BASE_URL}/MatchesControllers/UpdateArbitroPartido?ArbitroID=${arbitroId}&PartidoID=${partidoId}`;
+
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: getAuthHeaders(), // Asegúrate que esto incluye 'Content-Type': 'application/json' si es necesario
+    });
+
+    if (response.ok) {
+      if (response.status === 204) {
+        return { success: true, message: "Árbitro asignado correctamente." };
+      } else {
+        const data = await response.json();
+        return data;
+      }
+    } else {
+      let errorMessage = `Error HTTP! Estado: ${response.status}.`;
+      try {
+        const errorData = await response.json();
+        if (errorData && errorData.message) {
+          errorMessage = errorData.message;
+        } else {
+          errorMessage += ` ${JSON.stringify(errorData)}`;
+        }
+      } catch {
+        const rawErrorText = await response.text();
+        errorMessage += ` ${rawErrorText}`;
+      }
+      return { success: false, message: errorMessage };
+    }
+  } catch (error: any) {
+    console.error('Error al actualizar árbitro del partido:', error);
+    return { success: false, message: error.message || 'Error de conexión o servidor desconocido.' };
+  }
+};
+
+
+export interface Arbitro {
+  usuarioId: number;
+  nombre: string;
+  apellido: string;
+}
+
+export const getArbitros = async (): Promise<Arbitro[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/TeamManagementControllers/GetArbitros`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    // Si la respuesta es { success, message, data }, entonces extraemos "data"
+    return result.data as Arbitro[];
+  } catch (error) {
+    console.error('Error al obtener árbitros:', error);
+    return [];
+  }
+};
+
+export interface GolDTO {
+  minutoGol: number;
+  esTiempoExtra: boolean;
+  ordenPenal: number | null;
+  jugadorNombre: string;
+  tipoGol: string;
+  imagenJugador?: string; // Puede venir nulo
+}
+
+export interface TarjetaDTO {
+  minutoTarjeta: number;
+  tipoTarjeta: string;
+  descripcion?: string;
+  jugadorNombre: string;
+}
+
+export interface PartidoDetalladoDTO {
+  partidoId: number;
+  fechaPartido: string; // ISO 8601
+  horaPartido: string;  // HH:mm:ss
+  estado: string;
+
+  equipo1Nombre: string;
+  equipo2Nombre: string;
+
+  golesEquipo1: number;
+  golesEquipo2: number;
+
+  goles: GolDTO[];
+  tarjetas: TarjetaDTO[];
+}
+export const getResultadosPartidos = async (subTorneoId: number): Promise<PartidoDetalladoDTO[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/MatchesControllers/resultadoPartidos?subTorneoId=${subTorneoId}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const json = await response.json();
+
+    return json.data as PartidoDetalladoDTO[];
+
+  } catch (error) {
+    console.error('Error fetching resultados de partidos:', error);
     return [];
   }
 };

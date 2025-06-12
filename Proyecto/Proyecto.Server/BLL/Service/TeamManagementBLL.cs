@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Org.BouncyCastle.Crypto.Operators;
 using Proyecto.Server.BLL.Interface.InterfacesRepository;
 using Proyecto.Server.BLL.Interface.InterfacesService;
 using Proyecto.Server.DTOs;
@@ -274,6 +275,9 @@ namespace Proyecto.Server.BLL.Service
             await _teamManagementRepository.UpdateEstadoInscripcion(parametro);
         }
 
-        
+        public async Task<List<UserRegistrationDTO.GetArbitro>> GetArbitros()
+        {
+            return await _teamManagementRepository.GetArbitros();
+        }
     }
 }

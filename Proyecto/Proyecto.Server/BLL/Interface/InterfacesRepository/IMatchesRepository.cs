@@ -21,8 +21,20 @@ namespace Proyecto.Server.BLL.Interface.InterfacesRepository
         Task<bool> IsArbitroOcupadoAsync(int arbitroId, DateTime fecha, TimeOnly hora);
         Task<List<Partido>> GetPartidosProgramadosEnRangoAsync(DateTime fechaInicio, DateTime fechaFin);
         Task CrearJornadasYPartidosAsync(List<Jornada> jornadas, List<Partido> partidos);
-        Task<List<Jornada>> GetJornadasWithPartidosAndDetailsBySubtorneoAsync(int subtorneoId);
+        Task<List<Jornada>> GetJornadasWithPartidosAndDetailsBySubtorneoAsync(int subtorneoId, int rol, int usuarioId);
         Task UpdateEstadoSubtorneo(int subtorneoID);
         Task<List<TablaPosicionesDto>> ObtenerTablaPosicionesAsync(int subTorneoId);
+        Task<bool> AsignarArbitroPartido(int idArbitro, int partidoId);
+
+        Task<ResultadoPartido> CrearResultadoPartidoAsync(ResultadoPartido resultado);
+        Task AgregarGolesAsync(List<Goles> goles);
+        Task AgregarTarjetasAsync(List<Tarjeta> tarjetas);
+        Task<Jugador?> ObtenerJugadorPorIdAsync(int jugadorId);
+        Task ActualizarEstadoJugadorAsync(int jugadorId, Jugador.EstadoJugador nuevoEstado);
+        Task ActualizarGolesResultadoAsync(int resultadoId, int golesEq1, int golesEq2);
+        Task<Partido?> ObtenerPartidoConJugadoresAsync(int resultadoId);
+        Task<int?> ObtenerEquipoDeJugadorAsync(int jugadorId);
+        Task ActualizarEstadoPartido(int partidoID);
+        Task<List<ResultadoDTO.PartidoDetalladoDTO>> GetResultadosDetalladosPartidosBySubtorneo(int subtorneoId);
     }
 }
